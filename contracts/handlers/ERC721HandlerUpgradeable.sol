@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "../interfaces/IDepositExecute.sol";
 import {HandlerHelpersUpgradeable as HandlerHelpers} from "./HandlerHelpersUpgradeable.sol";
 import {ERC721SafeUpgradeable as ERC721Safe} from "../ERC721SafeUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721MetadataUpgradeable.sol";
+import {IERC721MetadataUpgradeable as IERC721Metadata} from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721MetadataUpgradeable.sol";
 import {ERC165CheckerUpgradeable as ERC165Checker} from "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165CheckerUpgradeable.sol";
 
 /**
@@ -59,9 +59,7 @@ contract ERC721HandlerUpgradeable is
 
         // Check if the contract supports metadata, fetch it if it does
         if (tokenAddress.supportsInterface(_INTERFACE_ERC721_METADATA)) {
-            IERC721MetadataUpgradeable erc721 = IERC721MetadataUpgradeable(
-                tokenAddress
-            );
+            IERC721Metadata erc721 = IERC721Metadata(tokenAddress);
             metaData = bytes(erc721.tokenURI(tokenID));
         }
 

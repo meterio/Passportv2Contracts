@@ -7,7 +7,7 @@ import {AccessControlUpgradeable as AccessControl} from "@openzeppelin/contracts
 import {CountersUpgradeable as Counters} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 import {ERC721BurnableUpgradeable as ERC721Burnable} from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
 import {ERC721PausableUpgradeable as ERC721Pausable} from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
+import {ERC721URIStorageUpgradeable as ERC721URIStorage} from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
 import {ERC721Upgradeable as ERC721} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 
 contract ERC721MinterBurnerPauserUpgradeable is
@@ -15,7 +15,7 @@ contract ERC721MinterBurnerPauserUpgradeable is
     ERC721,
     ERC721Burnable,
     ERC721Pausable,
-    ERC721URIStorageUpgradeable
+    ERC721URIStorage
 {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -110,7 +110,7 @@ contract ERC721MinterBurnerPauserUpgradeable is
         public
         view
         virtual
-        override(ERC721URIStorageUpgradeable, ERC721)
+        override(ERC721URIStorage, ERC721)
         returns (string memory)
     {
         return super.tokenURI(tokenId);
@@ -144,7 +144,7 @@ contract ERC721MinterBurnerPauserUpgradeable is
     function _burn(uint256 tokenId)
         internal
         virtual
-        override(ERC721URIStorageUpgradeable, ERC721)
+        override(ERC721URIStorage, ERC721)
     {
         super._burn(tokenId);
     }

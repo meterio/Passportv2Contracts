@@ -3,7 +3,7 @@ pragma solidity 0.8.11;
 
 import {SafeMathUpgradeable as SafeMath} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import {IERC20Upgradeable as IERC20} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/presets/ERC20PresetMinterPauserUpgradeable.sol";
+import {ERC20PresetMinterPauserUpgradeable as ERC20PresetMinterPauser} from "@openzeppelin/contracts-upgradeable/token/ERC20/presets/ERC20PresetMinterPauserUpgradeable.sol";
 import {ERC20BurnableUpgradeable as ERC20Burnable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
 
 /**
@@ -57,7 +57,7 @@ contract ERC20SafeUpgradeable {
         address recipient,
         uint256 amount
     ) internal {
-        ERC20PresetMinterPauserUpgradeable erc20 = ERC20PresetMinterPauserUpgradeable(tokenAddress);
+        ERC20PresetMinterPauser erc20 = ERC20PresetMinterPauser(tokenAddress);
         erc20.mint(recipient, amount);
     }
 

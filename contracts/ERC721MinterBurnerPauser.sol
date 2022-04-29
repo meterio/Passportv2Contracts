@@ -39,7 +39,7 @@ contract ERC721MinterBurnerPauser is
         _setupRole(MINTER_ROLE, _msgSender());
         _setupRole(PAUSER_ROLE, _msgSender());
 
-        _setBaseURI(baseURI);
+        _setBaseURI(baseURI_);
     }
 
     /**

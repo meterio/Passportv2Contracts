@@ -3,7 +3,7 @@ pragma solidity 0.8.11;
 
 import {SafeMathUpgradeable as SafeMath} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import {IERC721Upgradeable as IERC721} from "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
-import "./ERC721MinterBurnerPauserUpgradeable.sol";
+import {ERC721MinterBurnerPauserUpgradeable as ERC721MinterBurnerPauser} from "./ERC721MinterBurnerPauserUpgradeable.sol";
 
 /**
     @title Manages deposited ERC721s.
@@ -60,9 +60,9 @@ contract ERC721SafeUpgradeable {
         uint256 tokenID,
         bytes memory data
     ) internal {
-        ERC721MinterBurnerPauserUpgradeable erc721 = ERC721MinterBurnerPauserUpgradeable(
-                tokenAddress
-            );
+        ERC721MinterBurnerPauser erc721 = ERC721MinterBurnerPauser(
+            tokenAddress
+        );
         erc721.mint(recipient, tokenID, string(data));
     }
 
@@ -72,9 +72,9 @@ contract ERC721SafeUpgradeable {
         @param tokenID ID of token to burn.
      */
     function burnERC721(address tokenAddress, uint256 tokenID) internal {
-        ERC721MinterBurnerPauserUpgradeable erc721 = ERC721MinterBurnerPauserUpgradeable(
-                tokenAddress
-            );
+        ERC721MinterBurnerPauser erc721 = ERC721MinterBurnerPauser(
+            tokenAddress
+        );
         erc721.burn(tokenID);
     }
 }

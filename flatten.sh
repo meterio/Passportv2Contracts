@@ -1,0 +1,1 @@
+npx hardhat flatten contracts/ERC1155Mintable.sol > ./flattened/ERC1155Mintable.sol

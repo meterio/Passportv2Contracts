@@ -1,0 +1,201 @@
+{
+  "id": "bac58eac48578b7917bf5db8499ccb5b",
+  "_format": "hh-sol-build-info-1",
+  "solcVersion": "0.8.11",
+  "solcLongVersion": "0.8.11+commit.d7f03943",
+  "input": {
+    "language": "Solidity",
+    "sources": {
+      "contracts/interfaces/IBridge.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\npragma solidity 0.8.11;\n\n/**\n    @title Interface for Bridge contract.\n    @author ChainSafe Systems.\n */\ninterface IBridge {\n    /**\n        @notice Exposing getter for {_domainID} instead of forcing the use of call.\n        @return uint8 The {_domainID} that is currently set for the Bridge contract.\n     */\n    function _domainID() external returns (uint8);\n}"
+      }
+    },
+    "settings": {
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata",
+            "storageLayout"
+          ],
+          "": [
+            "ast"
+          ]
+        }
+      }
+    }
+  },
+  "output": {
+    "contracts": {
+      "contracts/interfaces/IBridge.sol": {
+        "IBridge": {
+          "abi": [
+            {
+              "inputs": [],
+              "name": "_domainID",
+              "outputs": [
+                {
+                  "internalType": "uint8",
+                  "name": "",
+                  "type": "uint8"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ],
+          "evm": {
+            "bytecode": {
+              "functionDebugData": {},
+              "generatedSources": [],
+              "linkReferences": {},
+              "object": "",
+              "opcodes": "",
+              "sourceMap": ""
+            },
+            "deployedBytecode": {
+              "functionDebugData": {},
+              "generatedSources": [],
+              "immutableReferences": {},
+              "linkReferences": {},
+              "object": "",
+              "opcodes": "",
+              "sourceMap": ""
+            },
+            "methodIdentifiers": {
+              "_domainID()": "9dd694f4"
+            }
+          },
+          "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"_domainID\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"ChainSafe Systems.\",\"kind\":\"dev\",\"methods\":{\"_domainID()\":{\"returns\":{\"_0\":\"uint8 The {_domainID} that is currently set for the Bridge contract.\"}}},\"title\":\"Interface for Bridge contract.\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"_domainID()\":{\"notice\":\"Exposing getter for {_domainID} instead of forcing the use of call.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/interfaces/IBridge.sol\":\"IBridge\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/interfaces/IBridge.sol\":{\"keccak256\":\"0x7dc8252a46076853e125756da211cf93285f59d21e38494fbb60a6a335d361e5\",\"license\":\"LGPL-3.0-only\",\"urls\":[\"bzz-raw://c4eb16a58fb3079dcc91314af94c4d4643fd94910b06b027d3574ea595f732a8\",\"dweb:/ipfs/QmdWW76UwNXw1YN1M2RzgsqJa14gBH24jYcAzeZdkYVQPF\"]}},\"version\":1}",
+          "storageLayout": {
+            "storage": [],
+            "types": null
+          }
+        }
+      }
+    },
+    "sources": {
+      "contracts/interfaces/IBridge.sol": {
+        "ast": {
+          "absolutePath": "contracts/interfaces/IBridge.sol",
+          "exportedSymbols": {
+            "IBridge": [
+              9
+            ]
+          },
+          "id": 10,
+          "license": "LGPL-3.0-only",
+          "nodeType": "SourceUnit",
+          "nodes": [
+            {
+              "id": 1,
+              "literals": [
+                "solidity",
+                "0.8",
+                ".11"
+              ],
+              "nodeType": "PragmaDirective",
+              "src": "42:23:0"
+            },
+            {
+              "abstract": false,
+              "baseContracts": [],
+              "canonicalName": "IBridge",
+              "contractDependencies": [],
+              "contractKind": "interface",
+              "documentation": {
+                "id": 2,
+                "nodeType": "StructuredDocumentation",
+                "src": "67:80:0",
+                "text": "@title Interface for Bridge contract.\n@author ChainSafe Systems."
+              },
+              "fullyImplemented": false,
+              "id": 9,
+              "linearizedBaseContracts": [
+                9
+              ],
+              "name": "IBridge",
+              "nameLocation": "158:7:0",
+              "nodeType": "ContractDefinition",
+              "nodes": [
+                {
+                  "documentation": {
+                    "id": 3,
+                    "nodeType": "StructuredDocumentation",
+                    "src": "172:180:0",
+                    "text": "@notice Exposing getter for {_domainID} instead of forcing the use of call.\n@return uint8 The {_domainID} that is currently set for the Bridge contract."
+                  },
+                  "functionSelector": "9dd694f4",
+                  "id": 8,
+                  "implemented": false,
+                  "kind": "function",
+                  "modifiers": [],
+                  "name": "_domainID",
+                  "nameLocation": "366:9:0",
+                  "nodeType": "FunctionDefinition",
+                  "parameters": {
+                    "id": 4,
+                    "nodeType": "ParameterList",
+                    "parameters": [],
+                    "src": "375:2:0"
+                  },
+                  "returnParameters": {
+                    "id": 7,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 6,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 8,
+                        "src": "396:5:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        },
+                        "typeName": {
+                          "id": 5,
+                          "name": "uint8",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "396:5:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint8",
+                            "typeString": "uint8"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "395:7:0"
+                  },
+                  "scope": 9,
+                  "src": "357:46:0",
+                  "stateMutability": "nonpayable",
+                  "virtual": false,
+                  "visibility": "external"
+                }
+              ],
+              "scope": 10,
+              "src": "148:257:0",
+              "usedErrors": []
+            }
+          ],
+          "src": "42:363:0"
+        },
+        "id": 0
+      }
+    }
+  }
+}

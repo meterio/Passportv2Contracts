@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "ERC721SafeUpgradeable",
+  "sourceName": "contracts/ERC721SafeUpgradeable.sol",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220875eda7eaf1b45534b3ad0211394a9120800d9d3a0347ed426565bc62d506f9f64736f6c634300080b0033",
+  "deployedBytecode": "0x6080604052600080fdfea2646970667358221220875eda7eaf1b45534b3ad0211394a9120800d9d3a0347ed426565bc62d506f9f64736f6c634300080b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

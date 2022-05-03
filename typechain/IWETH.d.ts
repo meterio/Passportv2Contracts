@@ -23,11 +23,16 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface IWETHInterface extends ethers.utils.Interface {
   functions: {
+    "approve(address,uint256)": FunctionFragment;
     "deposit()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "approve",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "deposit", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transfer",
@@ -38,6 +43,7 @@ interface IWETHInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
 
+  decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
@@ -59,6 +65,18 @@ export class IWETH extends Contract {
   interface: IWETHInterface;
 
   functions: {
+    approve(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "approve(address,uint256)"(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     deposit(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
     "deposit()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
@@ -85,6 +103,18 @@ export class IWETH extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
   };
+
+  approve(
+    spender: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "approve(address,uint256)"(
+    spender: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   deposit(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
@@ -113,6 +143,18 @@ export class IWETH extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    approve(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "approve(address,uint256)"(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     deposit(overrides?: CallOverrides): Promise<void>;
 
     "deposit()"(overrides?: CallOverrides): Promise<void>;
@@ -140,6 +182,18 @@ export class IWETH extends Contract {
   filters: {};
 
   estimateGas: {
+    approve(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "approve(address,uint256)"(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     deposit(overrides?: PayableOverrides): Promise<BigNumber>;
 
     "deposit()"(overrides?: PayableOverrides): Promise<BigNumber>;
@@ -165,6 +219,18 @@ export class IWETH extends Contract {
   };
 
   populateTransaction: {
+    approve(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "approve(address,uint256)"(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     deposit(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
 
     "deposit()"(overrides?: PayableOverrides): Promise<PopulatedTransaction>;

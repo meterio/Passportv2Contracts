@@ -23,6 +23,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface ForwarderInterface extends ethers.utils.Interface {
   functions: {
     "execute(tuple,bytes)": FunctionFragment;
+    "getChainId()": FunctionFragment;
     "getNonce(address)": FunctionFragment;
     "verify(tuple,bytes)": FunctionFragment;
   };
@@ -41,6 +42,10 @@ interface ForwarderInterface extends ethers.utils.Interface {
       BytesLike
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getChainId",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "getNonce", values: [string]): string;
   encodeFunctionData(
     functionFragment: "verify",
@@ -58,6 +63,7 @@ interface ForwarderInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "execute", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getChainId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "verify", data: BytesLike): Result;
 
@@ -103,6 +109,14 @@ export class Forwarder extends Contract {
       signature: BytesLike,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
+
+    getChainId(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getChainId()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
     getNonce(
       from: string,
@@ -175,6 +189,10 @@ export class Forwarder extends Contract {
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
+  getChainId(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getChainId()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   getNonce(from: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   "getNonce(address)"(
@@ -241,6 +259,10 @@ export class Forwarder extends Contract {
       1: string;
     }>;
 
+    getChainId(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getChainId()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getNonce(from: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "getNonce(address)"(
@@ -304,6 +326,10 @@ export class Forwarder extends Contract {
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
+    getChainId(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getChainId()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getNonce(from: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "getNonce(address)"(
@@ -364,6 +390,10 @@ export class Forwarder extends Contract {
       signature: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
+
+    getChainId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getChainId()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getNonce(
       from: string,

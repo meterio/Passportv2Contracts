@@ -1,5 +1,5 @@
 import "hardhat-typechain";
-import "@nomiclabs/hardhat-ethers";
+import"@nomiclabs/hardhat-truffle5";
 import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 import { task } from "hardhat/config";

@@ -21,7 +21,12 @@ contract ERC20Safe {
         @param recipient Address to transfer tokens to.
         @param amount Amount of tokens to transfer.
      */
-    function lockERC20(address tokenAddress, address owner, address recipient, uint256 amount) internal {
+    function lockERC20(
+        address tokenAddress,
+        address owner,
+        address recipient,
+        uint256 amount
+    ) internal {
         IERC20 erc20 = IERC20(tokenAddress);
         _safeTransferFrom(erc20, owner, recipient, amount);
     }
@@ -32,7 +37,11 @@ contract ERC20Safe {
         @param recipient Address to transfer tokens to.
         @param amount Amount of tokens to transfer.
      */
-    function releaseERC20(address tokenAddress, address recipient, uint256 amount) internal {
+    function releaseERC20(
+        address tokenAddress,
+        address recipient,
+        uint256 amount
+    ) internal {
         IERC20 erc20 = IERC20(tokenAddress);
         _safeTransfer(erc20, recipient, amount);
     }
@@ -43,10 +52,13 @@ contract ERC20Safe {
         @param recipient Address to mint token to.
         @param amount Amount of token to mint.
      */
-    function mintERC20(address tokenAddress, address recipient, uint256 amount) internal {
+    function mintERC20(
+        address tokenAddress,
+        address recipient,
+        uint256 amount
+    ) internal {
         ERC20PresetMinterPauser erc20 = ERC20PresetMinterPauser(tokenAddress);
         erc20.mint(recipient, amount);
-
     }
 
     /**
@@ -55,7 +67,11 @@ contract ERC20Safe {
         @param owner Current owner of tokens.
         @param amount Amount of tokens to burn.
      */
-    function burnERC20(address tokenAddress, address owner, uint256 amount) internal {
+    function burnERC20(
+        address tokenAddress,
+        address owner,
+        uint256 amount
+    ) internal {
         ERC20Burnable erc20 = ERC20Burnable(tokenAddress);
         erc20.burnFrom(owner, amount);
     }
@@ -66,10 +82,16 @@ contract ERC20Safe {
         @param to Address to transfer token to
         @param value Amount of token to transfer
      */
-    function _safeTransfer(IERC20 token, address to, uint256 value) private {
-        _safeCall(token, abi.encodeWithSelector(token.transfer.selector, to, value));
+    function _safeTransfer(
+        IERC20 token,
+        address to,
+        uint256 value
+    ) private {
+        _safeCall(
+            token,
+            abi.encodeWithSelector(token.transfer.selector, to, value)
+        );
     }
-
 
     /**
         @notice used to transfer ERC20s safely
@@ -78,8 +100,16 @@ contract ERC20Safe {
         @param to Address to transfer token to
         @param value Amount of token to transfer
      */
-    function _safeTransferFrom(IERC20 token, address from, address to, uint256 value) private {
-        _safeCall(token, abi.encodeWithSelector(token.transferFrom.selector, from, to, value));
+    function _safeTransferFrom(
+        IERC20 token,
+        address from,
+        address to,
+        uint256 value
+    ) private {
+        _safeCall(
+            token,
+            abi.encodeWithSelector(token.transferFrom.selector, from, to, value)
+        );
     }
 
     /**
@@ -91,16 +121,17 @@ contract ERC20Safe {
         uint256 tokenSize;
         assembly {
             tokenSize := extcodesize(token)
-        }         
+        }
         require(tokenSize > 0, "ERC20: not a contract");
 
         (bool success, bytes memory returndata) = address(token).call(data);
         require(success, "ERC20: call failed");
 
         if (returndata.length > 0) {
-
-            require(abi.decode(returndata, (bool)), "ERC20: operation did not succeed");
+            require(
+                abi.decode(returndata, (bool)),
+                "ERC20: operation did not succeed"
+            );
         }
     }
-
 }

@@ -21,12 +21,13 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
 
     bytes32 public constant PERMIT_TYPEHASH =
         keccak256(
-            "VoteProposal(uint8 domainID,uint64 depositNonce,bytes32 resourceID,bytes data,uint256 deadline,bytes[] signatures)"
+            "PermitBridge(uint8 domainID,uint64 depositNonce,bytes32 resourceID,uint256 deadline,bytes data)"
         );
 
     // Limit relayers number because proposal can fit only so much votes
     uint256 public constant MAX_RELAYERS = 200;
 
+    uint256 public _chainId = block.chainid;
     uint8 public _domainID;
     uint8 public _relayerThreshold;
     uint128 public _fee;
@@ -528,11 +529,13 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
 
         uint64 depositNonce = ++_depositCounts[destinationDomainID];
         IDepositExecute depositHandler = IDepositExecute(handler);
+        IWETH(WETH).approve(address(depositHandler), value);
         bytes memory handlerResponse = depositHandler.deposit(
             ETHresourceID,
             address(this),
             data
         );
+        IWETH(WETH).approve(address(depositHandler), 0);
 
         emit Deposit(
             destinationDomainID,
@@ -544,12 +547,14 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
         );
     }
 
+    error InviladSignature(address signer, uint256 index);
+
     function voteProposals(
         uint8 domainID,
         uint64 depositNonce,
         bytes32 resourceID,
-        bytes calldata data,
         uint256 deadline,
+        bytes calldata data,
         bytes[] memory signatures
     ) external whenNotPaused {
         address handler = _resourceIDToHandlerAddress[resourceID];
@@ -565,8 +570,15 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
 
         for (uint256 i; i < signatures.length; i++) {
             if (proposal._status == ProposalStatus.Passed) {
-                executeProposal(domainID, depositNonce, data, resourceID, true);
-                return;
+                proposal._status = ProposalStatus.Executed;
+                IDepositExecute depositHandler = IDepositExecute(handler);
+                depositHandler.executeProposal(resourceID, data);
+                emit ProposalEvent(
+                    domainID,
+                    depositNonce,
+                    ProposalStatus.Executed,
+                    dataHash
+                );
             }
             bytes32 structHash = keccak256(
                 abi.encode(
@@ -574,16 +586,15 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
                     domainID,
                     depositNonce,
                     resourceID,
-                    data,
-                    deadline
+                    deadline,
+                    keccak256(data)
                 )
             );
             bytes32 hash = _hashTypedDataV4(structHash);
             address sender = ECDSA.recover(hash, signatures[i]);
-            require(
-                hasRole(RELAYER_ROLE, sender),
-                "sender doesn't have relayer role"
-            );
+            if (!hasRole(RELAYER_ROLE, sender)) {
+                revert InviladSignature(sender, i);
+            }
             require(
                 uint256(proposal._status) <= 1,
                 "proposal already executed/cancelled"
@@ -641,16 +652,10 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
                 }
             }
         }
-        _proposals[nonceAndID][dataHash] = proposal;
         if (proposal._status == ProposalStatus.Passed) {
+            proposal._status = ProposalStatus.Executed;
             IDepositExecute depositHandler = IDepositExecute(handler);
-            try depositHandler.executeProposal(resourceID, data) {} catch (
-                bytes memory lowLevelData
-            ) {
-                proposal._status = ProposalStatus.Passed;
-                emit FailedHandlerExecution(lowLevelData);
-                return;
-            }
+            depositHandler.executeProposal(resourceID, data);
             emit ProposalEvent(
                 domainID,
                 depositNonce,
@@ -658,6 +663,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
                 dataHash
             );
         }
+        _proposals[nonceAndID][dataHash] = proposal;
     }
 
     /**
@@ -755,20 +761,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
         _proposals[nonceAndID][dataHash] = proposal;
 
         if (proposal._status == ProposalStatus.Passed) {
-            IDepositExecute depositHandler = IDepositExecute(handler);
-            try depositHandler.executeProposal(resourceID, data) {} catch (
-                bytes memory lowLevelData
-            ) {
-                proposal._status = ProposalStatus.Passed;
-                emit FailedHandlerExecution(lowLevelData);
-                return;
-            }
-            emit ProposalEvent(
-                domainID,
-                depositNonce,
-                ProposalStatus.Executed,
-                dataHash
-            );
+            executeProposal(domainID, depositNonce, data, resourceID, false);
         }
     }
 

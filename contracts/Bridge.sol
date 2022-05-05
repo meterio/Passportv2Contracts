@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity 0.8.11;
-pragma experimental ABIEncoderV2;
 
 import "./utils/AccessControl.sol";
 import "./utils/Pausable.sol";
@@ -10,24 +9,24 @@ import "./interfaces/IDepositExecute.sol";
 import "./interfaces/IERCHandler.sol";
 import "./interfaces/IGenericHandler.sol";
 import "./interfaces/IWETH.sol";
+import "./interfaces/IBridge.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 
 /**
     @title Facilitates deposits, creation and voting of deposit proposals, and deposit executions.
     @author ChainSafe Systems.
  */
-contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
+contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
     using SafeCast for *;
 
     bytes32 public constant PERMIT_TYPEHASH =
         keccak256(
-            "PermitBridge(uint8 domainID,uint64 depositNonce,bytes32 resourceID,uint256 deadline,bytes data)"
+            "PermitBridge(uint8 domainID,uint64 depositNonce,bytes32 resourceID,bytes data)"
         );
 
     // Limit relayers number because proposal can fit only so much votes
     uint256 public constant MAX_RELAYERS = 200;
 
-    uint256 public _chainId = block.chainid;
     uint8 public _domainID;
     uint8 public _relayerThreshold;
     uint128 public _fee;
@@ -36,21 +35,6 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
     mapping(uint8 => uint256) public _specialFee;
     bytes32 immutable ETHresourceID;
     address immutable WETH;
-
-    enum ProposalStatus {
-        Inactive,
-        Active,
-        Passed,
-        Executed,
-        Cancelled
-    }
-
-    struct Proposal {
-        ProposalStatus _status;
-        uint200 _yesVotes; // bitmap, 200 maximum votes
-        uint8 _yesVotesTotal;
-        uint40 _proposedBlock; // 1099511627775 maximum block
-    }
 
     // destinationDomainID => number of deposits
     mapping(uint8 => uint64) public _depositCounts;
@@ -124,6 +108,10 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
             hasRole(RELAYER_ROLE, _msgSender()),
             "sender doesn't have relayer role"
         );
+    }
+
+    function _chainId() external view returns (uint256) {
+        return block.chainid;
     }
 
     function _relayerBit(address relayer) private view returns (uint256) {
@@ -549,11 +537,31 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
 
     error InviladSignature(address signer, uint256 index);
 
+    function checkSignature(
+        uint8 domainID,
+        uint64 depositNonce,
+        bytes32 resourceID,
+        bytes calldata data,
+        bytes calldata signature
+    ) external view returns (bool) {
+        bytes32 structHash = keccak256(
+            abi.encode(
+                PERMIT_TYPEHASH,
+                domainID,
+                depositNonce,
+                resourceID,
+                keccak256(data)
+            )
+        );
+        bytes32 hash = _hashTypedDataV4(structHash);
+        address sender = ECDSA.recover(hash, signature);
+        return hasRole(RELAYER_ROLE, sender);
+    }
+
     function voteProposals(
         uint8 domainID,
         uint64 depositNonce,
         bytes32 resourceID,
-        uint256 deadline,
         bytes calldata data,
         bytes[] memory signatures
     ) external whenNotPaused {
@@ -561,7 +569,6 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
         uint72 nonceAndID = (uint72(depositNonce) << 8) | uint72(domainID);
         bytes32 dataHash = keccak256(abi.encodePacked(handler, data));
         Proposal memory proposal = _proposals[nonceAndID][dataHash];
-        require(deadline >= block.timestamp, "expired!");
 
         require(
             _resourceIDToHandlerAddress[resourceID] != address(0),
@@ -586,7 +593,6 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath {
                     domainID,
                     depositNonce,
                     resourceID,
-                    deadline,
                     keccak256(data)
                 )
             );

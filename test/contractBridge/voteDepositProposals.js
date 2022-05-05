@@ -26,9 +26,6 @@ contract('Bridge - [voteProposals]', async (accounts) => {
     const relayer2Address = relayer2.getAddressString();
     const relayer3Address = relayer3.getAddressString();
     const relayer4Address = relayer4.getAddressString();
-    const relayer1Bit = 1 << 0;
-    const relayer2Bit = 1 << 1;
-    const relayer3Bit = 1 << 2;
     const depositer = Wallet.generate();
     const depositerAddress = depositer.getAddressString();
     const destinationChainRecipientAddress = accounts[4];
@@ -62,7 +59,6 @@ contract('Bridge - [voteProposals]', async (accounts) => {
             { name: 'domainID', type: 'uint8' },
             { name: 'depositNonce', type: 'uint64' },
             { name: 'resourceID', type: 'bytes32' },
-            { name: 'deadline', type: 'uint256' },
             { name: 'data', type: 'bytes' },
         ],
     }
@@ -73,7 +69,6 @@ contract('Bridge - [voteProposals]', async (accounts) => {
     let depositData = '';
     let depositDataHash = '';
     let resourceID = '';
-    let initialResourceIDs;
     let initialContractAddresses;
     let burnableContractAddresses;
 
@@ -141,12 +136,10 @@ contract('Bridge - [voteProposals]', async (accounts) => {
     })
 
     it("depositProposal should be automatically executed after the vote if proposal status is changed to Passed during the vote", async () => {
-        let deadline = Math.floor(Date.now() / 1000) + 100;
         const request = {
             domainID: destinationDomainID,
             depositNonce: expectedDepositNonce,
             resourceID: resourceID,
-            deadline: deadline,
             data: depositData,
         }
 
@@ -184,7 +177,7 @@ contract('Bridge - [voteProposals]', async (accounts) => {
                 }
             }
         )
-        await BridgeInstance.voteProposals(destinationDomainID, expectedDepositNonce, resourceID, deadline, depositData, [sign1, sign2, sign3]);
+        await BridgeInstance.voteProposals(destinationDomainID, expectedDepositNonce, resourceID, depositData, [sign1, sign2, sign3]);
 
         const depositProposalAfterThirdVoteWithExecute = await BridgeInstance.getProposal(
             destinationDomainID, expectedDepositNonce, depositDataHash);

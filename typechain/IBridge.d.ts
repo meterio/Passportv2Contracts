@@ -23,11 +23,38 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface IBridgeInterface extends ethers.utils.Interface {
   functions: {
     "_domainID()": FunctionFragment;
+    "_resourceIDToHandlerAddress(bytes32)": FunctionFragment;
+    "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
+    "getProposal(uint8,uint64,bytes32)": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "_domainID", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "_resourceIDToHandlerAddress",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkSignature",
+    values: [BigNumberish, BigNumberish, BytesLike, BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getProposal",
+    values: [BigNumberish, BigNumberish, BytesLike]
+  ): string;
 
   decodeFunctionResult(functionFragment: "_domainID", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "_resourceIDToHandlerAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "checkSignature",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getProposal",
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
@@ -49,16 +76,208 @@ export class IBridge extends Contract {
     _domainID(overrides?: Overrides): Promise<ContractTransaction>;
 
     "_domainID()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    _resourceIDToHandlerAddress(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "_resourceIDToHandlerAddress(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    checkSignature(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "checkSignature(uint8,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    getProposal(
+      originDomainID: BigNumberish,
+      depositNonce: BigNumberish,
+      dataHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: {
+        _status: number;
+        _yesVotes: BigNumber;
+        _yesVotesTotal: number;
+        _proposedBlock: number;
+        0: number;
+        1: BigNumber;
+        2: number;
+        3: number;
+      };
+    }>;
+
+    "getProposal(uint8,uint64,bytes32)"(
+      originDomainID: BigNumberish,
+      depositNonce: BigNumberish,
+      dataHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: {
+        _status: number;
+        _yesVotes: BigNumber;
+        _yesVotesTotal: number;
+        _proposedBlock: number;
+        0: number;
+        1: BigNumber;
+        2: number;
+        3: number;
+      };
+    }>;
   };
 
   _domainID(overrides?: Overrides): Promise<ContractTransaction>;
 
   "_domainID()"(overrides?: Overrides): Promise<ContractTransaction>;
 
+  _resourceIDToHandlerAddress(
+    arg0: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "_resourceIDToHandlerAddress(bytes32)"(
+    arg0: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  checkSignature(
+    domainID: BigNumberish,
+    depositNonce: BigNumberish,
+    resourceID: BytesLike,
+    data: BytesLike,
+    signature: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "checkSignature(uint8,uint64,bytes32,bytes,bytes)"(
+    domainID: BigNumberish,
+    depositNonce: BigNumberish,
+    resourceID: BytesLike,
+    data: BytesLike,
+    signature: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  getProposal(
+    originDomainID: BigNumberish,
+    depositNonce: BigNumberish,
+    dataHash: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<{
+    _status: number;
+    _yesVotes: BigNumber;
+    _yesVotesTotal: number;
+    _proposedBlock: number;
+    0: number;
+    1: BigNumber;
+    2: number;
+    3: number;
+  }>;
+
+  "getProposal(uint8,uint64,bytes32)"(
+    originDomainID: BigNumberish,
+    depositNonce: BigNumberish,
+    dataHash: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<{
+    _status: number;
+    _yesVotes: BigNumber;
+    _yesVotesTotal: number;
+    _proposedBlock: number;
+    0: number;
+    1: BigNumber;
+    2: number;
+    3: number;
+  }>;
+
   callStatic: {
     _domainID(overrides?: CallOverrides): Promise<number>;
 
     "_domainID()"(overrides?: CallOverrides): Promise<number>;
+
+    _resourceIDToHandlerAddress(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "_resourceIDToHandlerAddress(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    checkSignature(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "checkSignature(uint8,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    getProposal(
+      originDomainID: BigNumberish,
+      depositNonce: BigNumberish,
+      dataHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      _status: number;
+      _yesVotes: BigNumber;
+      _yesVotesTotal: number;
+      _proposedBlock: number;
+      0: number;
+      1: BigNumber;
+      2: number;
+      3: number;
+    }>;
+
+    "getProposal(uint8,uint64,bytes32)"(
+      originDomainID: BigNumberish,
+      depositNonce: BigNumberish,
+      dataHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      _status: number;
+      _yesVotes: BigNumber;
+      _yesVotesTotal: number;
+      _proposedBlock: number;
+      0: number;
+      1: BigNumber;
+      2: number;
+      3: number;
+    }>;
   };
 
   filters: {};
@@ -67,11 +286,95 @@ export class IBridge extends Contract {
     _domainID(overrides?: Overrides): Promise<BigNumber>;
 
     "_domainID()"(overrides?: Overrides): Promise<BigNumber>;
+
+    _resourceIDToHandlerAddress(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "_resourceIDToHandlerAddress(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    checkSignature(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "checkSignature(uint8,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getProposal(
+      originDomainID: BigNumberish,
+      depositNonce: BigNumberish,
+      dataHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getProposal(uint8,uint64,bytes32)"(
+      originDomainID: BigNumberish,
+      depositNonce: BigNumberish,
+      dataHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     _domainID(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "_domainID()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    _resourceIDToHandlerAddress(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "_resourceIDToHandlerAddress(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    checkSignature(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "checkSignature(uint8,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getProposal(
+      originDomainID: BigNumberish,
+      depositNonce: BigNumberish,
+      dataHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getProposal(uint8,uint64,bytes32)"(
+      originDomainID: BigNumberish,
+      depositNonce: BigNumberish,
+      dataHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
   };
 }

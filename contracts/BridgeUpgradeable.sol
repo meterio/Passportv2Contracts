@@ -2,7 +2,7 @@
 pragma solidity 0.8.11;
 pragma experimental ABIEncoderV2;
 
-import "./utils/AccessControl.sol";
+import {AccessControlUpgradeable as AccessControl} from "./utils/AccessControlUpgradeable.sol";
 import "./utils/PausableUpgradeable.sol";
 import "./utils/SafeMath.sol";
 import "./utils/SafeCast.sol";
@@ -10,6 +10,7 @@ import "./interfaces/IDepositExecute.sol";
 import "./interfaces/IERCHandler.sol";
 import "./interfaces/IGenericHandler.sol";
 import "./interfaces/IWETH.sol";
+import "./interfaces/IBridge.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol";
 
 /**
@@ -20,13 +21,14 @@ contract BridgeUpgradeable is
     EIP712Upgradeable,
     PausableUpgradeable,
     AccessControl,
-    SafeMath
+    SafeMath,
+    IBridge
 {
     using SafeCast for *;
 
     bytes32 public constant PERMIT_TYPEHASH =
         keccak256(
-            "VoteProposal(uint8 domainID,uint64 depositNonce,bytes32 resourceID,bytes data,uint256 deadline,bytes[] signatures)"
+            "PermitBridge(uint8 domainID,uint64 depositNonce,bytes32 resourceID,bytes data)"
         );
 
     // Limit relayers number because proposal can fit only so much votes
@@ -40,21 +42,6 @@ contract BridgeUpgradeable is
     mapping(uint8 => uint256) public _specialFee;
     bytes32 ETHresourceID;
     address WETH;
-
-    enum ProposalStatus {
-        Inactive,
-        Active,
-        Passed,
-        Executed,
-        Cancelled
-    }
-
-    struct Proposal {
-        ProposalStatus _status;
-        uint200 _yesVotes; // bitmap, 200 maximum votes
-        uint8 _yesVotesTotal;
-        uint40 _proposedBlock; // 1099511627775 maximum block
-    }
 
     // destinationDomainID => number of deposits
     mapping(uint8 => uint64) public _depositCounts;
@@ -105,6 +92,10 @@ contract BridgeUpgradeable is
     modifier onlyRelayers() {
         _onlyRelayers();
         _;
+    }
+
+    function _chainId() external view returns (uint256) {
+        return block.chainid;
     }
 
     function _onlyAdminOrRelayer() private view {
@@ -535,11 +526,13 @@ contract BridgeUpgradeable is
 
         uint64 depositNonce = ++_depositCounts[destinationDomainID];
         IDepositExecute depositHandler = IDepositExecute(handler);
+        IWETH(WETH).approve(address(depositHandler), value);
         bytes memory handlerResponse = depositHandler.deposit(
             ETHresourceID,
             address(this),
             data
         );
+        IWETH(WETH).approve(address(depositHandler), 0);
 
         emit Deposit(
             destinationDomainID,
@@ -551,19 +544,40 @@ contract BridgeUpgradeable is
         );
     }
 
+    error InviladSignature(address signer, uint256 index);
+
+    function checkSignature(
+        uint8 domainID,
+        uint64 depositNonce,
+        bytes32 resourceID,
+        bytes calldata data,
+        bytes calldata signature
+    ) external view returns (bool) {
+        bytes32 structHash = keccak256(
+            abi.encode(
+                PERMIT_TYPEHASH,
+                domainID,
+                depositNonce,
+                resourceID,
+                keccak256(data)
+            )
+        );
+        bytes32 hash = _hashTypedDataV4(structHash);
+        address sender = ECDSAUpgradeable.recover(hash, signature);
+        return hasRole(RELAYER_ROLE, sender);
+    }
+
     function voteProposals(
         uint8 domainID,
         uint64 depositNonce,
         bytes32 resourceID,
         bytes calldata data,
-        uint256 deadline,
         bytes[] memory signatures
     ) external whenNotPaused {
         address handler = _resourceIDToHandlerAddress[resourceID];
         uint72 nonceAndID = (uint72(depositNonce) << 8) | uint72(domainID);
         bytes32 dataHash = keccak256(abi.encodePacked(handler, data));
         Proposal memory proposal = _proposals[nonceAndID][dataHash];
-        require(deadline >= block.timestamp, "expired!");
 
         require(
             _resourceIDToHandlerAddress[resourceID] != address(0),
@@ -572,8 +586,15 @@ contract BridgeUpgradeable is
 
         for (uint256 i; i < signatures.length; i++) {
             if (proposal._status == ProposalStatus.Passed) {
-                executeProposal(domainID, depositNonce, data, resourceID, true);
-                return;
+                proposal._status = ProposalStatus.Executed;
+                IDepositExecute depositHandler = IDepositExecute(handler);
+                depositHandler.executeProposal(resourceID, data);
+                emit ProposalEvent(
+                    domainID,
+                    depositNonce,
+                    ProposalStatus.Executed,
+                    dataHash
+                );
             }
             bytes32 structHash = keccak256(
                 abi.encode(
@@ -581,16 +602,14 @@ contract BridgeUpgradeable is
                     domainID,
                     depositNonce,
                     resourceID,
-                    data,
-                    deadline
+                    keccak256(data)
                 )
             );
             bytes32 hash = _hashTypedDataV4(structHash);
             address sender = ECDSAUpgradeable.recover(hash, signatures[i]);
-            require(
-                hasRole(RELAYER_ROLE, sender),
-                "sender doesn't have relayer role"
-            );
+            if (!hasRole(RELAYER_ROLE, sender)) {
+                revert InviladSignature(sender, i);
+            }
             require(
                 uint256(proposal._status) <= 1,
                 "proposal already executed/cancelled"
@@ -648,16 +667,10 @@ contract BridgeUpgradeable is
                 }
             }
         }
-        _proposals[nonceAndID][dataHash] = proposal;
         if (proposal._status == ProposalStatus.Passed) {
+            proposal._status = ProposalStatus.Executed;
             IDepositExecute depositHandler = IDepositExecute(handler);
-            try depositHandler.executeProposal(resourceID, data) {} catch (
-                bytes memory lowLevelData
-            ) {
-                proposal._status = ProposalStatus.Passed;
-                emit FailedHandlerExecution(lowLevelData);
-                return;
-            }
+            depositHandler.executeProposal(resourceID, data);
             emit ProposalEvent(
                 domainID,
                 depositNonce,
@@ -665,6 +678,7 @@ contract BridgeUpgradeable is
                 dataHash
             );
         }
+        _proposals[nonceAndID][dataHash] = proposal;
     }
 
     /**
@@ -762,20 +776,7 @@ contract BridgeUpgradeable is
         _proposals[nonceAndID][dataHash] = proposal;
 
         if (proposal._status == ProposalStatus.Passed) {
-            IDepositExecute depositHandler = IDepositExecute(handler);
-            try depositHandler.executeProposal(resourceID, data) {} catch (
-                bytes memory lowLevelData
-            ) {
-                proposal._status = ProposalStatus.Passed;
-                emit FailedHandlerExecution(lowLevelData);
-                return;
-            }
-            emit ProposalEvent(
-                domainID,
-                depositNonce,
-                ProposalStatus.Executed,
-                dataHash
-            );
+            executeProposal(domainID, depositNonce, data, resourceID, false);
         }
     }
 

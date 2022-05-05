@@ -30,4 +30,113 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    name: "_resourceIDToHandlerAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint8",
+        name: "domainID",
+        type: "uint8",
+      },
+      {
+        internalType: "uint64",
+        name: "depositNonce",
+        type: "uint64",
+      },
+      {
+        internalType: "bytes32",
+        name: "resourceID",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+      {
+        internalType: "bytes",
+        name: "signature",
+        type: "bytes",
+      },
+    ],
+    name: "checkSignature",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint8",
+        name: "originDomainID",
+        type: "uint8",
+      },
+      {
+        internalType: "uint64",
+        name: "depositNonce",
+        type: "uint64",
+      },
+      {
+        internalType: "bytes32",
+        name: "dataHash",
+        type: "bytes32",
+      },
+    ],
+    name: "getProposal",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "enum IBridge.ProposalStatus",
+            name: "_status",
+            type: "uint8",
+          },
+          {
+            internalType: "uint200",
+            name: "_yesVotes",
+            type: "uint200",
+          },
+          {
+            internalType: "uint8",
+            name: "_yesVotesTotal",
+            type: "uint8",
+          },
+          {
+            internalType: "uint40",
+            name: "_proposedBlock",
+            type: "uint40",
+          },
+        ],
+        internalType: "struct IBridge.Proposal",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ];

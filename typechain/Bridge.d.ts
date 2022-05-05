@@ -52,6 +52,7 @@ interface BridgeInterface extends ethers.utils.Interface {
     "adminUnpauseTransfers()": FunctionFragment;
     "adminWithdraw(address,bytes)": FunctionFragment;
     "cancelProposal(uint8,uint64,bytes32)": FunctionFragment;
+    "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "deposit(uint8,bytes32,bytes)": FunctionFragment;
     "depositETH(uint8,bytes32,bytes)": FunctionFragment;
     "executeProposal(uint8,uint64,bytes,bytes32,bool)": FunctionFragment;
@@ -71,7 +72,7 @@ interface BridgeInterface extends ethers.utils.Interface {
     "revokeRole(bytes32,address)": FunctionFragment;
     "transferFunds(address[],uint256[])": FunctionFragment;
     "voteProposal(uint8,uint64,bytes32,bytes)": FunctionFragment;
-    "voteProposals(uint8,uint64,bytes32,uint256,bytes,bytes[])": FunctionFragment;
+    "voteProposals(uint8,uint64,bytes32,bytes,bytes[])": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -179,6 +180,10 @@ interface BridgeInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "checkSignature",
+    values: [BigNumberish, BigNumberish, BytesLike, BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "deposit",
     values: [BigNumberish, BytesLike, BytesLike]
   ): string;
@@ -250,14 +255,7 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "voteProposals",
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BytesLike,
-      BigNumberish,
-      BytesLike,
-      BytesLike[]
-    ]
+    values: [BigNumberish, BigNumberish, BytesLike, BytesLike, BytesLike[]]
   ): string;
 
   decodeFunctionResult(
@@ -362,6 +360,10 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "cancelProposal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "checkSignature",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
@@ -772,6 +774,28 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    checkSignature(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "checkSignature(uint8,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     deposit(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
@@ -1058,17 +1082,15 @@ export class Bridge extends Contract {
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
-      deadline: BigNumberish,
       data: BytesLike,
       signatures: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "voteProposals(uint8,uint64,bytes32,uint256,bytes,bytes[])"(
+    "voteProposals(uint8,uint64,bytes32,bytes,bytes[])"(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
-      deadline: BigNumberish,
       data: BytesLike,
       signatures: BytesLike[],
       overrides?: Overrides
@@ -1327,6 +1349,24 @@ export class Bridge extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  checkSignature(
+    domainID: BigNumberish,
+    depositNonce: BigNumberish,
+    resourceID: BytesLike,
+    data: BytesLike,
+    signature: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "checkSignature(uint8,uint64,bytes32,bytes,bytes)"(
+    domainID: BigNumberish,
+    depositNonce: BigNumberish,
+    resourceID: BytesLike,
+    data: BytesLike,
+    signature: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   deposit(
     destinationDomainID: BigNumberish,
     resourceID: BytesLike,
@@ -1564,17 +1604,15 @@ export class Bridge extends Contract {
     domainID: BigNumberish,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
-    deadline: BigNumberish,
     data: BytesLike,
     signatures: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "voteProposals(uint8,uint64,bytes32,uint256,bytes,bytes[])"(
+  "voteProposals(uint8,uint64,bytes32,bytes,bytes[])"(
     domainID: BigNumberish,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
-    deadline: BigNumberish,
     data: BytesLike,
     signatures: BytesLike[],
     overrides?: Overrides
@@ -1831,6 +1869,24 @@ export class Bridge extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    checkSignature(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "checkSignature(uint8,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     deposit(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
@@ -2065,17 +2121,15 @@ export class Bridge extends Contract {
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
-      deadline: BigNumberish,
       data: BytesLike,
       signatures: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "voteProposals(uint8,uint64,bytes32,uint256,bytes,bytes[])"(
+    "voteProposals(uint8,uint64,bytes32,bytes,bytes[])"(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
-      deadline: BigNumberish,
       data: BytesLike,
       signatures: BytesLike[],
       overrides?: CallOverrides
@@ -2382,6 +2436,24 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    checkSignature(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "checkSignature(uint8,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     deposit(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
@@ -2604,17 +2676,15 @@ export class Bridge extends Contract {
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
-      deadline: BigNumberish,
       data: BytesLike,
       signatures: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "voteProposals(uint8,uint64,bytes32,uint256,bytes,bytes[])"(
+    "voteProposals(uint8,uint64,bytes32,bytes,bytes[])"(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
-      deadline: BigNumberish,
       data: BytesLike,
       signatures: BytesLike[],
       overrides?: Overrides
@@ -2886,6 +2956,24 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    checkSignature(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "checkSignature(uint8,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     deposit(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
@@ -3114,17 +3202,15 @@ export class Bridge extends Contract {
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
-      deadline: BigNumberish,
       data: BytesLike,
       signatures: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "voteProposals(uint8,uint64,bytes32,uint256,bytes,bytes[])"(
+    "voteProposals(uint8,uint64,bytes32,bytes,bytes[])"(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
-      deadline: BigNumberish,
       data: BytesLike,
       signatures: BytesLike[],
       overrides?: Overrides

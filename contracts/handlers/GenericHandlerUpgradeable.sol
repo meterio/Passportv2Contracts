@@ -92,7 +92,7 @@ contract GenericHandlerUpgradeable is IGenericHandler, Initializable {
         @notice {contractAddress} is required to be whitelisted
         @notice If {_contractAddressToDepositFunctionSignature}[{contractAddress}] is set,
         {metaData} is expected to consist of needed function arguments.
-        @return Returns the raw bytes returned from the call to {contractAddress}.
+        @return the raw bytes returned from the call to {contractAddress}.
      */
     function deposit(
         bytes32 resourceID,

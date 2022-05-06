@@ -1,5 +1,5 @@
 import "hardhat-typechain";
-import"@nomiclabs/hardhat-truffle5";
+import "@nomiclabs/hardhat-truffle5";
 import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 import { task } from "hardhat/config";
@@ -27,7 +27,11 @@ task("accounts", "Prints the list of accounts", async (taskArgs, bre) => {
 });
 
 export default {
-  networks: RPCS,
+  networks: {
+    hardhat: {
+      allowUnlimitedContractSize: false,
+    },
+  },
   etherscan: {
     apiKey: process.env.ETHERSCAN_APIKEY,
   },

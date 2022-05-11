@@ -78,6 +78,29 @@
       "inputs": [
         {
           "internalType": "uint8",
+          "name": "destinationDomainID",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "resourceID",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
           "name": "originDomainID",
           "type": "uint8"
         },

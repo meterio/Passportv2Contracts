@@ -26,6 +26,15 @@ export function compileSetting(version: string, runs: number) {
       optimizer: {
         enabled: true,
         runs: runs,
+      }, outputSelection: {
+        "*": {
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "metadata", // <-- add this
+          ]
+        },
       },
     },
   };
@@ -48,7 +57,7 @@ export async function deployContract(
   console.log("  to", contract.address);
   console.log("  in", contract.deployTransaction.hash);
   console.log("  receipt", await contract.deployTransaction.wait());
-  await saveFile(network, name, contract,args,libraries);
+  await saveFile(network, name, contract, args, libraries);
   return contract.deployed();
 }
 
@@ -78,19 +87,19 @@ export async function saveFile(
   const file = `${contractName}.json`;
 
   mkdirSync(path, { recursive: true });
-  
+
   if (contractName != name) {
     writeFileSync(path + file, JSON.stringify({
       address: contract.address,
       constructorArguments: args,
-      libraries:libraries,
-      contract:name
+      libraries: libraries,
+      contract: name
     }));
-  }else{
+  } else {
     writeFileSync(path + file, JSON.stringify({
       address: contract.address,
       constructorArguments: args,
-      libraries:libraries
+      libraries: libraries
     }));
   }
 }

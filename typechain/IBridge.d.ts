@@ -14,6 +14,7 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   CallOverrides,
 } from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
@@ -25,6 +26,7 @@ interface IBridgeInterface extends ethers.utils.Interface {
     "_domainID()": FunctionFragment;
     "_resourceIDToHandlerAddress(bytes32)": FunctionFragment;
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
+    "deposit(uint8,bytes32,bytes)": FunctionFragment;
     "getProposal(uint8,uint64,bytes32)": FunctionFragment;
   };
 
@@ -36,6 +38,10 @@ interface IBridgeInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "checkSignature",
     values: [BigNumberish, BigNumberish, BytesLike, BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "deposit",
+    values: [BigNumberish, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getProposal",
@@ -51,6 +57,7 @@ interface IBridgeInterface extends ethers.utils.Interface {
     functionFragment: "checkSignature",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getProposal",
     data: BytesLike
@@ -112,6 +119,20 @@ export class IBridge extends Contract {
     ): Promise<{
       0: boolean;
     }>;
+
+    deposit(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    "deposit(uint8,bytes32,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
 
     getProposal(
       originDomainID: BigNumberish,
@@ -182,6 +203,20 @@ export class IBridge extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  deposit(
+    destinationDomainID: BigNumberish,
+    resourceID: BytesLike,
+    data: BytesLike,
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
+
+  "deposit(uint8,bytes32,bytes)"(
+    destinationDomainID: BigNumberish,
+    resourceID: BytesLike,
+    data: BytesLike,
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
+
   getProposal(
     originDomainID: BigNumberish,
     depositNonce: BigNumberish,
@@ -246,6 +281,20 @@ export class IBridge extends Contract {
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    deposit(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "deposit(uint8,bytes32,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     getProposal(
       originDomainID: BigNumberish,
@@ -315,6 +364,20 @@ export class IBridge extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    deposit(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
+
+    "deposit(uint8,bytes32,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
+
     getProposal(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
@@ -361,6 +424,20 @@ export class IBridge extends Contract {
       data: BytesLike,
       signature: BytesLike,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    deposit(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "deposit(uint8,bytes32,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     getProposal(

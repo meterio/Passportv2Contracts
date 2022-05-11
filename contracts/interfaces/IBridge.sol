@@ -45,4 +45,10 @@ interface IBridge {
         bytes calldata data,
         bytes calldata signature
     ) external view returns (bool);
+
+    function deposit(
+        uint8 destinationDomainID,
+        bytes32 resourceID,
+        bytes calldata data
+    ) external payable;
 }

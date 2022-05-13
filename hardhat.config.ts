@@ -58,7 +58,7 @@ task("datahash", "get datahash")
       const data = '0x' +
         ethers.utils.hexZeroPad(ethers.BigNumber.from(expandDecimals(amount)).toHexString(), 32).substr(2)
       
-      console.log(utils.solidityKeccak256(['address', 'bytes32'], [handler, 'data']));
+      console.log(utils.solidityKeccak256(['address', 'bytes32'], [handler, data]));
 
     }
   );

@@ -22,6 +22,7 @@ contract ERC20HandlerUpgradeable is
     function initialize(address bridgeAddress) public initializer {
         __HandlerHelpers_init(bridgeAddress);
     }
+    error ProvidedTokenAddressIsNotWhitelisted();
 
     /**
         @notice A deposit is initiatied by making a deposit in the Bridge contract.
@@ -43,10 +44,9 @@ contract ERC20HandlerUpgradeable is
         (amount) = abi.decode(data, (uint256));
 
         address tokenAddress = _resourceIDToTokenContractAddress[resourceID];
-        require(
-            _contractWhitelist[tokenAddress],
-            "provided tokenAddress is not whitelisted"
-        );
+        if(!_contractWhitelist[tokenAddress]){
+            revert ProvidedTokenAddressIsNotWhitelisted();
+        }
 
         if (_burnList[tokenAddress]) {
             burnERC20(tokenAddress, depositer, amount);

@@ -87,6 +87,10 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         _;
     }
 
+    function _chainId() external view returns (uint256) {
+        return block.chainid;
+    }
+
     function _onlyAdminOrRelayer() private view {
         address sender = _msgSender();
         require(
@@ -108,10 +112,6 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
             hasRole(RELAYER_ROLE, _msgSender()),
             "sender doesn't have relayer role"
         );
-    }
-
-    function _chainId() external view returns (uint256) {
-        return block.chainid;
     }
 
     function _relayerBit(address relayer) private view returns (uint256) {
@@ -452,6 +452,9 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         handler.withdraw(data);
     }
 
+    error IncorrectFeeSupplied(uint256 msgValue, uint256 fee);
+    error ResourceIDNotMappedToHandler();
+
     /**
         @notice Initiates a transfer using a specified handler contract.
         @notice Only callable when Bridge is not paused.
@@ -468,12 +471,16 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         bytes32 resourceID,
         bytes calldata data
     ) external payable whenNotPaused {
-        require(
-            msg.value == _getFee(destinationDomainID),
-            "Incorrect fee supplied"
-        );
+        if (msg.value < _getFee(destinationDomainID)) {
+            revert IncorrectFeeSupplied(
+                msg.value,
+                _getFee(destinationDomainID)
+            );
+        }
         address handler = _resourceIDToHandlerAddress[resourceID];
-        require(handler != address(0), "resourceID not mapped to handler");
+        if (handler == address(0)) {
+            revert ResourceIDNotMappedToHandler();
+        }
 
         uint64 depositNonce = ++_depositCounts[destinationDomainID];
         address sender = _msgSender();

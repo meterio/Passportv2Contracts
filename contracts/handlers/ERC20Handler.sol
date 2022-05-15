@@ -16,6 +16,8 @@ contract ERC20Handler is IDepositExecute, HandlerHelpers, ERC20Safe {
         @param bridgeAddress Contract address of previously deployed Bridge.
      */
     constructor(address bridgeAddress) HandlerHelpers(bridgeAddress) {}
+    
+    error ProvidedTokenAddressIsNotWhitelisted();
 
     /**
         @notice A deposit is initiatied by making a deposit in the Bridge contract.
@@ -37,10 +39,9 @@ contract ERC20Handler is IDepositExecute, HandlerHelpers, ERC20Safe {
         (amount) = abi.decode(data, (uint256));
 
         address tokenAddress = _resourceIDToTokenContractAddress[resourceID];
-        require(
-            _contractWhitelist[tokenAddress],
-            "provided tokenAddress is not whitelisted"
-        );
+        if(!_contractWhitelist[tokenAddress]){
+            revert ProvidedTokenAddressIsNotWhitelisted();
+        }
 
         if (_burnList[tokenAddress]) {
             burnERC20(tokenAddress, depositer, amount);

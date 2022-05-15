@@ -33,6 +33,8 @@ interface IBridge {
         bytes32 dataHash
     ) external view returns (Proposal memory);
 
+    function _relayerThreshold() external view returns(uint8);
+
     function _resourceIDToHandlerAddress(bytes32)
         external
         view

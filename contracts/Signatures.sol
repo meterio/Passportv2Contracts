@@ -11,8 +11,24 @@ contract Signatures {
 
     mapping(bytes32 => bytes[]) public signatures;
 
+    event SubmitSignature(
+        uint8 indexed originDomainID,
+        uint64 depositNonce,
+        bytes32 indexed resourceID,
+        bytes data,
+        bytes signature
+    );
+
+    event SignturePass(
+        uint8 indexed originDomainID,
+        uint64 depositNonce,
+        bytes32 indexed resourceID,
+        bytes data,
+        bytes signature
+    );
+
     function submitSignature(
-        uint8 domainID,
+        uint8 originDomainID,
         uint64 depositNonce,
         bytes32 resourceID,
         bytes calldata data,
@@ -23,7 +39,7 @@ contract Signatures {
         );
         bytes32 dataHash = keccak256(abi.encodePacked(handler, data));
         IBridge.Proposal memory proposal = IBridge(bridge).getProposal(
-            domainID,
+            originDomainID,
             depositNonce,
             dataHash
         );
@@ -35,7 +51,7 @@ contract Signatures {
         );
         require(
             IBridge(bridge).checkSignature(
-                domainID,
+                originDomainID,
                 depositNonce,
                 resourceID,
                 data,
@@ -43,16 +59,34 @@ contract Signatures {
             ),
             "invalid signature"
         );
-        signatures[
-            keccak256(
-                abi.encode(
-                    domainID,
-                    depositNonce,
-                    resourceID,
-                    keccak256(data)
-                )
+        bytes32 depositHash = keccak256(
+            abi.encode(
+                originDomainID,
+                depositNonce,
+                resourceID,
+                keccak256(data)
             )
-        ].push(signature);
+        );
+        signatures[depositHash].push(signature);
+        emit SubmitSignature(
+            originDomainID,
+            depositNonce,
+            resourceID,
+            data,
+            signature
+        );
+        if (
+            signatures[depositHash].length >=
+            IBridge(bridge)._relayerThreshold()
+        ) {
+            emit SignturePass(
+                originDomainID,
+                depositNonce,
+                resourceID,
+                data,
+                signature
+            );
+        }
     }
 
     function getSignatures(

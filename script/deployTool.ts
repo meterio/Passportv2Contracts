@@ -56,7 +56,7 @@ export async function deployContract(
   console.log("Deploying", name);
   console.log("  to", contract.address);
   console.log("  in", contract.deployTransaction.hash);
-  console.log("  receipt", await contract.deployTransaction.wait());
+  // console.log("  receipt", await contract.deployTransaction.wait());
   await saveFile(network, name, contract, args, libraries);
   return contract.deployed();
 }

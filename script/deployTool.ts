@@ -68,7 +68,10 @@ export function getContract(network: string, name: string) {
   const latest = `${contractName}.json`;
 
   if (existsSync(path + latest)) {
-    return JSON.parse(readFileSync(path + latest).toString());
+    let json = JSON.parse(readFileSync(path + latest).toString());
+    console.log("Deployed", name);
+    console.log("  on", json.address);
+    return json;
   } else {
     return "";
   }

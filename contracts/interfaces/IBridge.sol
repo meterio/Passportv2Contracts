@@ -33,7 +33,7 @@ interface IBridge {
         bytes32 dataHash
     ) external view returns (Proposal memory);
 
-    function _relayerThreshold() external view returns(uint8);
+    function _relayerThreshold() external view returns (uint8);
 
     function _resourceIDToHandlerAddress(bytes32)
         external
@@ -51,6 +51,7 @@ interface IBridge {
     function deposit(
         uint8 destinationDomainID,
         bytes32 resourceID,
-        bytes calldata data
+        bytes calldata depositData,
+        bytes calldata feeData
     ) external payable;
 }

@@ -11,6 +11,7 @@ import "./interfaces/IERCHandler.sol";
 import "./interfaces/IGenericHandler.sol";
 import "./interfaces/IWETH.sol";
 import "./interfaces/IBridge.sol";
+import "./interfaces/IFeeHandler.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol";
 
 /**
@@ -36,12 +37,10 @@ contract BridgeUpgradeable is
 
     uint8 public _domainID;
     uint8 public _relayerThreshold;
-    uint128 public _fee;
     uint40 public _expiry;
-    // destinationDomainID ==> specailFee other than _fee
-    mapping(uint8 => uint256) public _specialFee;
     bytes32 ETHresourceID;
     address WETH;
+    IFeeHandler public _feeHandler;
 
     // destinationDomainID => number of deposits
     mapping(uint8 => uint64) public _depositCounts;
@@ -55,6 +54,7 @@ contract BridgeUpgradeable is
     event RelayerThresholdChanged(uint256 newThreshold);
     event RelayerAdded(address relayer);
     event RelayerRemoved(address relayer);
+    event FeeHandlerChanged(address newFeeHandler);
     event Deposit(
         uint8 destinationDomainID,
         bytes32 resourceID,
@@ -156,7 +156,6 @@ contract BridgeUpgradeable is
         uint8 domainID,
         address[] memory initialRelayers,
         uint256 initialRelayerThreshold,
-        uint256 fee,
         uint256 expiry,
         bytes32 _ETHresourceID,
         address _WETH
@@ -165,7 +164,6 @@ contract BridgeUpgradeable is
         __EIP712_init("PermitBridge", "1.0");
         _domainID = domainID;
         _relayerThreshold = initialRelayerThreshold.toUint8();
-        _fee = fee.toUint128();
         _expiry = expiry.toUint40();
 
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
@@ -395,57 +393,17 @@ contract BridgeUpgradeable is
     }
 
     /**
-        @notice Changes deposit fee.
+        @notice Changes deposit fee handler contract address.
         @notice Only callable by admin.
-        @param newFee Value {_fee} will be updated to.
+        @param newFeeHandler Address {_feeHandler} will be updated to.
      */
-    function adminChangeFee(uint256 newFee) external onlyAdmin {
-        require(_fee != newFee, "Current fee is equal to new fee");
-        _fee = newFee.toUint128();
-    }
-
-    /**
-        @notice Changes deposit fee.
-        @notice Only callable by admin.
-        @param newFee Value {_specialFee} will be updated to.
-        @param chainID Value {_specialFeeChainID} will be updated to
-     */
-    function adminChangeSpecialFee(uint256 newFee, uint8 chainID)
-        external
-        onlyAdmin
-    {
-        uint256 current = _specialFee[chainID];
-        require(
-            (current != newFee),
-            "Current special fee equals to the new fee"
-        );
-        _specialFee[chainID] = newFee;
+    function adminChangeFeeHandler(address newFeeHandler) external onlyAdmin {
+        _feeHandler = IFeeHandler(newFeeHandler);
+        emit FeeHandlerChanged(newFeeHandler);
     }
 
     function adminChangeExpiry(uint256 expiry) external onlyAdmin {
         _expiry = expiry.toUint40();
-    }
-
-    /**
-        @notice Get bridge fee, Returns fee of destionation chainID.
-        @param destinationDomainID Value destination chainID
-        @return _fee
-     */
-    function _getFee(uint8 destinationDomainID)
-        internal
-        view
-        returns (uint256)
-    {
-        uint256 special = _specialFee[destinationDomainID];
-        if (special != 0) {
-            return special;
-        } else {
-            return _fee;
-        }
-    }
-
-    function getFee(uint8 destinationDomainID) external view returns (uint256) {
-        return _getFee(destinationDomainID);
     }
 
     /**
@@ -469,7 +427,8 @@ contract BridgeUpgradeable is
         @notice Only callable when Bridge is not paused.
         @param destinationDomainID ID of chain deposit will be bridged to.
         @param resourceID ResourceID used to find address of handler to be used for deposit.
-        @param data Additional data to be passed to specified handler.
+        @param depositData Additional data to be passed to specified handler.
+        @param feeData Additional data to be passed to the fee handler.
         @notice Emits {Deposit} event with all necessary parameters and a handler response.
         - ERC20Handler: responds with an empty data.
         - ERC721Handler: responds with the deposited token metadata acquired by calling a tokenURI method in the token contract.
@@ -478,27 +437,36 @@ contract BridgeUpgradeable is
     function deposit(
         uint8 destinationDomainID,
         bytes32 resourceID,
-        bytes calldata data
+        bytes calldata depositData,
+        bytes calldata feeData
     ) external payable whenNotPaused {
-        if (msg.value < _getFee(destinationDomainID)) {
-            revert IncorrectFeeSupplied(
-                msg.value,
-                _getFee(destinationDomainID)
+        address sender = _msgSender();
+        if (address(_feeHandler) == address(0)) {
+            require(msg.value == 0, "no FeeHandler, msg.value != 0");
+        } else {
+            // Reverts on failure
+            _feeHandler.collectFee{value: msg.value}(
+                sender,
+                _domainID,
+                destinationDomainID,
+                resourceID,
+                depositData,
+                feeData
             );
         }
+
         address handler = _resourceIDToHandlerAddress[resourceID];
         if (handler == address(0)) {
             revert ResourceIDNotMappedToHandler();
         }
 
         uint64 depositNonce = ++_depositCounts[destinationDomainID];
-        address sender = _msgSender();
 
         IDepositExecute depositHandler = IDepositExecute(handler);
         bytes memory handlerResponse = depositHandler.deposit(
             resourceID,
             sender,
-            data
+            depositData
         );
 
         emit Deposit(
@@ -506,7 +474,7 @@ contract BridgeUpgradeable is
             resourceID,
             depositNonce,
             sender,
-            data,
+            depositData,
             handlerResponse
         );
     }
@@ -514,16 +482,38 @@ contract BridgeUpgradeable is
     function depositETH(
         uint8 destinationDomainID,
         bytes32 resourceID,
-        bytes calldata data
+        bytes calldata depositData,
+        bytes calldata feeData
     ) external payable whenNotPaused {
-        uint256 fee = _getFee(destinationDomainID);
-        require(msg.value > fee, "Incorrect fee supplied");
+        address sender = _msgSender();
+        uint256 value = msg.value;
+        if (address(_feeHandler) != address(0)) {
+            // Reverts on failure
+            (uint256 fee, ) = _feeHandler.calculateFee(
+                sender,
+                _domainID,
+                destinationDomainID,
+                resourceID,
+                depositData,
+                feeData
+            );
+            if (fee > 0) {
+                _feeHandler.collectFee{value: fee}(
+                    sender,
+                    _domainID,
+                    destinationDomainID,
+                    resourceID,
+                    depositData,
+                    feeData
+                );
+                value -= fee;
+            }
+        }
 
         address handler = _resourceIDToHandlerAddress[ETHresourceID];
         require(handler != address(0), "resourceID not mapped to handler");
         require(resourceID == ETHresourceID, "resourceID not WETH");
 
-        uint256 value = msg.value - fee;
         uint256 amount;
         assembly {
             amount := calldataload(0x84)
@@ -537,7 +527,7 @@ contract BridgeUpgradeable is
         bytes memory handlerResponse = depositHandler.deposit(
             ETHresourceID,
             address(this),
-            data
+            depositData
         );
         IWETH(WETH).approve(address(depositHandler), 0);
 
@@ -545,8 +535,8 @@ contract BridgeUpgradeable is
             destinationDomainID,
             ETHresourceID,
             depositNonce,
-            _msgSender(),
-            data,
+            sender,
+            depositData,
             handlerResponse
         );
     }

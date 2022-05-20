@@ -53,7 +53,13 @@ interface SignaturesInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "SignturePass(uint8,uint64,bytes32,bytes,bytes)": EventFragment;
+    "SubmitSignature(uint8,uint64,bytes32,bytes,bytes)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "SignturePass"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SubmitSignature"): EventFragment;
 }
 
 export class Signatures extends Contract {
@@ -115,7 +121,7 @@ export class Signatures extends Contract {
     }>;
 
     submitSignature(
-      domainID: BigNumberish,
+      originDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -124,7 +130,7 @@ export class Signatures extends Contract {
     ): Promise<ContractTransaction>;
 
     "submitSignature(uint8,uint64,bytes32,bytes,bytes)"(
-      domainID: BigNumberish,
+      originDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -166,7 +172,7 @@ export class Signatures extends Contract {
   ): Promise<string>;
 
   submitSignature(
-    domainID: BigNumberish,
+    originDomainID: BigNumberish,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
     data: BytesLike,
@@ -175,7 +181,7 @@ export class Signatures extends Contract {
   ): Promise<ContractTransaction>;
 
   "submitSignature(uint8,uint64,bytes32,bytes,bytes)"(
-    domainID: BigNumberish,
+    originDomainID: BigNumberish,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
     data: BytesLike,
@@ -217,7 +223,7 @@ export class Signatures extends Contract {
     ): Promise<string>;
 
     submitSignature(
-      domainID: BigNumberish,
+      originDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -226,7 +232,7 @@ export class Signatures extends Contract {
     ): Promise<void>;
 
     "submitSignature(uint8,uint64,bytes32,bytes,bytes)"(
-      domainID: BigNumberish,
+      originDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -235,7 +241,23 @@ export class Signatures extends Contract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    SignturePass(
+      originDomainID: BigNumberish | null,
+      depositNonce: null,
+      resourceID: BytesLike | null,
+      data: null,
+      signature: null
+    ): EventFilter;
+
+    SubmitSignature(
+      originDomainID: BigNumberish | null,
+      depositNonce: null,
+      resourceID: BytesLike | null,
+      data: null,
+      signature: null
+    ): EventFilter;
+  };
 
   estimateGas: {
     bridge(overrides?: CallOverrides): Promise<BigNumber>;
@@ -271,7 +293,7 @@ export class Signatures extends Contract {
     ): Promise<BigNumber>;
 
     submitSignature(
-      domainID: BigNumberish,
+      originDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -280,7 +302,7 @@ export class Signatures extends Contract {
     ): Promise<BigNumber>;
 
     "submitSignature(uint8,uint64,bytes32,bytes,bytes)"(
-      domainID: BigNumberish,
+      originDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -323,7 +345,7 @@ export class Signatures extends Contract {
     ): Promise<PopulatedTransaction>;
 
     submitSignature(
-      domainID: BigNumberish,
+      originDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -332,7 +354,7 @@ export class Signatures extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "submitSignature(uint8,uint64,bytes32,bytes,bytes)"(
-      domainID: BigNumberish,
+      originDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,

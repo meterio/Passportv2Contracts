@@ -31,6 +31,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "_relayerThreshold",
+    outputs: [
+      {
+        internalType: "uint8",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "bytes32",
@@ -102,7 +115,12 @@ const _abi = [
       },
       {
         internalType: "bytes",
-        name: "data",
+        name: "depositData",
+        type: "bytes",
+      },
+      {
+        internalType: "bytes",
+        name: "feeData",
         type: "bytes",
       },
     ],

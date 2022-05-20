@@ -20,6 +20,25 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes32",
+        name: "resourceID",
+        type: "bytes32",
+      },
+    ],
+    name: "_resourceIDToTokenContractAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "contractAddress",
         type: "address",

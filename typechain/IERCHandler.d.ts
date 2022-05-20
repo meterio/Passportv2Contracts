@@ -22,11 +22,16 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface IERCHandlerInterface extends ethers.utils.Interface {
   functions: {
+    "_resourceIDToTokenContractAddress(bytes32)": FunctionFragment;
     "setBurnable(address)": FunctionFragment;
     "setResource(bytes32,address)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "_resourceIDToTokenContractAddress",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "setBurnable", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setResource",
@@ -34,6 +39,10 @@ interface IERCHandlerInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
 
+  decodeFunctionResult(
+    functionFragment: "_resourceIDToTokenContractAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "setBurnable",
     data: BytesLike
@@ -61,6 +70,20 @@ export class IERCHandler extends Contract {
   interface: IERCHandlerInterface;
 
   functions: {
+    _resourceIDToTokenContractAddress(
+      resourceID: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "_resourceIDToTokenContractAddress(bytes32)"(
+      resourceID: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     setBurnable(
       contractAddress: string,
       overrides?: Overrides
@@ -93,6 +116,16 @@ export class IERCHandler extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
   };
+
+  _resourceIDToTokenContractAddress(
+    resourceID: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "_resourceIDToTokenContractAddress(bytes32)"(
+    resourceID: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   setBurnable(
     contractAddress: string,
@@ -127,6 +160,16 @@ export class IERCHandler extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    _resourceIDToTokenContractAddress(
+      resourceID: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "_resourceIDToTokenContractAddress(bytes32)"(
+      resourceID: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     setBurnable(
       contractAddress: string,
       overrides?: CallOverrides
@@ -160,6 +203,16 @@ export class IERCHandler extends Contract {
   filters: {};
 
   estimateGas: {
+    _resourceIDToTokenContractAddress(
+      resourceID: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "_resourceIDToTokenContractAddress(bytes32)"(
+      resourceID: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     setBurnable(
       contractAddress: string,
       overrides?: Overrides
@@ -191,6 +244,16 @@ export class IERCHandler extends Contract {
   };
 
   populateTransaction: {
+    _resourceIDToTokenContractAddress(
+      resourceID: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "_resourceIDToTokenContractAddress(bytes32)"(
+      resourceID: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     setBurnable(
       contractAddress: string,
       overrides?: Overrides

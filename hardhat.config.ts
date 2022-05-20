@@ -12,8 +12,9 @@ dotenv.config();
 // import Colors = require("colors.ts");
 import { BigNumber, BytesLike, utils } from "ethers";
 
-import { WETH9, Bridge, ERC20Handler, ERC721Handler, ERC1155Handler, TokenERC20 } from "./typechain"
-import { deployContract } from "./script/deployTool";
+import { WETH9, Bridge, ERC20Handler, ERC721Handler, ERC1155Handler, GenericHandler, TokenERC20 } from "./typechain"
+import { deployContract, getContract } from "./script/deployTool";
+import { boolean } from "hardhat/internal/core/params/argumentTypes";
 
 
 const toHex = (covertThis: BytesLike, padding: number): string => {
@@ -24,8 +25,16 @@ const createResourceID = (contractAddress: string, domainID: number) => {
   return toHex(contractAddress + toHex(BigNumber.from(domainID).toHexString(), 1).substr(2), 32)
 };
 
-const expandDecimals = (amount, decimals = 18) => {
+const expandDecimals = (amount: any, decimals = 18) => {
   return utils.parseUnits(String(amount), decimals);
+}
+
+const encodeData = (amount: string, recipient: string) => {
+  const data = '0x' +
+    utils.hexZeroPad(BigNumber.from(expandDecimals(amount)).toHexString(), 32).substr(2) +  // Deposit Amount        (32 bytes)
+    utils.hexZeroPad(utils.hexlify((recipient.length - 2) / 2), 32).substr(2) +    // len(recipientAddress) (32 bytes)
+    recipient.substr(2);                    // recipientAddress      (?? bytes)
+  return data;
 }
 
 task("accounts", "Prints the list of accounts", async (taskArgs, bre) => {
@@ -40,23 +49,44 @@ task("accounts", "Prints the list of accounts", async (taskArgs, bre) => {
   }
 });
 // 0x5FbDB2315678afecb367f032d93F642f64180aa3
-task("deploy-token", "deploy contract")
-  .addParam("name", "token name")
-  .addParam("symbol", "token symbol")
-  .addParam("supply", "initial supply")
+task("depositToken", "deposit contract")
+  .addOptionalParam("force", "force deploy", false, boolean)
+  .addParam("domain", "domain id")
   .setAction(
-    async ({ name, symbol, supply }, { ethers, run, network }) => {
+    async ({ force, domain }, { ethers, run, network }) => {
       await run("compile");
       const [signer, relayer1, relayer2] = await ethers.getSigners();
+      let token: TokenERC20;
 
-      const token = await deployContract(
-        "TokenERC20",
-        network.name,
-        ethers.getContractFactory,
-        signer,
-        [name, symbol, supply]
-      ) as TokenERC20;
+      const tokenJson = getContract(network.name, "TokenERC20");
+      if (force || tokenJson == "") {
+        token = await deployContract(
+          "TokenERC20",
+          network.name,
+          ethers.getContractFactory,
+          signer,
+          ["TT", "TTT", "100000000000000000000000000"]
+        ) as TokenERC20;
+      } else {
+        token = await ethers.getContractAt("TokenERC20", tokenJson.address, signer) as TokenERC20;
+      }
 
+      const erc20HandlerJson = getContract(network.name, "ERC20Handler");
+      if (erc20HandlerJson != "") {
+        await token.transfer(erc20HandlerJson.address, "100000000000000000000000000")
+      }
+
+      const bridgeJson = getContract(network.name, "Bridge");
+      if (bridgeJson != "") {
+        const resId = createResourceID(token.address, domain);
+        const bridgeInstant = await ethers.getContractAt("Bridge", bridgeJson.address, signer) as Bridge;
+        let receipt = await bridgeInstant.adminSetResource(
+          erc20HandlerJson.address,
+          resId,
+          token.address
+        )
+        console.log(await receipt.wait());
+      }
     }
   );
 
@@ -82,87 +112,124 @@ task("approve", "approve")
     }
   );
 
-task("deposit", "approve")
-  .addParam("token", "Token address")
-  .addParam("domain", "domain id")
-  .addParam("bridge", "bridge address")
-  .addParam("amount", "amount")
-  .setAction(
-    async ({ token, domain, bridge, amount }, { ethers, run, network }) => {
-      await run("compile");
-      const [signer, relayer1, relayer2] = await ethers.getSigners();
-
-      const bridgeInstant = await ethers.getContractAt(
-        "Bridge",
-        bridge,
-        signer
-      ) as Bridge;
-
-      let receipt = await bridgeInstant.deposit(
-        domain,
-        createResourceID(token, domain),
-        ethers.utils.defaultAbiCoder.encode(['uint256'], [amount])
-      )
-      console.log(await receipt.wait())
-
-    }
-  );
-
-task("deploy", "deploy contract")
+task("deposit", "deposit")
   .addParam("domain", "domain id")
   .setAction(
     async ({ domain }, { ethers, run, network }) => {
       await run("compile");
       const [signer, relayer1, relayer2] = await ethers.getSigners();
 
-      const weth = await deployContract(
-        "WETH9",
-        network.name,
-        ethers.getContractFactory,
-        signer
-      ) as WETH9;
+      const tokenJson = getContract(network.name, "TokenERC20");
+      const token = await ethers.getContractAt("TokenERC20", tokenJson.address, signer) as TokenERC20;
 
-      const bridgeArgs = [
+      const bridgeJson = getContract(network.name, "Bridge");
+      const bridgeInstant = await ethers.getContractAt("Bridge", bridgeJson.address, signer) as Bridge;
+
+      const resId = createResourceID(token.address, domain);
+      const handlerAddress = await bridgeInstant._resourceIDToHandlerAddress(resId);
+
+      let receipt = await token.approve(handlerAddress, expandDecimals("1"));
+      console.log("Approve:", receipt.hash)
+
+      console.log(
         domain,
-        [relayer1.address, relayer2.address],
-        2,
-        0,
-        999999,
-        createResourceID(weth.address, domain),
-        weth.address
-      ]
-      const bridge = await deployContract(
-        "Bridge",
-        network.name,
-        ethers.getContractFactory,
-        signer,
-        bridgeArgs
-      ) as Bridge;
+        resId,
+        encodeData("1", signer.address)
+      )
+      receipt = await bridgeInstant.deposit(
+        domain,
+        resId,
+        encodeData("1", signer.address)
+      )
+      console.log(await receipt.wait());
 
-      const erc20Handler = await deployContract(
-        "ERC20Handler",
-        network.name,
-        ethers.getContractFactory,
-        signer,
-        [bridge.address]
-      ) as ERC20Handler;
+    }
+  );
 
-      const erc721Handler = await deployContract(
-        "ERC721Handler",
-        network.name,
-        ethers.getContractFactory,
-        signer,
-        [bridge.address]
-      ) as ERC721Handler;
+task("deploy", "deploy contract")
+  .addParam("domain", "domain id")
+  .addOptionalParam("force", "force deploy", false, boolean)
+  .addOptionalParam("weth", "weth address", "")
+  .setAction(
+    async ({ domain, force, weth }, { ethers, run, network }) => {
+      await run("compile");
+      const [signer, relayer1, relayer2] = await ethers.getSigners();
+      let bridge: Bridge;
+      let weth9: WETH9;
 
-      const erc1155Handler = await deployContract(
-        "ERC1155Handler",
-        network.name,
-        ethers.getContractFactory,
-        signer,
-        [bridge.address]
-      ) as ERC1155Handler;
+      const weth9Json = getContract(network.name, "WETH9");
+      if (weth != "") {
+        weth9 = await ethers.getContractAt("WETH9", weth9Json.address, signer) as WETH9;
+      } else if (!force && weth9Json != "") {
+        weth9 = await ethers.getContractAt("WETH9", weth9Json.address, signer) as WETH9;
+      } else {
+        weth9 = await deployContract(
+          "WETH9",
+          network.name,
+          ethers.getContractFactory,
+          signer
+        ) as WETH9;
+      }
 
+      const bridgeJson = getContract(network.name, "Bridge");
+      if (!force && weth9Json != "") {
+        bridge = await ethers.getContractAt("Bridge", bridgeJson.address, signer) as Bridge;
+      } else {
+        const bridgeArgs = [
+          domain,
+          [relayer1.address, relayer2.address],
+          2,
+          0,
+          999999,
+          createResourceID(weth9.address, domain),
+          weth9.address
+        ]
+        bridge = await deployContract(
+          "Bridge",
+          network.name,
+          ethers.getContractFactory,
+          signer,
+          bridgeArgs
+        ) as Bridge;
+
+      }
+
+      if (force || getContract(network.name, "ERC20Handler") == "") {
+        const erc20Handler = await deployContract(
+          "ERC20Handler",
+          network.name,
+          ethers.getContractFactory,
+          signer,
+          [bridge.address]
+        ) as ERC20Handler;
+      }
+      if (force || getContract(network.name, "ERC721Handler") == "") {
+        const erc721Handler = await deployContract(
+          "ERC721Handler",
+          network.name,
+          ethers.getContractFactory,
+          signer,
+          [bridge.address]
+        ) as ERC721Handler;
+      }
+      if (force || getContract(network.name, "ERC1155Handler") == "") {
+        const erc1155Handler = await deployContract(
+          "ERC1155Handler",
+          network.name,
+          ethers.getContractFactory,
+          signer,
+          [bridge.address]
+        ) as ERC1155Handler;
+      }
+      if (force || getContract(network.name, "GenericHandler") == "") {
+        const genericHandler = await deployContract(
+          "GenericHandler",
+          network.name,
+          ethers.getContractFactory,
+          signer,
+          [bridge.address]
+        ) as GenericHandler;
+      }
     }
   );
 
@@ -194,13 +261,24 @@ task("resid", "get resource ID")
 task("datahash", "get datahash")
   .addParam("handler", "handler address")
   .addParam("amount", "deposit amount")
+  .addParam("recipient", "recipient address")
   .setAction(
-    async ({ handler, amount }, { ethers, run, network }) => {
+    async ({ handler, amount, recipient }, { ethers, run, network }) => {
       const data = '0x' +
-        ethers.utils.hexZeroPad(ethers.BigNumber.from(expandDecimals(amount)).toHexString(), 32).substr(2)
+        ethers.utils.hexZeroPad(ethers.BigNumber.from(expandDecimals(amount)).toHexString(), 32).substr(2) +  // Deposit Amount        (32 bytes)
+        ethers.utils.hexZeroPad(ethers.utils.hexlify((recipient.length - 2) / 2), 32).substr(2) +    // len(recipientAddress) (32 bytes)
+        recipient.substr(2);                    // recipientAddress      (?? bytes)
 
       console.log(utils.solidityKeccak256(['address', 'bytes32'], [handler, data]));
 
+    }
+  );
+task("encode", "get datahash")
+  .addParam("amount", "deposit amount")
+  .addParam("recipient", "recipient address")
+  .setAction(
+    async ({ handler, amount, recipient }, { ethers, run, network }) => {
+      console.log(encodeData(amount, recipient));
     }
   );
 export default {
@@ -208,13 +286,35 @@ export default {
     hardhat: {
       allowUnlimitedContractSize: false,
     },
+    ganache: {
+      url: `http://127.0.0.1:7545`,
+      chainId: 1337,
+      accounts: {
+        mnemonic: process.env.MNEMONIC,
+      },
+    },
+    ganacheCli: {
+      url: `http://127.0.0.1:8545`,
+      chainId: 1337,
+      accounts: {
+        mnemonic: process.env.MNEMONIC,
+      },
+    },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/bb6d78227dca492daab0a4cfb7b32fb5`,
-      accounts: ['0x7e77511687b9683be61acca40457ecb44fc7ede7e1b4733e8378c1800a423e91',
-        "0x1493937792efc0eefaec982bfa70e3eb7cb099606245fd8a7d7291ee862537dd", // Bob Private Key
-        "0x3220b7e5e8679dc1b3176dd0f24c47910214632a608050198eae5f50ea2c4f5f",],
+      accounts: ['0x278e623d5c3445753374f065a7ad9c76d82a642e416ac670d7d90eafd4a34ad0',
+        "0xaee9f26de5275ecad2d50354c616b76a8981d4c543964dcd094d07a30235a735", // Bob Private Key
+        "0x402a7d83a9c142b898c280eb1ace8282fbde4adfbf8e5cbbb15145bb3c7e5bdf",],
       chainId: 4,
       gasPrice: 2000000000,
+    },
+    bsctest: {
+      url: `https://data-seed-prebsc-1-s1.binance.org:8545`,
+      accounts: ['0x278e623d5c3445753374f065a7ad9c76d82a642e416ac670d7d90eafd4a34ad0',
+        "0xaee9f26de5275ecad2d50354c616b76a8981d4c543964dcd094d07a30235a735", // Bob Private Key
+        "0x402a7d83a9c142b898c280eb1ace8282fbde4adfbf8e5cbbb15145bb3c7e5bdf",],
+      chainId: 97,
+      gasPrice: 10000000000,
     }
   },
   etherscan: {

@@ -24,13 +24,18 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface IBridgeInterface extends ethers.utils.Interface {
   functions: {
     "_domainID()": FunctionFragment;
+    "_relayerThreshold()": FunctionFragment;
     "_resourceIDToHandlerAddress(bytes32)": FunctionFragment;
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
-    "deposit(uint8,bytes32,bytes)": FunctionFragment;
+    "deposit(uint8,bytes32,bytes,bytes)": FunctionFragment;
     "getProposal(uint8,uint64,bytes32)": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "_domainID", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "_relayerThreshold",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "_resourceIDToHandlerAddress",
     values: [BytesLike]
@@ -41,7 +46,7 @@ interface IBridgeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "deposit",
-    values: [BigNumberish, BytesLike, BytesLike]
+    values: [BigNumberish, BytesLike, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getProposal",
@@ -49,6 +54,10 @@ interface IBridgeInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "_domainID", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "_relayerThreshold",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "_resourceIDToHandlerAddress",
     data: BytesLike
@@ -83,6 +92,14 @@ export class IBridge extends Contract {
     _domainID(overrides?: Overrides): Promise<ContractTransaction>;
 
     "_domainID()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    _relayerThreshold(overrides?: CallOverrides): Promise<{
+      0: number;
+    }>;
+
+    "_relayerThreshold()"(overrides?: CallOverrides): Promise<{
+      0: number;
+    }>;
 
     _resourceIDToHandlerAddress(
       arg0: BytesLike,
@@ -123,14 +140,16 @@ export class IBridge extends Contract {
     deposit(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
-      data: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    "deposit(uint8,bytes32,bytes)"(
+    "deposit(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
-      data: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
@@ -175,6 +194,10 @@ export class IBridge extends Contract {
 
   "_domainID()"(overrides?: Overrides): Promise<ContractTransaction>;
 
+  _relayerThreshold(overrides?: CallOverrides): Promise<number>;
+
+  "_relayerThreshold()"(overrides?: CallOverrides): Promise<number>;
+
   _resourceIDToHandlerAddress(
     arg0: BytesLike,
     overrides?: CallOverrides
@@ -206,14 +229,16 @@ export class IBridge extends Contract {
   deposit(
     destinationDomainID: BigNumberish,
     resourceID: BytesLike,
-    data: BytesLike,
+    depositData: BytesLike,
+    feeData: BytesLike,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "deposit(uint8,bytes32,bytes)"(
+  "deposit(uint8,bytes32,bytes,bytes)"(
     destinationDomainID: BigNumberish,
     resourceID: BytesLike,
-    data: BytesLike,
+    depositData: BytesLike,
+    feeData: BytesLike,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
@@ -254,6 +279,10 @@ export class IBridge extends Contract {
 
     "_domainID()"(overrides?: CallOverrides): Promise<number>;
 
+    _relayerThreshold(overrides?: CallOverrides): Promise<number>;
+
+    "_relayerThreshold()"(overrides?: CallOverrides): Promise<number>;
+
     _resourceIDToHandlerAddress(
       arg0: BytesLike,
       overrides?: CallOverrides
@@ -285,14 +314,16 @@ export class IBridge extends Contract {
     deposit(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
-      data: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "deposit(uint8,bytes32,bytes)"(
+    "deposit(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
-      data: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -336,6 +367,10 @@ export class IBridge extends Contract {
 
     "_domainID()"(overrides?: Overrides): Promise<BigNumber>;
 
+    _relayerThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_relayerThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     _resourceIDToHandlerAddress(
       arg0: BytesLike,
       overrides?: CallOverrides
@@ -367,14 +402,16 @@ export class IBridge extends Contract {
     deposit(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
-      data: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "deposit(uint8,bytes32,bytes)"(
+    "deposit(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
-      data: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
@@ -398,6 +435,12 @@ export class IBridge extends Contract {
 
     "_domainID()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
+    _relayerThreshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "_relayerThreshold()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     _resourceIDToHandlerAddress(
       arg0: BytesLike,
       overrides?: CallOverrides
@@ -429,14 +472,16 @@ export class IBridge extends Contract {
     deposit(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
-      data: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "deposit(uint8,bytes32,bytes)"(
+    "deposit(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
-      data: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 

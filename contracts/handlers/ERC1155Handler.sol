@@ -35,7 +35,8 @@ contract ERC1155Handler is
         bytes32 resourceID,
         address depositer,
         bytes calldata data
-    ) external override onlyBridge returns (bytes memory) {
+    ) external payable override onlyBridge returns (bytes memory) {
+        require(msg.value == 0, "msg.value not null");
         uint256[] memory tokenIDs;
         uint256[] memory amounts;
 

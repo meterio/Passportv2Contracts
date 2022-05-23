@@ -3,7 +3,7 @@ pragma solidity 0.8.11;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-
+import "../../utils/AccessControl.sol";
 import "../../interfaces/IFeeHandler.sol";
 import "../../interfaces/IERCHandler.sol";
 import "../../interfaces/IBridge.sol";
@@ -243,7 +243,7 @@ contract FeeHandlerWithOracle is IFeeHandler, AccessControl, ERC20Safe {
         bytes32 message,
         bytes memory signature,
         address signerAddress
-    ) internal view {
+    ) internal pure {
         address signerAddressRecovered = ECDSA.recover(message, signature);
         require(signerAddressRecovered == signerAddress, "Invalid signature");
     }

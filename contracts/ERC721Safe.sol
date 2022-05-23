@@ -3,7 +3,7 @@ pragma solidity 0.8.11;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "./ERC721MinterBurnerPauser.sol";
+import "./interfaces/IERCMintBurn.sol";
 
 /**
     @title Manages deposited ERC721s.
@@ -46,7 +46,7 @@ contract ERC721Safe {
         @param data Optional data to send along with mint call.
      */
     function mintERC721(address tokenAddress, address recipient, uint256 tokenID, bytes memory data) internal {
-        ERC721MinterBurnerPauser erc721 = ERC721MinterBurnerPauser(tokenAddress);
+        IERCMintBurn erc721 = IERCMintBurn(tokenAddress);
         erc721.mint(recipient, tokenID, string(data));
     }
 
@@ -56,7 +56,7 @@ contract ERC721Safe {
         @param tokenID ID of token to burn.
      */
     function burnERC721(address tokenAddress, uint256 tokenID) internal {
-        ERC721MinterBurnerPauser erc721 = ERC721MinterBurnerPauser(tokenAddress);
+        IERCMintBurn erc721 = IERCMintBurn(tokenAddress);
         erc721.burn(tokenID);
     }
 

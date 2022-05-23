@@ -10,6 +10,7 @@ import "../interfaces/IERCHandler.sol";
  */
 contract HandlerHelpers is IERCHandler {
     address public immutable _bridgeAddress;
+    address public wtoken;
 
     // resourceID => token contract address
     mapping(bytes32 => address) public _resourceIDToTokenContractAddress;
@@ -22,6 +23,8 @@ contract HandlerHelpers is IERCHandler {
 
     // token contract address => is burnable
     mapping(address => bool) public _burnList;
+    // wtoken => bool
+    mapping(address => bool) public isWtoken;
 
     modifier onlyBridge() {
         _onlyBridge();
@@ -82,5 +85,13 @@ contract HandlerHelpers is IERCHandler {
             "provided contract is not whitelisted"
         );
         _burnList[contractAddress] = true;
+    }
+
+    function setWtoken(address wtokenAddress, bool _isWtoken)
+        external
+        override
+        onlyBridge
+    {
+        isWtoken[wtokenAddress] = _isWtoken;
     }
 }

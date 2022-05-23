@@ -34,4 +34,6 @@ interface IERCHandler {
         external
         view
         returns (address);
+
+    function setWtoken(address wtokenAddress,bool _isWtoken) external;
 }

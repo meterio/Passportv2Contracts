@@ -27,9 +27,12 @@ interface HandlerHelpersUpgradeableInterface extends ethers.utils.Interface {
     "_contractWhitelist(address)": FunctionFragment;
     "_resourceIDToTokenContractAddress(bytes32)": FunctionFragment;
     "_tokenContractAddressToResourceID(address)": FunctionFragment;
+    "isWtoken(address)": FunctionFragment;
     "setBurnable(address)": FunctionFragment;
     "setResource(bytes32,address)": FunctionFragment;
+    "setWtoken(address,bool)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
+    "wtoken()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -49,12 +52,18 @@ interface HandlerHelpersUpgradeableInterface extends ethers.utils.Interface {
     functionFragment: "_tokenContractAddressToResourceID",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "isWtoken", values: [string]): string;
   encodeFunctionData(functionFragment: "setBurnable", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setResource",
     values: [BytesLike, string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setWtoken",
+    values: [string, boolean]
+  ): string;
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: "wtoken", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "_bridgeAddress",
@@ -73,6 +82,7 @@ interface HandlerHelpersUpgradeableInterface extends ethers.utils.Interface {
     functionFragment: "_tokenContractAddressToResourceID",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "isWtoken", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setBurnable",
     data: BytesLike
@@ -81,7 +91,9 @@ interface HandlerHelpersUpgradeableInterface extends ethers.utils.Interface {
     functionFragment: "setResource",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setWtoken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "wtoken", data: BytesLike): Result;
 
   events: {};
 }
@@ -164,6 +176,20 @@ export class HandlerHelpersUpgradeable extends Contract {
       0: string;
     }>;
 
+    isWtoken(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isWtoken(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     setBurnable(
       contractAddress: string,
       overrides?: Overrides
@@ -186,6 +212,18 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     withdraw(
       data: BytesLike,
       overrides?: Overrides
@@ -195,6 +233,14 @@ export class HandlerHelpersUpgradeable extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    wtoken(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "wtoken()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
   };
 
   _bridgeAddress(overrides?: CallOverrides): Promise<string>;
@@ -235,6 +281,13 @@ export class HandlerHelpersUpgradeable extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  isWtoken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isWtoken(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   setBurnable(
     contractAddress: string,
     overrides?: Overrides
@@ -257,6 +310,18 @@ export class HandlerHelpersUpgradeable extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setWtoken(
+    wtokenAddress: string,
+    _isWtoken: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setWtoken(address,bool)"(
+    wtokenAddress: string,
+    _isWtoken: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   withdraw(
     data: BytesLike,
     overrides?: Overrides
@@ -266,6 +331,10 @@ export class HandlerHelpersUpgradeable extends Contract {
     data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  wtoken(overrides?: CallOverrides): Promise<string>;
+
+  "wtoken()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     _bridgeAddress(overrides?: CallOverrides): Promise<string>;
@@ -309,6 +378,13 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    isWtoken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "isWtoken(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     setBurnable(
       contractAddress: string,
       overrides?: CallOverrides
@@ -331,12 +407,28 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     withdraw(data: BytesLike, overrides?: CallOverrides): Promise<void>;
 
     "withdraw(bytes)"(
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    wtoken(overrides?: CallOverrides): Promise<string>;
+
+    "wtoken()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -383,6 +475,13 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    isWtoken(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "isWtoken(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     setBurnable(
       contractAddress: string,
       overrides?: Overrides
@@ -405,12 +504,28 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     withdraw(data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
 
     "withdraw(bytes)"(
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    wtoken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "wtoken()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -460,6 +575,16 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    isWtoken(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isWtoken(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     setBurnable(
       contractAddress: string,
       overrides?: Overrides
@@ -482,6 +607,18 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     withdraw(
       data: BytesLike,
       overrides?: Overrides
@@ -491,5 +628,9 @@ export class HandlerHelpersUpgradeable extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    wtoken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "wtoken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

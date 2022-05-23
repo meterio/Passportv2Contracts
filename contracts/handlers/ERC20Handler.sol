@@ -3,6 +3,7 @@ pragma solidity 0.8.11;
 pragma experimental ABIEncoderV2;
 
 import "../interfaces/IDepositExecute.sol";
+import "../interfaces/IWETH.sol";
 import "./HandlerHelpers.sol";
 import "../ERC20Safe.sol";
 
@@ -16,7 +17,7 @@ contract ERC20Handler is IDepositExecute, HandlerHelpers, ERC20Safe {
         @param bridgeAddress Contract address of previously deployed Bridge.
      */
     constructor(address bridgeAddress) HandlerHelpers(bridgeAddress) {}
-    
+
     error ProvidedTokenAddressIsNotWhitelisted();
 
     /**
@@ -34,17 +35,19 @@ contract ERC20Handler is IDepositExecute, HandlerHelpers, ERC20Safe {
         bytes32 resourceID,
         address depositer,
         bytes calldata data
-    ) external override onlyBridge returns (bytes memory) {
+    ) external payable override onlyBridge returns (bytes memory) {
         uint256 amount;
         (amount) = abi.decode(data, (uint256));
 
         address tokenAddress = _resourceIDToTokenContractAddress[resourceID];
-        if(!_contractWhitelist[tokenAddress]){
+        if (!_contractWhitelist[tokenAddress]) {
             revert ProvidedTokenAddressIsNotWhitelisted();
         }
 
         if (_burnList[tokenAddress]) {
             burnERC20(tokenAddress, depositer, amount);
+        } else if (isWtoken[tokenAddress]) {
+            depositETH(tokenAddress, amount);
         } else {
             lockERC20(tokenAddress, depositer, address(this), amount);
         }
@@ -92,6 +95,8 @@ contract ERC20Handler is IDepositExecute, HandlerHelpers, ERC20Safe {
 
         if (_burnList[tokenAddress]) {
             mintERC20(tokenAddress, address(recipientAddress), amount);
+        } else if (isWtoken[tokenAddress]) {
+            withdrawETH(tokenAddress, address(recipientAddress), amount);
         } else {
             releaseERC20(tokenAddress, address(recipientAddress), amount);
         }

@@ -3,8 +3,8 @@ pragma solidity 0.8.11;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "./interfaces/IWETH.sol";
+import "./interfaces/IERCMintBurn.sol";
 
 /**
     @title Manages deposited ERC20s.
@@ -46,6 +46,27 @@ contract ERC20Safe {
         _safeTransfer(erc20, recipient, amount);
     }
 
+    function depositETH(address tokenAddress, uint256 amount) internal {
+        require(amount == msg.value, "msg.value and data mismatched");
+        IWETH erc20 = IWETH(tokenAddress);
+        erc20.deposit{value: amount}();
+    }
+
+    function withdrawETH(
+        address tokenAddress,
+        address recipient,
+        uint256 amount
+    ) internal {
+        IWETH erc20 = IWETH(tokenAddress);
+        uint256 balanceBefore = address(this).balance;
+        erc20.withdraw(amount);
+        _safeTransferETH(recipient, amount);
+        require(
+            address(this).balance == balanceBefore,
+            "ERC20: withdraw fail!"
+        );
+    }
+
     /**
         @notice Used to create new ERC20s.
         @param tokenAddress Address of ERC20 to transfer.
@@ -57,7 +78,7 @@ contract ERC20Safe {
         address recipient,
         uint256 amount
     ) internal {
-        ERC20PresetMinterPauser erc20 = ERC20PresetMinterPauser(tokenAddress);
+        IERCMintBurn erc20 = IERCMintBurn(tokenAddress);
         erc20.mint(recipient, amount);
     }
 
@@ -72,7 +93,7 @@ contract ERC20Safe {
         address owner,
         uint256 amount
     ) internal {
-        ERC20Burnable erc20 = ERC20Burnable(tokenAddress);
+        IERCMintBurn erc20 = IERCMintBurn(tokenAddress);
         erc20.burnFrom(owner, amount);
     }
 
@@ -91,6 +112,20 @@ contract ERC20Safe {
             token,
             abi.encodeWithSelector(token.transfer.selector, to, value)
         );
+    }
+
+    function _safeTransferETH(address to, uint256 value) private {
+        (bool success, bytes memory returndata) = address(to).call{
+            value: value
+        }("");
+        require(success, "ERC20: call failed");
+
+        if (returndata.length > 0) {
+            require(
+                abi.decode(returndata, (bool)),
+                "ERC20: operation did not succeed"
+            );
+        }
     }
 
     /**

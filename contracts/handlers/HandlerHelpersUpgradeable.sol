@@ -11,6 +11,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
  */
 contract HandlerHelpersUpgradeable is IERCHandler, Initializable {
     address public _bridgeAddress;
+    address public wtoken;
 
     // resourceID => token contract address
     mapping(bytes32 => address) public _resourceIDToTokenContractAddress;
@@ -23,6 +24,8 @@ contract HandlerHelpersUpgradeable is IERCHandler, Initializable {
 
     // token contract address => is burnable
     mapping(address => bool) public _burnList;
+    // wtoken => bool
+    mapping(address => bool) public isWtoken;
 
     modifier onlyBridge() {
         _onlyBridge();
@@ -83,5 +86,13 @@ contract HandlerHelpersUpgradeable is IERCHandler, Initializable {
             "provided contract is not whitelisted"
         );
         _burnList[contractAddress] = true;
+    }
+
+    function setWtoken(address wtokenAddress, bool _isWtoken)
+        external
+        override
+        onlyBridge
+    {
+        isWtoken[wtokenAddress] = _isWtoken;
     }
 }

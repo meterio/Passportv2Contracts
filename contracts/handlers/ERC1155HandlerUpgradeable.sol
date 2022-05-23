@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "../interfaces/IDepositExecute.sol";
 import {HandlerHelpersUpgradeable as HandlerHelpers} from "./HandlerHelpersUpgradeable.sol";
-import {ERC1155SafeUpgradeable as ERC1155Safe} from "../ERC1155SafeUpgradeable.sol";
+import "../ERC1155Safe.sol";
 import {ERC165CheckerUpgradeable as ERC165Checker} from "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165CheckerUpgradeable.sol";
 import {ERC1155HolderUpgradeable as ERC1155Holder} from "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
 import {IERC1155MetadataURIUpgradeable as IERC1155MetadataURI} from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/IERC1155MetadataURIUpgradeable.sol";
@@ -37,7 +37,8 @@ contract ERC1155HandlerUpgradeable is
         bytes32 resourceID,
         address depositer,
         bytes calldata data
-    ) external override onlyBridge returns (bytes memory) {
+    ) external payable override onlyBridge returns (bytes memory) {
+        require(msg.value == 0, "msg.value not null");
         uint256[] memory tokenIDs;
         uint256[] memory amounts;
 

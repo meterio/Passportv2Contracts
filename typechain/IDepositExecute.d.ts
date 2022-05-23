@@ -14,6 +14,7 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   CallOverrides,
 } from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
@@ -62,14 +63,14 @@ export class IDepositExecute extends Contract {
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     executeProposal(
@@ -89,14 +90,14 @@ export class IDepositExecute extends Contract {
     resourceID: BytesLike,
     depositer: string,
     data: BytesLike,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   "deposit(bytes32,address,bytes)"(
     resourceID: BytesLike,
     depositer: string,
     data: BytesLike,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   executeProposal(
@@ -146,14 +147,14 @@ export class IDepositExecute extends Contract {
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     executeProposal(
@@ -174,14 +175,14 @@ export class IDepositExecute extends Contract {
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     executeProposal(

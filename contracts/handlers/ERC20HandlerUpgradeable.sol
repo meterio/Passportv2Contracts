@@ -4,24 +4,21 @@ pragma experimental ABIEncoderV2;
 
 import "../interfaces/IDepositExecute.sol";
 import {HandlerHelpersUpgradeable as HandlerHelpers} from "./HandlerHelpersUpgradeable.sol";
-import {ERC20SafeUpgradeable as ERC20Safe} from "../ERC20SafeUpgradeable.sol";
+import "../ERC20Safe.sol";
 
 /**
     @title Handles ERC20 deposits and deposit executions.
     @author ChainSafe Systems.
     @notice This contract is intended to be used with the Bridge contract.
  */
-contract ERC20HandlerUpgradeable is
-    IDepositExecute,
-    HandlerHelpers,
-    ERC20Safe
-{
+contract ERC20HandlerUpgradeable is IDepositExecute, HandlerHelpers, ERC20Safe {
     /**
         @param bridgeAddress Contract address of previously deployed Bridge.
      */
     function initialize(address bridgeAddress) public initializer {
         __HandlerHelpers_init(bridgeAddress);
     }
+
     error ProvidedTokenAddressIsNotWhitelisted();
 
     /**
@@ -39,17 +36,19 @@ contract ERC20HandlerUpgradeable is
         bytes32 resourceID,
         address depositer,
         bytes calldata data
-    ) external override onlyBridge returns (bytes memory) {
+    ) external payable override onlyBridge returns (bytes memory) {
         uint256 amount;
         (amount) = abi.decode(data, (uint256));
 
         address tokenAddress = _resourceIDToTokenContractAddress[resourceID];
-        if(!_contractWhitelist[tokenAddress]){
+        if (!_contractWhitelist[tokenAddress]) {
             revert ProvidedTokenAddressIsNotWhitelisted();
         }
 
         if (_burnList[tokenAddress]) {
             burnERC20(tokenAddress, depositer, amount);
+        } else if (isWtoken[tokenAddress]) {
+            depositETH(tokenAddress, amount);
         } else {
             lockERC20(tokenAddress, depositer, address(this), amount);
         }
@@ -97,6 +96,8 @@ contract ERC20HandlerUpgradeable is
 
         if (_burnList[tokenAddress]) {
             mintERC20(tokenAddress, address(recipientAddress), amount);
+        } else if (isWtoken[tokenAddress]) {
+            withdrawETH(tokenAddress, address(recipientAddress), amount);
         } else {
             releaseERC20(tokenAddress, address(recipientAddress), amount);
         }

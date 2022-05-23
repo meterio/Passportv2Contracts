@@ -47,12 +47,12 @@ interface BridgeInterface extends ethers.utils.Interface {
     "adminSetForwarder(address,bool)": FunctionFragment;
     "adminSetGenericResource(address,bytes32,address,bytes4,uint256,bytes4)": FunctionFragment;
     "adminSetResource(address,bytes32,address)": FunctionFragment;
+    "adminSetWtoken(bytes32,address,bool)": FunctionFragment;
     "adminUnpauseTransfers()": FunctionFragment;
     "adminWithdraw(address,bytes)": FunctionFragment;
     "cancelProposal(uint8,uint64,bytes32)": FunctionFragment;
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "deposit(uint8,bytes32,bytes,bytes)": FunctionFragment;
-    "depositETH(uint8,bytes32,bytes,bytes)": FunctionFragment;
     "executeProposal(uint8,uint64,bytes,bytes32,bool)": FunctionFragment;
     "getProposal(uint8,uint64,bytes32)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
@@ -160,6 +160,10 @@ interface BridgeInterface extends ethers.utils.Interface {
     values: [string, BytesLike, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "adminSetWtoken",
+    values: [BytesLike, string, boolean]
+  ): string;
+  encodeFunctionData(
     functionFragment: "adminUnpauseTransfers",
     values?: undefined
   ): string;
@@ -177,10 +181,6 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "deposit",
-    values: [BigNumberish, BytesLike, BytesLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "depositETH",
     values: [BigNumberish, BytesLike, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
@@ -334,6 +334,10 @@ interface BridgeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "adminSetWtoken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "adminUnpauseTransfers",
     data: BytesLike
   ): Result;
@@ -350,7 +354,6 @@ interface BridgeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "depositETH", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "executeProposal",
     data: BytesLike
@@ -700,6 +703,20 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    adminSetWtoken(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetWtoken(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     adminUnpauseTransfers(overrides?: Overrides): Promise<ContractTransaction>;
 
     "adminUnpauseTransfers()"(
@@ -763,22 +780,6 @@ export class Bridge extends Contract {
     ): Promise<ContractTransaction>;
 
     "deposit(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    depositETH(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    "depositETH(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
       depositData: BytesLike,
@@ -1243,6 +1244,20 @@ export class Bridge extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  adminSetWtoken(
+    resourceID: BytesLike,
+    wtokenAddress: string,
+    isWtoken: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetWtoken(bytes32,address,bool)"(
+    resourceID: BytesLike,
+    wtokenAddress: string,
+    isWtoken: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   adminUnpauseTransfers(overrides?: Overrides): Promise<ContractTransaction>;
 
   "adminUnpauseTransfers()"(
@@ -1302,22 +1317,6 @@ export class Bridge extends Contract {
   ): Promise<ContractTransaction>;
 
   "deposit(uint8,bytes32,bytes,bytes)"(
-    destinationDomainID: BigNumberish,
-    resourceID: BytesLike,
-    depositData: BytesLike,
-    feeData: BytesLike,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  depositETH(
-    destinationDomainID: BigNumberish,
-    resourceID: BytesLike,
-    depositData: BytesLike,
-    feeData: BytesLike,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  "depositETH(uint8,bytes32,bytes,bytes)"(
     destinationDomainID: BigNumberish,
     resourceID: BytesLike,
     depositData: BytesLike,
@@ -1737,6 +1736,20 @@ export class Bridge extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    adminSetWtoken(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminSetWtoken(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     adminUnpauseTransfers(overrides?: CallOverrides): Promise<void>;
 
     "adminUnpauseTransfers()"(overrides?: CallOverrides): Promise<void>;
@@ -1794,22 +1807,6 @@ export class Bridge extends Contract {
     ): Promise<void>;
 
     "deposit(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    depositETH(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "depositETH(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
       depositData: BytesLike,
@@ -2278,6 +2275,20 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    adminSetWtoken(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminSetWtoken(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     adminUnpauseTransfers(overrides?: Overrides): Promise<BigNumber>;
 
     "adminUnpauseTransfers()"(overrides?: Overrides): Promise<BigNumber>;
@@ -2335,22 +2346,6 @@ export class Bridge extends Contract {
     ): Promise<BigNumber>;
 
     "deposit(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    depositETH(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    "depositETH(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
       depositData: BytesLike,
@@ -2768,6 +2763,20 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    adminSetWtoken(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminSetWtoken(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     adminUnpauseTransfers(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "adminUnpauseTransfers()"(
@@ -2827,22 +2836,6 @@ export class Bridge extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "deposit(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    depositETH(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "depositETH(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
       depositData: BytesLike,

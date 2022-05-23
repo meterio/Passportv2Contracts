@@ -70,6 +70,24 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "wtokenAddress",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "_isWtoken",
+        type: "bool",
+      },
+    ],
+    name: "setWtoken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes",
         name: "data",
         type: "bytes",

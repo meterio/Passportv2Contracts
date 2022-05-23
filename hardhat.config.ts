@@ -10,7 +10,7 @@ require('@openzeppelin/hardhat-upgrades');
 const dotenv = require("dotenv");
 dotenv.config();
 // import Colors = require("colors.ts");
-import { BigNumber, BytesLike, utils } from "ethers";
+import { BigNumber, BytesLike, constants, utils } from "ethers";
 
 import { WETH9, Bridge, ERC20Handler, ERC721Handler, ERC1155Handler, GenericHandler, TokenERC20 } from "./typechain"
 import { deployContract, getContract } from "./script/deployTool";
@@ -139,7 +139,8 @@ task("deposit", "deposit")
       receipt = await bridgeInstant.deposit(
         domain,
         resId,
-        encodeData("1", signer.address)
+        encodeData("1", signer.address),
+        constants.HashZero
       )
       console.log(await receipt.wait());
 

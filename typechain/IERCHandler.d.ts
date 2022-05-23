@@ -25,6 +25,7 @@ interface IERCHandlerInterface extends ethers.utils.Interface {
     "_resourceIDToTokenContractAddress(bytes32)": FunctionFragment;
     "setBurnable(address)": FunctionFragment;
     "setResource(bytes32,address)": FunctionFragment;
+    "setWtoken(address,bool)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
   };
 
@@ -36,6 +37,10 @@ interface IERCHandlerInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "setResource",
     values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setWtoken",
+    values: [string, boolean]
   ): string;
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
 
@@ -51,6 +56,7 @@ interface IERCHandlerInterface extends ethers.utils.Interface {
     functionFragment: "setResource",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setWtoken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {};
@@ -106,6 +112,18 @@ export class IERCHandler extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     withdraw(
       data: BytesLike,
       overrides?: Overrides
@@ -146,6 +164,18 @@ export class IERCHandler extends Contract {
   "setResource(bytes32,address)"(
     resourceID: BytesLike,
     contractAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setWtoken(
+    wtokenAddress: string,
+    _isWtoken: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setWtoken(address,bool)"(
+    wtokenAddress: string,
+    _isWtoken: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -192,6 +222,18 @@ export class IERCHandler extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     withdraw(data: BytesLike, overrides?: CallOverrides): Promise<void>;
 
     "withdraw(bytes)"(
@@ -235,6 +277,18 @@ export class IERCHandler extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     withdraw(data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
 
     "withdraw(bytes)"(
@@ -273,6 +327,18 @@ export class IERCHandler extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

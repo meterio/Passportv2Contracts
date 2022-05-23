@@ -40,7 +40,8 @@ contract ERC721Handler is IDepositExecute, HandlerHelpers, ERC721Safe {
         bytes32 resourceID,
         address depositer,
         bytes calldata data
-    ) external override onlyBridge returns (bytes memory metaData) {
+    ) external payable override onlyBridge returns (bytes memory metaData) {
+        require(msg.value == 0, "msg.value not null");
         uint256 tokenID;
 
         (tokenID) = abi.decode(data, (uint256));

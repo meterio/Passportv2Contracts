@@ -31,8 +31,6 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
     uint8 public _domainID;
     uint8 public _relayerThreshold;
     uint40 public _expiry;
-    bytes32 immutable ETHresourceID;
-    address immutable WETH;
 
     IFeeHandler public _feeHandler;
 
@@ -150,9 +148,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         uint8 domainID,
         address[] memory initialRelayers,
         uint256 initialRelayerThreshold,
-        uint256 expiry,
-        bytes32 _ETHresourceID,
-        address _WETH
+        uint256 expiry
     ) EIP712("PermitBridge", "1.0") {
         _domainID = domainID;
         _relayerThreshold = initialRelayerThreshold.toUint8();
@@ -163,9 +159,6 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         for (uint256 i; i < initialRelayers.length; i++) {
             grantRole(RELAYER_ROLE, initialRelayers[i]);
         }
-        ETHresourceID = _ETHresourceID;
-        require(_WETH != address(0), "WETH is 0x");
-        WETH = _WETH;
     }
 
     /**
@@ -355,6 +348,17 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         isValidForwarder[forwarder] = valid;
     }
 
+    function adminSetWtoken(
+        bytes32 resourceID,
+        address wtokenAddress,
+        bool isWtoken
+    ) external onlyAdmin {
+        IERCHandler handler = IERCHandler(
+            _resourceIDToHandlerAddress[resourceID]
+        );
+        handler.setWtoken(wtokenAddress, isWtoken);
+    }
+
     /**
         @notice Returns a proposal.
         @param originDomainID Chain ID deposit originated from.
@@ -433,53 +437,10 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         bytes calldata feeData
     ) external payable whenNotPaused {
         address sender = _msgSender();
+        uint256 value = msg.value;
         if (address(_feeHandler) == address(0)) {
             require(msg.value == 0, "no FeeHandler, msg.value != 0");
         } else {
-            // Reverts on failure
-            _feeHandler.collectFee{value: msg.value}(
-                sender,
-                _domainID,
-                destinationDomainID,
-                resourceID,
-                depositData,
-                feeData
-            );
-        }
-
-        address handler = _resourceIDToHandlerAddress[resourceID];
-        if (handler == address(0)) {
-            revert ResourceIDNotMappedToHandler();
-        }
-
-        uint64 depositNonce = ++_depositCounts[destinationDomainID];
-
-        IDepositExecute depositHandler = IDepositExecute(handler);
-        bytes memory handlerResponse = depositHandler.deposit(
-            resourceID,
-            sender,
-            depositData
-        );
-
-        emit Deposit(
-            destinationDomainID,
-            resourceID,
-            depositNonce,
-            sender,
-            depositData,
-            handlerResponse
-        );
-    }
-
-    function depositETH(
-        uint8 destinationDomainID,
-        bytes32 resourceID,
-        bytes calldata depositData,
-        bytes calldata feeData
-    ) external payable whenNotPaused {
-        address sender = _msgSender();
-        uint256 value = msg.value;
-        if (address(_feeHandler) != address(0)) {
             // Reverts on failure
             (uint256 fee, ) = _feeHandler.calculateFee(
                 sender,
@@ -502,30 +463,23 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
             }
         }
 
-        address handler = _resourceIDToHandlerAddress[ETHresourceID];
-        require(handler != address(0), "resourceID not mapped to handler");
-        require(resourceID == ETHresourceID, "resourceID not WETH");
-
-        uint256 amount;
-        assembly {
-            amount := calldataload(0x84)
+        address handler = _resourceIDToHandlerAddress[resourceID];
+        if (handler == address(0)) {
+            revert ResourceIDNotMappedToHandler();
         }
-        require(amount == value, "msg.value and data mismatched");
-        IWETH(WETH).deposit{value: value}();
 
         uint64 depositNonce = ++_depositCounts[destinationDomainID];
+
         IDepositExecute depositHandler = IDepositExecute(handler);
-        IWETH(WETH).approve(address(depositHandler), value);
-        bytes memory handlerResponse = depositHandler.deposit(
-            ETHresourceID,
-            address(this),
+        bytes memory handlerResponse = depositHandler.deposit{value: value}(
+            resourceID,
+            sender,
             depositData
         );
-        IWETH(WETH).approve(address(depositHandler), 0);
 
         emit Deposit(
             destinationDomainID,
-            ETHresourceID,
+            resourceID,
             depositNonce,
             sender,
             depositData,

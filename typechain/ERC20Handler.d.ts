@@ -14,6 +14,7 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   CallOverrides,
 } from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
@@ -29,9 +30,12 @@ interface ERC20HandlerInterface extends ethers.utils.Interface {
     "_tokenContractAddressToResourceID(address)": FunctionFragment;
     "deposit(bytes32,address,bytes)": FunctionFragment;
     "executeProposal(bytes32,bytes)": FunctionFragment;
+    "isWtoken(address)": FunctionFragment;
     "setBurnable(address)": FunctionFragment;
     "setResource(bytes32,address)": FunctionFragment;
+    "setWtoken(address,bool)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
+    "wtoken()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -59,12 +63,18 @@ interface ERC20HandlerInterface extends ethers.utils.Interface {
     functionFragment: "executeProposal",
     values: [BytesLike, BytesLike]
   ): string;
+  encodeFunctionData(functionFragment: "isWtoken", values: [string]): string;
   encodeFunctionData(functionFragment: "setBurnable", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setResource",
     values: [BytesLike, string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setWtoken",
+    values: [string, boolean]
+  ): string;
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: "wtoken", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "_bridgeAddress",
@@ -88,6 +98,7 @@ interface ERC20HandlerInterface extends ethers.utils.Interface {
     functionFragment: "executeProposal",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "isWtoken", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setBurnable",
     data: BytesLike
@@ -96,7 +107,9 @@ interface ERC20HandlerInterface extends ethers.utils.Interface {
     functionFragment: "setResource",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setWtoken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "wtoken", data: BytesLike): Result;
 
   events: {};
 }
@@ -183,14 +196,14 @@ export class ERC20Handler extends Contract {
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     executeProposal(
@@ -204,6 +217,20 @@ export class ERC20Handler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    isWtoken(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isWtoken(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
 
     setBurnable(
       contractAddress: string,
@@ -227,6 +254,18 @@ export class ERC20Handler extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     withdraw(
       data: BytesLike,
       overrides?: Overrides
@@ -236,6 +275,14 @@ export class ERC20Handler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    wtoken(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "wtoken()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
   };
 
   _bridgeAddress(overrides?: CallOverrides): Promise<string>;
@@ -280,14 +327,14 @@ export class ERC20Handler extends Contract {
     resourceID: BytesLike,
     depositer: string,
     data: BytesLike,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   "deposit(bytes32,address,bytes)"(
     resourceID: BytesLike,
     depositer: string,
     data: BytesLike,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   executeProposal(
@@ -301,6 +348,13 @@ export class ERC20Handler extends Contract {
     data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  isWtoken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isWtoken(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   setBurnable(
     contractAddress: string,
@@ -324,6 +378,18 @@ export class ERC20Handler extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setWtoken(
+    wtokenAddress: string,
+    _isWtoken: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setWtoken(address,bool)"(
+    wtokenAddress: string,
+    _isWtoken: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   withdraw(
     data: BytesLike,
     overrides?: Overrides
@@ -333,6 +399,10 @@ export class ERC20Handler extends Contract {
     data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  wtoken(overrides?: CallOverrides): Promise<string>;
+
+  "wtoken()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     _bridgeAddress(overrides?: CallOverrides): Promise<string>;
@@ -402,6 +472,13 @@ export class ERC20Handler extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    isWtoken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "isWtoken(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     setBurnable(
       contractAddress: string,
       overrides?: CallOverrides
@@ -424,12 +501,28 @@ export class ERC20Handler extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     withdraw(data: BytesLike, overrides?: CallOverrides): Promise<void>;
 
     "withdraw(bytes)"(
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    wtoken(overrides?: CallOverrides): Promise<string>;
+
+    "wtoken()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -480,14 +573,14 @@ export class ERC20Handler extends Contract {
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     executeProposal(
@@ -500,6 +593,13 @@ export class ERC20Handler extends Contract {
       resourceID: BytesLike,
       data: BytesLike,
       overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    isWtoken(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "isWtoken(address)"(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     setBurnable(
@@ -524,12 +624,28 @@ export class ERC20Handler extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     withdraw(data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
 
     "withdraw(bytes)"(
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    wtoken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "wtoken()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -583,14 +699,14 @@ export class ERC20Handler extends Contract {
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
       depositer: string,
       data: BytesLike,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     executeProposal(
@@ -603,6 +719,16 @@ export class ERC20Handler extends Contract {
       resourceID: BytesLike,
       data: BytesLike,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    isWtoken(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isWtoken(address)"(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     setBurnable(
@@ -627,6 +753,18 @@ export class ERC20Handler extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    setWtoken(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setWtoken(address,bool)"(
+      wtokenAddress: string,
+      _isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     withdraw(
       data: BytesLike,
       overrides?: Overrides
@@ -636,5 +774,9 @@ export class ERC20Handler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    wtoken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "wtoken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

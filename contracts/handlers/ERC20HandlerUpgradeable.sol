@@ -48,7 +48,7 @@ contract ERC20HandlerUpgradeable is IDepositExecute, HandlerHelpers, ERC20Safe {
         if (_burnList[tokenAddress]) {
             burnERC20(tokenAddress, depositer, amount);
         } else if (isWtoken[tokenAddress]) {
-            depositETH(tokenAddress, amount);
+            depositETH(amount);
         } else {
             lockERC20(tokenAddress, depositer, address(this), amount);
         }
@@ -97,7 +97,7 @@ contract ERC20HandlerUpgradeable is IDepositExecute, HandlerHelpers, ERC20Safe {
         if (_burnList[tokenAddress]) {
             mintERC20(tokenAddress, address(recipientAddress), amount);
         } else if (isWtoken[tokenAddress]) {
-            withdrawETH(tokenAddress, address(recipientAddress), amount);
+            withdrawETH(address(recipientAddress), amount);
         } else {
             releaseERC20(tokenAddress, address(recipientAddress), amount);
         }

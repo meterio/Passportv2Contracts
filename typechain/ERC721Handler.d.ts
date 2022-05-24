@@ -35,7 +35,6 @@ interface ERC721HandlerInterface extends ethers.utils.Interface {
     "setResource(bytes32,address)": FunctionFragment;
     "setWtoken(address,bool)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
-    "wtoken()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -74,7 +73,6 @@ interface ERC721HandlerInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "wtoken", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "_bridgeAddress",
@@ -109,7 +107,6 @@ interface ERC721HandlerInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setWtoken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "wtoken", data: BytesLike): Result;
 
   events: {};
 }
@@ -275,14 +272,6 @@ export class ERC721Handler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    wtoken(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
   };
 
   _bridgeAddress(overrides?: CallOverrides): Promise<string>;
@@ -400,10 +389,6 @@ export class ERC721Handler extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  wtoken(overrides?: CallOverrides): Promise<string>;
-
-  "wtoken()"(overrides?: CallOverrides): Promise<string>;
-
   callStatic: {
     _bridgeAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -519,10 +504,6 @@ export class ERC721Handler extends Contract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    wtoken(overrides?: CallOverrides): Promise<string>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -642,10 +623,6 @@ export class ERC721Handler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    wtoken(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -774,9 +751,5 @@ export class ERC721Handler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    wtoken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

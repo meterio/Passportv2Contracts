@@ -10,7 +10,6 @@ import "../interfaces/IERCHandler.sol";
  */
 contract HandlerHelpers is IERCHandler {
     address public immutable _bridgeAddress;
-    address public wtoken;
 
     // resourceID => token contract address
     mapping(bytes32 => address) public _resourceIDToTokenContractAddress;

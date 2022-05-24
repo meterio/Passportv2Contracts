@@ -23,6 +23,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface ERC20HandlerInterface extends ethers.utils.Interface {
   functions: {
+    "ETHReserve()": FunctionFragment;
     "_bridgeAddress()": FunctionFragment;
     "_burnList(address)": FunctionFragment;
     "_contractWhitelist(address)": FunctionFragment;
@@ -35,9 +36,12 @@ interface ERC20HandlerInterface extends ethers.utils.Interface {
     "setResource(bytes32,address)": FunctionFragment;
     "setWtoken(address,bool)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
-    "wtoken()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "ETHReserve",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "_bridgeAddress",
     values?: undefined
@@ -74,8 +78,8 @@ interface ERC20HandlerInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "wtoken", values?: undefined): string;
 
+  decodeFunctionResult(functionFragment: "ETHReserve", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "_bridgeAddress",
     data: BytesLike
@@ -109,7 +113,6 @@ interface ERC20HandlerInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setWtoken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "wtoken", data: BytesLike): Result;
 
   events: {};
 }
@@ -128,6 +131,14 @@ export class ERC20Handler extends Contract {
   interface: ERC20HandlerInterface;
 
   functions: {
+    ETHReserve(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
     _bridgeAddress(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
@@ -275,15 +286,11 @@ export class ERC20Handler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    wtoken(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
   };
+
+  ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   _bridgeAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -400,11 +407,11 @@ export class ERC20Handler extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  wtoken(overrides?: CallOverrides): Promise<string>;
-
-  "wtoken()"(overrides?: CallOverrides): Promise<string>;
-
   callStatic: {
+    ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     _bridgeAddress(overrides?: CallOverrides): Promise<string>;
 
     "_bridgeAddress()"(overrides?: CallOverrides): Promise<string>;
@@ -519,15 +526,15 @@ export class ERC20Handler extends Contract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    wtoken(overrides?: CallOverrides): Promise<string>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
 
   estimateGas: {
+    ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     _bridgeAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     "_bridgeAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -642,13 +649,13 @@ export class ERC20Handler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    wtoken(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    ETHReserve(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     _bridgeAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "_bridgeAddress()"(
@@ -774,9 +781,5 @@ export class ERC20Handler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    wtoken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

@@ -34,7 +34,6 @@ interface HandlerRevertInterface extends ethers.utils.Interface {
     "setWtoken(address,bool)": FunctionFragment;
     "virtualIncreaseBalance(uint256)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
-    "wtoken()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -73,7 +72,6 @@ interface HandlerRevertInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "wtoken", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "_bridgeAddress",
@@ -111,7 +109,6 @@ interface HandlerRevertInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "wtoken", data: BytesLike): Result;
 
   events: {};
 }
@@ -277,14 +274,6 @@ export class HandlerRevert extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    wtoken(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
   };
 
   _bridgeAddress(overrides?: CallOverrides): Promise<string>;
@@ -398,10 +387,6 @@ export class HandlerRevert extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  wtoken(overrides?: CallOverrides): Promise<string>;
-
-  "wtoken()"(overrides?: CallOverrides): Promise<string>;
-
   callStatic: {
     _bridgeAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -513,10 +498,6 @@ export class HandlerRevert extends Contract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    wtoken(overrides?: CallOverrides): Promise<string>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -632,10 +613,6 @@ export class HandlerRevert extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    wtoken(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -760,9 +737,5 @@ export class HandlerRevert extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    wtoken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

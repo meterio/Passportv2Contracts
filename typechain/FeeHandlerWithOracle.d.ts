@@ -24,6 +24,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface FeeHandlerWithOracleInterface extends ethers.utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "ETHReserve()": FunctionFragment;
     "_bridgeAddress()": FunctionFragment;
     "_feePercent()": FunctionFragment;
     "_gasUsed()": FunctionFragment;
@@ -45,6 +46,10 @@ interface FeeHandlerWithOracleInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "DEFAULT_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "ETHReserve",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -131,6 +136,7 @@ interface FeeHandlerWithOracleInterface extends ethers.utils.Interface {
     functionFragment: "DEFAULT_ADMIN_ROLE",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "ETHReserve", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "_bridgeAddress",
     data: BytesLike
@@ -218,6 +224,14 @@ export class FeeHandlerWithOracle extends Contract {
 
     "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<{
       0: string;
+    }>;
+
+    ETHReserve(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
     }>;
 
     _bridgeAddress(overrides?: CallOverrides): Promise<{
@@ -455,6 +469,10 @@ export class FeeHandlerWithOracle extends Contract {
 
   "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
 
+  ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   _bridgeAddress(overrides?: CallOverrides): Promise<string>;
 
   "_bridgeAddress()"(overrides?: CallOverrides): Promise<string>;
@@ -650,6 +668,10 @@ export class FeeHandlerWithOracle extends Contract {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
     "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
+
+    ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     _bridgeAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -877,6 +899,10 @@ export class FeeHandlerWithOracle extends Contract {
 
     "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     _bridgeAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     "_bridgeAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1070,6 +1096,10 @@ export class FeeHandlerWithOracle extends Contract {
     "DEFAULT_ADMIN_ROLE()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    ETHReserve(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     _bridgeAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

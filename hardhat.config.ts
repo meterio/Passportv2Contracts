@@ -287,20 +287,6 @@ export default {
     hardhat: {
       allowUnlimitedContractSize: false,
     },
-    ganache: {
-      url: `http://127.0.0.1:7545`,
-      chainId: 1337,
-      accounts: {
-        mnemonic: process.env.MNEMONIC,
-      },
-    },
-    ganacheCli: {
-      url: `http://127.0.0.1:8545`,
-      chainId: 1337,
-      accounts: {
-        mnemonic: process.env.MNEMONIC,
-      },
-    },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/bb6d78227dca492daab0a4cfb7b32fb5`,
       accounts: ['0x278e623d5c3445753374f065a7ad9c76d82a642e416ac670d7d90eafd4a34ad0',

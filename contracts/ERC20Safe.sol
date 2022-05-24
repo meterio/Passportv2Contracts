@@ -13,6 +13,7 @@ import "./interfaces/IERCMintBurn.sol";
  */
 contract ERC20Safe {
     using SafeMath for uint256;
+    uint256 public ETHReserve;
 
     /**
         @notice Used to gain custody of deposited token.
@@ -46,23 +47,20 @@ contract ERC20Safe {
         _safeTransfer(erc20, recipient, amount);
     }
 
-    function depositETH(address tokenAddress, uint256 amount) internal {
+    function depositETH(uint256 amount) internal {
         require(amount == msg.value, "msg.value and data mismatched");
-        IWETH erc20 = IWETH(tokenAddress);
-        erc20.deposit{value: amount}();
+        require(
+            address(this).balance >= ETHReserve + amount,
+            "ETHReserve mismatched"
+        );
+        ETHReserve = address(this).balance;
     }
 
-    function withdrawETH(
-        address tokenAddress,
-        address recipient,
-        uint256 amount
-    ) internal {
-        IWETH erc20 = IWETH(tokenAddress);
+    function withdrawETH(address recipient, uint256 amount) internal {
         uint256 balanceBefore = address(this).balance;
-        erc20.withdraw(amount);
         _safeTransferETH(recipient, amount);
         require(
-            address(this).balance == balanceBefore,
+            address(this).balance == balanceBefore - amount,
             "ERC20: withdraw fail!"
         );
     }

@@ -10,19 +10,28 @@ import {
   BigNumberish,
   PopulatedTransaction,
 } from "ethers";
-import { Contract, ContractTransaction } from "@ethersproject/contracts";
+import {
+  Contract,
+  ContractTransaction,
+  CallOverrides,
+} from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface ERC20SafeInterface extends ethers.utils.Interface {
-  functions: {};
-
-  events: {
-    "Console(address,address,address,uint256)": EventFragment;
+  functions: {
+    "ETHReserve()": FunctionFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "Console"): EventFragment;
+  encodeFunctionData(
+    functionFragment: "ETHReserve",
+    values?: undefined
+  ): string;
+
+  decodeFunctionResult(functionFragment: "ETHReserve", data: BytesLike): Result;
+
+  events: {};
 }
 
 export class ERC20Safe extends Contract {
@@ -38,20 +47,37 @@ export class ERC20Safe extends Contract {
 
   interface: ERC20SafeInterface;
 
-  functions: {};
+  functions: {
+    ETHReserve(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-  callStatic: {};
-
-  filters: {
-    Console(
-      tokenAddress: string | null,
-      owner: string | null,
-      recipient: string | null,
-      amount: null
-    ): EventFilter;
+    "ETHReserve()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
   };
 
-  estimateGas: {};
+  ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
 
-  populateTransaction: {};
+  "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  callStatic: {
+    ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+  };
+
+  filters: {};
+
+  estimateGas: {
+    ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+  };
+
+  populateTransaction: {
+    ETHReserve(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+  };
 }

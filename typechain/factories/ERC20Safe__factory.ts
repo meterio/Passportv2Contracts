@@ -35,37 +35,19 @@ export class ERC20Safe__factory extends ContractFactory {
 
 const _abi = [
   {
-    anonymous: false,
-    inputs: [
+    inputs: [],
+    name: "ETHReserve",
+    outputs: [
       {
-        indexed: true,
-        internalType: "address",
-        name: "tokenAddress",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
-      {
-        indexed: false,
         internalType: "uint256",
-        name: "amount",
+        name: "",
         type: "uint256",
       },
     ],
-    name: "Console",
-    type: "event",
+    stateMutability: "view",
+    type: "function",
   },
 ];
 
 const _bytecode =
-  "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220fb43b0ef450827df25bcbf0f635d39ae288bbaaea1a7c1a8eb28ba6c1474f8e164736f6c634300080b0033";
+  "0x6080604052348015600f57600080fd5b50607d8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c8063ddafda4614602d575b600080fd5b603560005481565b60405190815260200160405180910390f3fea2646970667358221220541b981ea9852ff1511aa0d3a42f3e8a6723ed12155ceb097fcb81423af8508164736f6c634300080b0033";

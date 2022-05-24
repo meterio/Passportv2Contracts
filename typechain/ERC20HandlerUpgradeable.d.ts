@@ -23,6 +23,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface ERC20HandlerUpgradeableInterface extends ethers.utils.Interface {
   functions: {
+    "ETHReserve()": FunctionFragment;
     "_bridgeAddress()": FunctionFragment;
     "_burnList(address)": FunctionFragment;
     "_contractWhitelist(address)": FunctionFragment;
@@ -39,6 +40,10 @@ interface ERC20HandlerUpgradeableInterface extends ethers.utils.Interface {
     "wtoken()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "ETHReserve",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "_bridgeAddress",
     values?: undefined
@@ -78,6 +83,7 @@ interface ERC20HandlerUpgradeableInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "wtoken", values?: undefined): string;
 
+  decodeFunctionResult(functionFragment: "ETHReserve", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "_bridgeAddress",
     data: BytesLike
@@ -131,6 +137,14 @@ export class ERC20HandlerUpgradeable extends Contract {
   interface: ERC20HandlerUpgradeableInterface;
 
   functions: {
+    ETHReserve(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
     _bridgeAddress(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
@@ -298,6 +312,10 @@ export class ERC20HandlerUpgradeable extends Contract {
     }>;
   };
 
+  ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   _bridgeAddress(overrides?: CallOverrides): Promise<string>;
 
   "_bridgeAddress()"(overrides?: CallOverrides): Promise<string>;
@@ -428,6 +446,10 @@ export class ERC20HandlerUpgradeable extends Contract {
   "wtoken()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     _bridgeAddress(overrides?: CallOverrides): Promise<string>;
 
     "_bridgeAddress()"(overrides?: CallOverrides): Promise<string>;
@@ -558,6 +580,10 @@ export class ERC20HandlerUpgradeable extends Contract {
   filters: {};
 
   estimateGas: {
+    ETHReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     _bridgeAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     "_bridgeAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -689,6 +715,10 @@ export class ERC20HandlerUpgradeable extends Contract {
   };
 
   populateTransaction: {
+    ETHReserve(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "ETHReserve()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     _bridgeAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "_bridgeAddress()"(

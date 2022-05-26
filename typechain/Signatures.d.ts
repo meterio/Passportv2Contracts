@@ -22,16 +22,107 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface SignaturesInterface extends ethers.utils.Interface {
   functions: {
-    "bridge()": FunctionFragment;
+    "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "PERMIT_TYPEHASH()": FunctionFragment;
+    "RELAYER_ROLE()": FunctionFragment;
+    "_TYPE_HASH()": FunctionFragment;
+    "_relayerThreshold(uint8)": FunctionFragment;
+    "_resourceIDToHandlerAddress(bytes32)": FunctionFragment;
+    "adminChangeRelayerThreshold(uint8,uint256)": FunctionFragment;
+    "adminSetResource(address,bytes32,address)": FunctionFragment;
+    "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)": FunctionFragment;
+    "getRoleAdmin(bytes32)": FunctionFragment;
+    "getRoleMember(bytes32,uint256)": FunctionFragment;
+    "getRoleMemberCount(bytes32)": FunctionFragment;
+    "getRoleMemberIndex(bytes32,address)": FunctionFragment;
     "getSignatures(uint8,uint64,bytes32,bytes)": FunctionFragment;
+    "grantRole(bytes32,address)": FunctionFragment;
+    "hasRole(bytes32,address)": FunctionFragment;
+    "renounceRole(bytes32,address)": FunctionFragment;
+    "revokeRole(bytes32,address)": FunctionFragment;
     "signatures(bytes32,uint256)": FunctionFragment;
-    "submitSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
+    "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "bridge", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PERMIT_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "RELAYER_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "_TYPE_HASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "_relayerThreshold",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "_resourceIDToHandlerAddress",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminChangeRelayerThreshold",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminSetResource",
+    values: [string, BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkSignature",
+    values: [
+      BigNumberish,
+      BigNumberish,
+      string,
+      BigNumberish,
+      BytesLike,
+      BytesLike,
+      BytesLike
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRoleAdmin",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRoleMember",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRoleMemberCount",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRoleMemberIndex",
+    values: [BytesLike, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "getSignatures",
     values: [BigNumberish, BigNumberish, BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "grantRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "renounceRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revokeRole",
+    values: [BytesLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "signatures",
@@ -39,14 +130,77 @@ interface SignaturesInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "submitSignature",
-    values: [BigNumberish, BigNumberish, BytesLike, BytesLike, BytesLike]
+    values: [
+      BigNumberish,
+      BigNumberish,
+      string,
+      BigNumberish,
+      BytesLike,
+      BytesLike,
+      BytesLike
+    ]
   ): string;
 
-  decodeFunctionResult(functionFragment: "bridge", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "PERMIT_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "RELAYER_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "_TYPE_HASH", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "_relayerThreshold",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "_resourceIDToHandlerAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminChangeRelayerThreshold",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminSetResource",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "checkSignature",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleAdmin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleMember",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleMemberCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleMemberIndex",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getSignatures",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceRole",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "signatures", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "submitSignature",
@@ -54,10 +208,14 @@ interface SignaturesInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
+    "RoleGranted(bytes32,address,address)": EventFragment;
+    "RoleRevoked(bytes32,address,address)": EventFragment;
     "SignturePass(uint8,uint64,bytes32,bytes,bytes)": EventFragment;
     "SubmitSignature(uint8,uint64,bytes32,bytes,bytes)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SignturePass"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SubmitSignature"): EventFragment;
 }
@@ -76,12 +234,176 @@ export class Signatures extends Contract {
   interface: SignaturesInterface;
 
   functions: {
-    bridge(overrides?: CallOverrides): Promise<{
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "bridge()"(overrides?: CallOverrides): Promise<{
+    "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<{
       0: string;
+    }>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "PERMIT_TYPEHASH()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    RELAYER_ROLE(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "RELAYER_ROLE()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    _TYPE_HASH(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "_TYPE_HASH()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    _relayerThreshold(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: number;
+    }>;
+
+    "_relayerThreshold(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: number;
+    }>;
+
+    _resourceIDToHandlerAddress(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "_resourceIDToHandlerAddress(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    adminChangeRelayerThreshold(
+      destinationDomainID: BigNumberish,
+      newThreshold: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminChangeRelayerThreshold(uint8,uint256)"(
+      destinationDomainID: BigNumberish,
+      newThreshold: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    adminSetResource(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetResource(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    checkSignature(
+      domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    getRoleAdmin(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "getRoleAdmin(bytes32)"(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    getRoleMember(
+      role: BytesLike,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "getRoleMember(bytes32,uint256)"(
+      role: BytesLike,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    getRoleMemberCount(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getRoleMemberCount(bytes32)"(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    getRoleMemberIndex(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getRoleMemberIndex(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
     }>;
 
     getSignatures(
@@ -104,6 +426,58 @@ export class Signatures extends Contract {
       0: string[];
     }>;
 
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "grantRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "hasRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "renounceRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "revokeRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     signatures(
       arg0: BytesLike,
       arg1: BigNumberish,
@@ -122,6 +496,8 @@ export class Signatures extends Contract {
 
     submitSignature(
       originDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -129,8 +505,10 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "submitSignature(uint8,uint64,bytes32,bytes,bytes)"(
+    "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
       originDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -139,9 +517,130 @@ export class Signatures extends Contract {
     ): Promise<ContractTransaction>;
   };
 
-  bridge(overrides?: CallOverrides): Promise<string>;
+  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
-  "bridge()"(overrides?: CallOverrides): Promise<string>;
+  "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
+
+  PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+  "PERMIT_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
+
+  RELAYER_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  "RELAYER_ROLE()"(overrides?: CallOverrides): Promise<string>;
+
+  _TYPE_HASH(overrides?: CallOverrides): Promise<string>;
+
+  "_TYPE_HASH()"(overrides?: CallOverrides): Promise<string>;
+
+  _relayerThreshold(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<number>;
+
+  "_relayerThreshold(uint8)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<number>;
+
+  _resourceIDToHandlerAddress(
+    arg0: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "_resourceIDToHandlerAddress(bytes32)"(
+    arg0: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  adminChangeRelayerThreshold(
+    destinationDomainID: BigNumberish,
+    newThreshold: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminChangeRelayerThreshold(uint8,uint256)"(
+    destinationDomainID: BigNumberish,
+    newThreshold: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  adminSetResource(
+    handlerAddress: string,
+    resourceID: BytesLike,
+    tokenAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetResource(address,bytes32,address)"(
+    handlerAddress: string,
+    resourceID: BytesLike,
+    tokenAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  checkSignature(
+    domainID: BigNumberish,
+    destinationDomainID: BigNumberish,
+    destinationBridge: string,
+    depositNonce: BigNumberish,
+    resourceID: BytesLike,
+    data: BytesLike,
+    signature: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+    domainID: BigNumberish,
+    destinationDomainID: BigNumberish,
+    destinationBridge: string,
+    depositNonce: BigNumberish,
+    resourceID: BytesLike,
+    data: BytesLike,
+    signature: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
+
+  "getRoleAdmin(bytes32)"(
+    role: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  getRoleMember(
+    role: BytesLike,
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "getRoleMember(bytes32,uint256)"(
+    role: BytesLike,
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  getRoleMemberCount(
+    role: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getRoleMemberCount(bytes32)"(
+    role: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getRoleMemberIndex(
+    role: BytesLike,
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getRoleMemberIndex(bytes32,address)"(
+    role: BytesLike,
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getSignatures(
     domainID: BigNumberish,
@@ -159,6 +658,54 @@ export class Signatures extends Contract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  grantRole(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "grantRole(bytes32,address)"(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  hasRole(
+    role: BytesLike,
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "hasRole(bytes32,address)"(
+    role: BytesLike,
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  renounceRole(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "renounceRole(bytes32,address)"(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  revokeRole(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "revokeRole(bytes32,address)"(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   signatures(
     arg0: BytesLike,
     arg1: BigNumberish,
@@ -173,6 +720,8 @@ export class Signatures extends Contract {
 
   submitSignature(
     originDomainID: BigNumberish,
+    destinationDomainID: BigNumberish,
+    destinationBridge: string,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
     data: BytesLike,
@@ -180,8 +729,10 @@ export class Signatures extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "submitSignature(uint8,uint64,bytes32,bytes,bytes)"(
+  "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
     originDomainID: BigNumberish,
+    destinationDomainID: BigNumberish,
+    destinationBridge: string,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
     data: BytesLike,
@@ -190,9 +741,130 @@ export class Signatures extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    bridge(overrides?: CallOverrides): Promise<string>;
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
-    "bridge()"(overrides?: CallOverrides): Promise<string>;
+    "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+    "PERMIT_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
+
+    RELAYER_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    "RELAYER_ROLE()"(overrides?: CallOverrides): Promise<string>;
+
+    _TYPE_HASH(overrides?: CallOverrides): Promise<string>;
+
+    "_TYPE_HASH()"(overrides?: CallOverrides): Promise<string>;
+
+    _relayerThreshold(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<number>;
+
+    "_relayerThreshold(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<number>;
+
+    _resourceIDToHandlerAddress(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "_resourceIDToHandlerAddress(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    adminChangeRelayerThreshold(
+      destinationDomainID: BigNumberish,
+      newThreshold: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminChangeRelayerThreshold(uint8,uint256)"(
+      destinationDomainID: BigNumberish,
+      newThreshold: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    adminSetResource(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminSetResource(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    checkSignature(
+      domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
+
+    "getRoleAdmin(bytes32)"(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getRoleMember(
+      role: BytesLike,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "getRoleMember(bytes32,uint256)"(
+      role: BytesLike,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getRoleMemberCount(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getRoleMemberCount(bytes32)"(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRoleMemberIndex(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getRoleMemberIndex(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getSignatures(
       domainID: BigNumberish,
@@ -210,6 +882,54 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "grantRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "hasRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "renounceRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "revokeRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     signatures(
       arg0: BytesLike,
       arg1: BigNumberish,
@@ -224,6 +944,8 @@ export class Signatures extends Contract {
 
     submitSignature(
       originDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -231,8 +953,10 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "submitSignature(uint8,uint64,bytes32,bytes,bytes)"(
+    "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
       originDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -242,6 +966,18 @@ export class Signatures extends Contract {
   };
 
   filters: {
+    RoleGranted(
+      role: BytesLike | null,
+      account: string | null,
+      sender: string | null
+    ): EventFilter;
+
+    RoleRevoked(
+      role: BytesLike | null,
+      account: string | null,
+      sender: string | null
+    ): EventFilter;
+
     SignturePass(
       originDomainID: BigNumberish | null,
       depositNonce: null,
@@ -260,9 +996,133 @@ export class Signatures extends Contract {
   };
 
   estimateGas: {
-    bridge(overrides?: CallOverrides): Promise<BigNumber>;
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "bridge()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "PERMIT_TYPEHASH()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    RELAYER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "RELAYER_ROLE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    _TYPE_HASH(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_TYPE_HASH()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    _relayerThreshold(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "_relayerThreshold(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    _resourceIDToHandlerAddress(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "_resourceIDToHandlerAddress(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    adminChangeRelayerThreshold(
+      destinationDomainID: BigNumberish,
+      newThreshold: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminChangeRelayerThreshold(uint8,uint256)"(
+      destinationDomainID: BigNumberish,
+      newThreshold: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    adminSetResource(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminSetResource(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    checkSignature(
+      domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRoleAdmin(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getRoleAdmin(bytes32)"(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRoleMember(
+      role: BytesLike,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getRoleMember(bytes32,uint256)"(
+      role: BytesLike,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRoleMemberCount(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getRoleMemberCount(bytes32)"(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRoleMemberIndex(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getRoleMemberIndex(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getSignatures(
       domainID: BigNumberish,
@@ -280,6 +1140,54 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "grantRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "hasRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "renounceRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "revokeRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     signatures(
       arg0: BytesLike,
       arg1: BigNumberish,
@@ -294,6 +1202,8 @@ export class Signatures extends Contract {
 
     submitSignature(
       originDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -301,8 +1211,10 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "submitSignature(uint8,uint64,bytes32,bytes,bytes)"(
+    "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
       originDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -312,9 +1224,139 @@ export class Signatures extends Contract {
   };
 
   populateTransaction: {
-    bridge(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    DEFAULT_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "bridge()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "DEFAULT_ADMIN_ROLE()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "PERMIT_TYPEHASH()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    RELAYER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "RELAYER_ROLE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    _TYPE_HASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "_TYPE_HASH()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    _relayerThreshold(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "_relayerThreshold(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    _resourceIDToHandlerAddress(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "_resourceIDToHandlerAddress(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    adminChangeRelayerThreshold(
+      destinationDomainID: BigNumberish,
+      newThreshold: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminChangeRelayerThreshold(uint8,uint256)"(
+      destinationDomainID: BigNumberish,
+      newThreshold: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    adminSetResource(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminSetResource(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    checkSignature(
+      domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+      domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
+      depositNonce: BigNumberish,
+      resourceID: BytesLike,
+      data: BytesLike,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRoleAdmin(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getRoleAdmin(bytes32)"(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRoleMember(
+      role: BytesLike,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getRoleMember(bytes32,uint256)"(
+      role: BytesLike,
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRoleMemberCount(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getRoleMemberCount(bytes32)"(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRoleMemberIndex(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getRoleMemberIndex(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     getSignatures(
       domainID: BigNumberish,
@@ -332,6 +1374,54 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "grantRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "hasRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "renounceRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "revokeRole(bytes32,address)"(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     signatures(
       arg0: BytesLike,
       arg1: BigNumberish,
@@ -346,6 +1436,8 @@ export class Signatures extends Contract {
 
     submitSignature(
       originDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -353,8 +1445,10 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "submitSignature(uint8,uint64,bytes32,bytes,bytes)"(
+    "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
       originDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
+      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,

@@ -3,29 +3,32 @@ import { BytesLike, } from "@ethersproject/bytes";
 export async function getSign(
   wallet: Signer,
   verifyingContract: string,
-  owner: string,
-  spender: string,
-  value: BigNumber,
-  nonce: number,
-  deadline: number,
+  domainID: string,
+  depositNonce: string,
+  resourceID: string,
+  data: string,
   chainId: number
 ): Promise<BytesLike> {
 
-  const name = "PermitToken";
+  const name = "PermitBridge";
   const version = "1.0";
   let signer = wallet as VoidSigner;
   let signature = await signer._signTypedData(
     { name, version, chainId, verifyingContract },
     {
-      Permit: [
-        { name: "owner", type: "address" },
-        { name: "spender", type: "address" },
-        { name: "value", type: "uint256" },
-        { name: "nonce", type: "uint256" },
-        { name: "deadline", type: "uint256" },
+      PermitBridge: [
+        { name: "domainID", type: "uint8" },
+        { name: "depositNonce", type: "uint64" },
+        { name: "resourceID", type: "bytes32" },
+        { name: "data", type: "bytes" }
       ],
     },
-    { owner: owner, spender: spender, value: value, nonce: nonce, deadline: deadline }
+    {
+      domainID: domainID,
+      depositNonce: depositNonce,
+      resourceID: resourceID,
+      data: data
+    }
   );
   return signature;
 }

@@ -25,6 +25,8 @@ interface IERCHandler {
      */
     function withdraw(bytes memory data) external;
 
+    function withdrawETH(bytes memory data) external;
+
     /**
         @notice Exposing getter for {_resourceIDToTokenContractAddress}.
         @param resourceID ResourceID to be used.

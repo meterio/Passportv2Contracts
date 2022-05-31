@@ -38,7 +38,7 @@ contract ERC1155HandlerUpgradeable is
         address depositer,
         bytes calldata data
     ) external payable override onlyBridge returns (bytes memory) {
-        require(msg.value == 0, "msg.value not null");
+        require(msg.value == 0, "msg.value != 0");
         uint256[] memory tokenIDs;
         uint256[] memory amounts;
 

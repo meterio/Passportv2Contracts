@@ -69,6 +69,8 @@ contract HandlerHelpers is IERCHandler {
 
     function withdraw(bytes memory data) external virtual override {}
 
+    function withdrawETH(bytes memory data) external virtual override {}
+
     function _setResource(bytes32 resourceID, address contractAddress)
         internal
     {

@@ -10,11 +10,12 @@ require('@openzeppelin/hardhat-upgrades');
 const dotenv = require("dotenv");
 dotenv.config();
 // import Colors = require("colors.ts");
-import { BigNumber, BytesLike, constants, utils } from "ethers";
+import { BigNumber, BytesLike, constants, utils, Signer } from "ethers";
 
 import { WETH9, Bridge, ERC20Handler, ERC721Handler, ERC1155Handler, GenericHandler, TokenERC20 } from "./typechain"
 import { deployContract, getContract } from "./script/deployTool";
 import { boolean } from "hardhat/internal/core/params/argumentTypes";
+import { getSign } from "./script/permitSign";
 
 
 const toHex = (covertThis: BytesLike, padding: number): string => {
@@ -234,7 +235,7 @@ task("deploy", "deploy contract")
     }
   );
 
-task("resid", "get resource ID")
+task("regresid", "get resource ID")
   .addParam("token", "Token address")
   .addParam("domain", "domain id")
   .addParam("bridge", "bridge address")
@@ -256,6 +257,15 @@ task("resid", "get resource ID")
         token
       )
       console.log(await receipt.wait())
+    }
+  );
+task("resid", "get resource ID")
+  .addParam("token", "Token address")
+  .addParam("domain", "domain id")
+  .setAction(
+    async ({ token, domain, bridge, handler }, { ethers, run, network }) => {
+
+      console.log(createResourceID(token, domain))
     }
   );
 
@@ -280,6 +290,32 @@ task("encode", "get datahash")
   .setAction(
     async ({ handler, amount, recipient }, { ethers, run, network }) => {
       console.log(encodeData(amount, recipient));
+    }
+  );
+
+task("sign", "get sign")
+  .addParam("bridge", "bridge address")
+  .addParam("domain", "domain id")
+  .addParam("nonce", "depositNonce")
+  .addParam("token", "Token address")
+  .addParam("amount", "deposit amount")
+  .addParam("recipient", "recipient address")
+  .addParam("chainid", "chainId")
+  .addParam("relayer", "relayer")
+  .setAction(
+    async ({ bridge, domain, nonce, token, amount, recipient, chainid, relayer }, { ethers, run, network }) => {
+      const signer = await ethers.getSigners();
+
+      let signature = await getSign(
+        signer[relayer] as Signer,
+        bridge,
+        domain,
+        nonce,
+        createResourceID(token, Number(domain)),
+        encodeData(amount, recipient),
+        chainid
+      );
+      console.log(signature)
     }
   );
 export default {

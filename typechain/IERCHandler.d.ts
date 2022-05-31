@@ -27,6 +27,7 @@ interface IERCHandlerInterface extends ethers.utils.Interface {
     "setResource(bytes32,address)": FunctionFragment;
     "setWtoken(address,bool)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
+    "withdrawETH(bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -43,6 +44,10 @@ interface IERCHandlerInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "withdrawETH",
+    values: [BytesLike]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "_resourceIDToTokenContractAddress",
@@ -58,6 +63,10 @@ interface IERCHandlerInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setWtoken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawETH",
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
@@ -133,6 +142,16 @@ export class IERCHandler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    withdrawETH(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "withdrawETH(bytes)"(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
   };
 
   _resourceIDToTokenContractAddress(
@@ -189,6 +208,16 @@ export class IERCHandler extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  withdrawETH(
+    data: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "withdrawETH(bytes)"(
+    data: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     _resourceIDToTokenContractAddress(
       resourceID: BytesLike,
@@ -237,6 +266,13 @@ export class IERCHandler extends Contract {
     withdraw(data: BytesLike, overrides?: CallOverrides): Promise<void>;
 
     "withdraw(bytes)"(
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    withdrawETH(data: BytesLike, overrides?: CallOverrides): Promise<void>;
+
+    "withdrawETH(bytes)"(
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -295,6 +331,13 @@ export class IERCHandler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    withdrawETH(data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
+
+    "withdrawETH(bytes)"(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -348,6 +391,16 @@ export class IERCHandler extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "withdraw(bytes)"(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    withdrawETH(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "withdrawETH(bytes)"(
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

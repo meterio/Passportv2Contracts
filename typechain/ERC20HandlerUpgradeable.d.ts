@@ -37,6 +37,7 @@ interface ERC20HandlerUpgradeableInterface extends ethers.utils.Interface {
     "setResource(bytes32,address)": FunctionFragment;
     "setWtoken(address,bool)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
+    "withdrawETH(bytes)": FunctionFragment;
     "wtoken()": FunctionFragment;
   };
 
@@ -81,6 +82,10 @@ interface ERC20HandlerUpgradeableInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "withdrawETH",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "wtoken", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "ETHReserve", data: BytesLike): Result;
@@ -118,6 +123,10 @@ interface ERC20HandlerUpgradeableInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setWtoken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawETH",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "wtoken", data: BytesLike): Result;
 
   events: {};
@@ -303,6 +312,16 @@ export class ERC20HandlerUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    withdrawETH(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "withdrawETH(bytes)"(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     wtoken(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
@@ -441,6 +460,16 @@ export class ERC20HandlerUpgradeable extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  withdrawETH(
+    data: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "withdrawETH(bytes)"(
+    data: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   wtoken(overrides?: CallOverrides): Promise<string>;
 
   "wtoken()"(overrides?: CallOverrides): Promise<string>;
@@ -568,6 +597,13 @@ export class ERC20HandlerUpgradeable extends Contract {
     withdraw(data: BytesLike, overrides?: CallOverrides): Promise<void>;
 
     "withdraw(bytes)"(
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    withdrawETH(data: BytesLike, overrides?: CallOverrides): Promise<void>;
+
+    "withdrawETH(bytes)"(
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -705,6 +741,13 @@ export class ERC20HandlerUpgradeable extends Contract {
     withdraw(data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
 
     "withdraw(bytes)"(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    withdrawETH(data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
+
+    "withdrawETH(bytes)"(
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -851,6 +894,16 @@ export class ERC20HandlerUpgradeable extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "withdraw(bytes)"(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    withdrawETH(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "withdrawETH(bytes)"(
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

@@ -50,6 +50,7 @@ interface BridgeInterface extends ethers.utils.Interface {
     "adminSetWtoken(bytes32,address,bool)": FunctionFragment;
     "adminUnpauseTransfers()": FunctionFragment;
     "adminWithdraw(address,bytes)": FunctionFragment;
+    "adminWithdrawETH(address,bytes)": FunctionFragment;
     "cancelProposal(uint8,uint64,bytes32)": FunctionFragment;
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "deposit(uint8,bytes32,bytes,bytes)": FunctionFragment;
@@ -169,6 +170,10 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "adminWithdraw",
+    values: [string, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminWithdrawETH",
     values: [string, BytesLike]
   ): string;
   encodeFunctionData(
@@ -343,6 +348,10 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "adminWithdraw",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminWithdrawETH",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -730,6 +739,18 @@ export class Bridge extends Contract {
     ): Promise<ContractTransaction>;
 
     "adminWithdraw(address,bytes)"(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    adminWithdrawETH(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: BytesLike,
       overrides?: Overrides
@@ -1276,6 +1297,18 @@ export class Bridge extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  adminWithdrawETH(
+    handlerAddress: string,
+    data: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminWithdrawETH(address,bytes)"(
+    handlerAddress: string,
+    data: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   cancelProposal(
     domainID: BigNumberish,
     depositNonce: BigNumberish,
@@ -1761,6 +1794,18 @@ export class Bridge extends Contract {
     ): Promise<void>;
 
     "adminWithdraw(address,bytes)"(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    adminWithdrawETH(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: BytesLike,
       overrides?: CallOverrides
@@ -2305,6 +2350,18 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    adminWithdrawETH(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminWithdrawETH(address,bytes)"(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     cancelProposal(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
@@ -2790,6 +2847,18 @@ export class Bridge extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "adminWithdraw(address,bytes)"(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    adminWithdrawETH(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: BytesLike,
       overrides?: Overrides

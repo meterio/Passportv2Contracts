@@ -47,12 +47,13 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "adminSetForwarder(address,bool)": FunctionFragment;
     "adminSetGenericResource(address,bytes32,address,bytes4,uint256,bytes4)": FunctionFragment;
     "adminSetResource(address,bytes32,address)": FunctionFragment;
+    "adminSetWtoken(bytes32,address,bool)": FunctionFragment;
     "adminUnpauseTransfers()": FunctionFragment;
     "adminWithdraw(address,bytes)": FunctionFragment;
+    "adminWithdrawETH(address,bytes)": FunctionFragment;
     "cancelProposal(uint8,uint64,bytes32)": FunctionFragment;
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "deposit(uint8,bytes32,bytes,bytes)": FunctionFragment;
-    "depositETH(uint8,bytes32,bytes,bytes)": FunctionFragment;
     "executeProposal(uint8,uint64,bytes,bytes32,bool)": FunctionFragment;
     "getProposal(uint8,uint64,bytes32)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
@@ -61,7 +62,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "getRoleMemberIndex(bytes32,address)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
-    "initialize(uint8,address[],uint256,uint256,bytes32,address)": FunctionFragment;
+    "initialize(uint8,address[],uint256,uint256)": FunctionFragment;
     "isRelayer(address)": FunctionFragment;
     "isValidForwarder(address)": FunctionFragment;
     "paused()": FunctionFragment;
@@ -161,11 +162,19 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     values: [string, BytesLike, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "adminSetWtoken",
+    values: [BytesLike, string, boolean]
+  ): string;
+  encodeFunctionData(
     functionFragment: "adminUnpauseTransfers",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "adminWithdraw",
+    values: [string, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminWithdrawETH",
     values: [string, BytesLike]
   ): string;
   encodeFunctionData(
@@ -178,10 +187,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "deposit",
-    values: [BigNumberish, BytesLike, BytesLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "depositETH",
     values: [BigNumberish, BytesLike, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
@@ -218,14 +223,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [
-      BigNumberish,
-      string[],
-      BigNumberish,
-      BigNumberish,
-      BytesLike,
-      string
-    ]
+    values: [BigNumberish, string[], BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "isRelayer", values: [string]): string;
   encodeFunctionData(
@@ -346,11 +344,19 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "adminSetWtoken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "adminUnpauseTransfers",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "adminWithdraw",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminWithdrawETH",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -362,7 +368,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "depositETH", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "executeProposal",
     data: BytesLike
@@ -713,6 +718,20 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    adminSetWtoken(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetWtoken(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     adminUnpauseTransfers(overrides?: Overrides): Promise<ContractTransaction>;
 
     "adminUnpauseTransfers()"(
@@ -726,6 +745,18 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<ContractTransaction>;
 
     "adminWithdraw(address,bytes)"(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    adminWithdrawETH(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: BytesLike,
       overrides?: Overrides
@@ -776,22 +807,6 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<ContractTransaction>;
 
     "deposit(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    depositETH(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    "depositETH(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
       depositData: BytesLike,
@@ -946,18 +961,14 @@ export class BridgeUpgradeable extends Contract {
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
-      _ETHresourceID: BytesLike,
-      _WETH: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(uint8,address[],uint256,uint256,bytes32,address)"(
+    "initialize(uint8,address[],uint256,uint256)"(
       domainID: BigNumberish,
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
-      _ETHresourceID: BytesLike,
-      _WETH: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1276,6 +1287,20 @@ export class BridgeUpgradeable extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  adminSetWtoken(
+    resourceID: BytesLike,
+    wtokenAddress: string,
+    isWtoken: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetWtoken(bytes32,address,bool)"(
+    resourceID: BytesLike,
+    wtokenAddress: string,
+    isWtoken: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   adminUnpauseTransfers(overrides?: Overrides): Promise<ContractTransaction>;
 
   "adminUnpauseTransfers()"(
@@ -1289,6 +1314,18 @@ export class BridgeUpgradeable extends Contract {
   ): Promise<ContractTransaction>;
 
   "adminWithdraw(address,bytes)"(
+    handlerAddress: string,
+    data: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  adminWithdrawETH(
+    handlerAddress: string,
+    data: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminWithdrawETH(address,bytes)"(
     handlerAddress: string,
     data: BytesLike,
     overrides?: Overrides
@@ -1335,22 +1372,6 @@ export class BridgeUpgradeable extends Contract {
   ): Promise<ContractTransaction>;
 
   "deposit(uint8,bytes32,bytes,bytes)"(
-    destinationDomainID: BigNumberish,
-    resourceID: BytesLike,
-    depositData: BytesLike,
-    feeData: BytesLike,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  depositETH(
-    destinationDomainID: BigNumberish,
-    resourceID: BytesLike,
-    depositData: BytesLike,
-    feeData: BytesLike,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  "depositETH(uint8,bytes32,bytes,bytes)"(
     destinationDomainID: BigNumberish,
     resourceID: BytesLike,
     depositData: BytesLike,
@@ -1478,18 +1499,14 @@ export class BridgeUpgradeable extends Contract {
     initialRelayers: string[],
     initialRelayerThreshold: BigNumberish,
     expiry: BigNumberish,
-    _ETHresourceID: BytesLike,
-    _WETH: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(uint8,address[],uint256,uint256,bytes32,address)"(
+  "initialize(uint8,address[],uint256,uint256)"(
     domainID: BigNumberish,
     initialRelayers: string[],
     initialRelayerThreshold: BigNumberish,
     expiry: BigNumberish,
-    _ETHresourceID: BytesLike,
-    _WETH: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1790,6 +1807,20 @@ export class BridgeUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    adminSetWtoken(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminSetWtoken(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     adminUnpauseTransfers(overrides?: CallOverrides): Promise<void>;
 
     "adminUnpauseTransfers()"(overrides?: CallOverrides): Promise<void>;
@@ -1801,6 +1832,18 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<void>;
 
     "adminWithdraw(address,bytes)"(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    adminWithdrawETH(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: BytesLike,
       overrides?: CallOverrides
@@ -1847,22 +1890,6 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<void>;
 
     "deposit(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    depositETH(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "depositETH(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
       depositData: BytesLike,
@@ -1990,18 +2017,14 @@ export class BridgeUpgradeable extends Contract {
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
-      _ETHresourceID: BytesLike,
-      _WETH: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(uint8,address[],uint256,uint256,bytes32,address)"(
+    "initialize(uint8,address[],uint256,uint256)"(
       domainID: BigNumberish,
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
-      _ETHresourceID: BytesLike,
-      _WETH: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2351,6 +2374,20 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    adminSetWtoken(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminSetWtoken(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     adminUnpauseTransfers(overrides?: Overrides): Promise<BigNumber>;
 
     "adminUnpauseTransfers()"(overrides?: Overrides): Promise<BigNumber>;
@@ -2362,6 +2399,18 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<BigNumber>;
 
     "adminWithdraw(address,bytes)"(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    adminWithdrawETH(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: BytesLike,
       overrides?: Overrides
@@ -2408,22 +2457,6 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<BigNumber>;
 
     "deposit(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    depositETH(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    "depositETH(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
       depositData: BytesLike,
@@ -2536,18 +2569,14 @@ export class BridgeUpgradeable extends Contract {
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
-      _ETHresourceID: BytesLike,
-      _WETH: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(uint8,address[],uint256,uint256,bytes32,address)"(
+    "initialize(uint8,address[],uint256,uint256)"(
       domainID: BigNumberish,
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
-      _ETHresourceID: BytesLike,
-      _WETH: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2861,6 +2890,20 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    adminSetWtoken(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminSetWtoken(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      wtokenAddress: string,
+      isWtoken: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     adminUnpauseTransfers(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "adminUnpauseTransfers()"(
@@ -2874,6 +2917,18 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "adminWithdraw(address,bytes)"(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    adminWithdrawETH(
+      handlerAddress: string,
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: BytesLike,
       overrides?: Overrides
@@ -2920,22 +2975,6 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "deposit(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    depositETH(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "depositETH(uint8,bytes32,bytes,bytes)"(
       destinationDomainID: BigNumberish,
       resourceID: BytesLike,
       depositData: BytesLike,
@@ -3048,18 +3087,14 @@ export class BridgeUpgradeable extends Contract {
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
-      _ETHresourceID: BytesLike,
-      _WETH: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(uint8,address[],uint256,uint256,bytes32,address)"(
+    "initialize(uint8,address[],uint256,uint256)"(
       domainID: BigNumberish,
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
-      _ETHresourceID: BytesLike,
-      _WETH: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

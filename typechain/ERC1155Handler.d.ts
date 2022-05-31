@@ -38,6 +38,7 @@ interface ERC1155HandlerInterface extends ethers.utils.Interface {
     "setWtoken(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
+    "withdrawETH(bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -88,6 +89,10 @@ interface ERC1155HandlerInterface extends ethers.utils.Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "withdrawETH",
+    values: [BytesLike]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "_bridgeAddress",
@@ -134,6 +139,10 @@ interface ERC1155HandlerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawETH",
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
@@ -349,6 +358,16 @@ export class ERC1155Handler extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    withdrawETH(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "withdrawETH(bytes)"(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
   };
 
   _bridgeAddress(overrides?: CallOverrides): Promise<string>;
@@ -508,6 +527,16 @@ export class ERC1155Handler extends Contract {
   ): Promise<ContractTransaction>;
 
   "withdraw(bytes)"(
+    data: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  withdrawETH(
+    data: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "withdrawETH(bytes)"(
     data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -673,6 +702,13 @@ export class ERC1155Handler extends Contract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    withdrawETH(data: BytesLike, overrides?: CallOverrides): Promise<void>;
+
+    "withdrawETH(bytes)"(
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
@@ -835,6 +871,13 @@ export class ERC1155Handler extends Contract {
     withdraw(data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
 
     "withdraw(bytes)"(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    withdrawETH(data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
+
+    "withdrawETH(bytes)"(
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -1009,6 +1052,16 @@ export class ERC1155Handler extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "withdraw(bytes)"(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    withdrawETH(
+      data: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "withdrawETH(bytes)"(
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

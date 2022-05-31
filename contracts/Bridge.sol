@@ -414,6 +414,14 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         IERCHandler handler = IERCHandler(handlerAddress);
         handler.withdraw(data);
     }
+    
+    function adminWithdrawETH(
+        address handlerAddress,
+        bytes memory data
+    ) external onlyAdmin {
+        IERCHandler handler = IERCHandler(handlerAddress);
+        handler.withdrawETH(data);
+    }
 
     error IncorrectFeeSupplied(uint256 msgValue, uint256 fee);
     error ResourceIDNotMappedToHandler();
@@ -438,9 +446,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
     ) external payable whenNotPaused {
         address sender = _msgSender();
         uint256 value = msg.value;
-        if (address(_feeHandler) == address(0)) {
-            require(msg.value == 0, "no FeeHandler, msg.value != 0");
-        } else {
+        if (address(_feeHandler) != address(0)) {
             // Reverts on failure
             (uint256 fee, ) = _feeHandler.calculateFee(
                 sender,

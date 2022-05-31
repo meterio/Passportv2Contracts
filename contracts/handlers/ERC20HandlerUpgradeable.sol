@@ -123,4 +123,20 @@ contract ERC20HandlerUpgradeable is IDepositExecute, HandlerHelpers, ERC20Safe {
 
         releaseERC20(tokenAddress, recipient, amount);
     }
+
+    /**
+        @notice Used to manually release ETH ERC20Safe.
+        @param data Consists of {recipient}, and {amount} all padded to 32 bytes.
+        @notice Data passed into the function should be constructed as follows:
+        recipient                           address     bytes  0 - 32
+        amount                                 uint     bytes  32 - 64
+     */
+    function withdrawETH(bytes memory data) external override onlyBridge {
+        address recipient;
+        uint256 amount;
+
+        (recipient, amount) = abi.decode(data, (address, uint256));
+
+        withdrawETH(recipient, amount);
+    }
 }

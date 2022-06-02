@@ -12,7 +12,7 @@ dotenv.config();
 // import Colors = require("colors.ts");
 import { BigNumber, BytesLike, constants, utils, Signer } from "ethers";
 
-import { WETH9, Bridge, ERC20Handler, ERC721Handler, ERC1155Handler, GenericHandler, TokenERC20 } from "./typechain"
+import { WETH9, Bridge, ERC20Handler, ERC721Handler, ERC1155Handler, GenericHandler, TokenERC20,BasicFeeHandler } from "./typechain"
 import { deployContract, getContract } from "./script/deployTool";
 import { boolean } from "hardhat/internal/core/params/argumentTypes";
 import { getSign } from "./script/permitSign";
@@ -151,57 +151,37 @@ task("deposit", "deposit")
 task("deploy", "deploy contract")
   .addParam("domain", "domain id")
   .addOptionalParam("force", "force deploy", false, boolean)
-  .addOptionalParam("weth", "weth address", "")
   .setAction(
-    async ({ domain, force, weth }, { ethers, run, network }) => {
+    async ({ domain, force }, { ethers, run, network }) => {
       await run("compile");
-      const [signer, relayer1, relayer2] = await ethers.getSigners();
+      const signers = await ethers.getSigners();
       let bridge: Bridge;
-      let weth9: WETH9;
+      const deployer = signers[3]
+      const relayer1 = signers[4]
+      const relayer2 = signers[5]
 
-      const weth9Json = getContract(network.name, "WETH9");
-      if (weth != "") {
-        weth9 = await ethers.getContractAt("WETH9", weth9Json.address, signer) as WETH9;
-      } else if (!force && weth9Json != "") {
-        weth9 = await ethers.getContractAt("WETH9", weth9Json.address, signer) as WETH9;
-      } else {
-        weth9 = await deployContract(
-          "WETH9",
-          network.name,
-          ethers.getContractFactory,
-          signer
-        ) as WETH9;
-      }
 
-      const bridgeJson = getContract(network.name, "Bridge");
-      if (!force && weth9Json != "") {
-        bridge = await ethers.getContractAt("Bridge", bridgeJson.address, signer) as Bridge;
-      } else {
-        const bridgeArgs = [
-          domain,
-          [relayer1.address, relayer2.address],
-          2,
-          0,
-          999999,
-          createResourceID(weth9.address, domain),
-          weth9.address
-        ]
-        bridge = await deployContract(
-          "Bridge",
-          network.name,
-          ethers.getContractFactory,
-          signer,
-          bridgeArgs
-        ) as Bridge;
+      const bridgeArgs = [
+        domain,
+        [relayer1.address, relayer2.address],
+        2,
+        999999
+      ]
+      bridge = await deployContract(
+        "Bridge",
+        network.name,
+        ethers.getContractFactory,
+        deployer,
+        bridgeArgs
+      ) as Bridge;
 
-      }
 
       if (force || getContract(network.name, "ERC20Handler") == "") {
         const erc20Handler = await deployContract(
           "ERC20Handler",
           network.name,
           ethers.getContractFactory,
-          signer,
+          deployer,
           [bridge.address]
         ) as ERC20Handler;
       }
@@ -210,28 +190,37 @@ task("deploy", "deploy contract")
           "ERC721Handler",
           network.name,
           ethers.getContractFactory,
-          signer,
+          deployer,
           [bridge.address]
         ) as ERC721Handler;
       }
-      if (force || getContract(network.name, "ERC1155Handler") == "") {
-        const erc1155Handler = await deployContract(
-          "ERC1155Handler",
+      if (force || getContract(network.name, "BasicFeeHandler") == "") {
+        const basicFeeHandler = await deployContract(
+          "BasicFeeHandler",
           network.name,
           ethers.getContractFactory,
-          signer,
+          deployer,
           [bridge.address]
-        ) as ERC1155Handler;
+        ) as BasicFeeHandler;
       }
-      if (force || getContract(network.name, "GenericHandler") == "") {
-        const genericHandler = await deployContract(
-          "GenericHandler",
-          network.name,
-          ethers.getContractFactory,
-          signer,
-          [bridge.address]
-        ) as GenericHandler;
-      }
+      // if (force || getContract(network.name, "ERC1155Handler") == "") {
+      //   const erc1155Handler = await deployContract(
+      //     "ERC1155Handler",
+      //     network.name,
+      //     ethers.getContractFactory,
+      //     deployer,
+      //     [bridge.address]
+      //   ) as ERC1155Handler;
+      // }
+      // if (force || getContract(network.name, "GenericHandler") == "") {
+      //   const genericHandler = await deployContract(
+      //     "GenericHandler",
+      //     network.name,
+      //     ethers.getContractFactory,
+      //     deployer,
+      //     [bridge.address]
+      //   ) as GenericHandler;
+      // }
     }
   );
 
@@ -319,27 +308,7 @@ task("sign", "get sign")
     }
   );
 export default {
-  networks: {
-    hardhat: {
-      allowUnlimitedContractSize: false,
-    },
-    rinkeby: {
-      url: `https://rinkeby.infura.io/v3/bb6d78227dca492daab0a4cfb7b32fb5`,
-      accounts: ['0x278e623d5c3445753374f065a7ad9c76d82a642e416ac670d7d90eafd4a34ad0',
-        "0xaee9f26de5275ecad2d50354c616b76a8981d4c543964dcd094d07a30235a735", // Bob Private Key
-        "0x402a7d83a9c142b898c280eb1ace8282fbde4adfbf8e5cbbb15145bb3c7e5bdf",],
-      chainId: 4,
-      gasPrice: 2000000000,
-    },
-    bsctest: {
-      url: `https://data-seed-prebsc-1-s1.binance.org:8545`,
-      accounts: ['0x278e623d5c3445753374f065a7ad9c76d82a642e416ac670d7d90eafd4a34ad0',
-        "0xaee9f26de5275ecad2d50354c616b76a8981d4c543964dcd094d07a30235a735", // Bob Private Key
-        "0x402a7d83a9c142b898c280eb1ace8282fbde4adfbf8e5cbbb15145bb3c7e5bdf",],
-      chainId: 97,
-      gasPrice: 10000000000,
-    }
-  },
+  networks: RPCS,
   etherscan: {
     apiKey: process.env.ETHERSCAN_APIKEY,
   },

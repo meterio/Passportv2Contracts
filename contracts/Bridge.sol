@@ -86,6 +86,10 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         _;
     }
 
+    function _fee() external view returns(uint256){
+        return _feeHandler._fee();
+    }
+
     function _chainId() external view returns (uint256) {
         return block.chainid;
     }

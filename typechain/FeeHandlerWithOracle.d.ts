@@ -26,6 +26,7 @@ interface FeeHandlerWithOracleInterface extends ethers.utils.Interface {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "ETHReserve()": FunctionFragment;
     "_bridgeAddress()": FunctionFragment;
+    "_fee()": FunctionFragment;
     "_feePercent()": FunctionFragment;
     "_gasUsed()": FunctionFragment;
     "_oracleAddress()": FunctionFragment;
@@ -56,6 +57,7 @@ interface FeeHandlerWithOracleInterface extends ethers.utils.Interface {
     functionFragment: "_bridgeAddress",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "_fee", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "_feePercent",
     values?: undefined
@@ -141,6 +143,7 @@ interface FeeHandlerWithOracleInterface extends ethers.utils.Interface {
     functionFragment: "_bridgeAddress",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "_fee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "_feePercent",
     data: BytesLike
@@ -240,6 +243,14 @@ export class FeeHandlerWithOracle extends Contract {
 
     "_bridgeAddress()"(overrides?: CallOverrides): Promise<{
       0: string;
+    }>;
+
+    _fee(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
     }>;
 
     _feePercent(overrides?: CallOverrides): Promise<{
@@ -477,6 +488,10 @@ export class FeeHandlerWithOracle extends Contract {
 
   "_bridgeAddress()"(overrides?: CallOverrides): Promise<string>;
 
+  _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   _feePercent(overrides?: CallOverrides): Promise<number>;
 
   "_feePercent()"(overrides?: CallOverrides): Promise<number>;
@@ -676,6 +691,10 @@ export class FeeHandlerWithOracle extends Contract {
     _bridgeAddress(overrides?: CallOverrides): Promise<string>;
 
     "_bridgeAddress()"(overrides?: CallOverrides): Promise<string>;
+
+    _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     _feePercent(overrides?: CallOverrides): Promise<number>;
 
@@ -907,6 +926,10 @@ export class FeeHandlerWithOracle extends Contract {
 
     "_bridgeAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     _feePercent(overrides?: CallOverrides): Promise<BigNumber>;
 
     "_feePercent()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1106,6 +1129,10 @@ export class FeeHandlerWithOracle extends Contract {
     "_bridgeAddress()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    _fee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     _feePercent(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

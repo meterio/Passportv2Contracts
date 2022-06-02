@@ -19,6 +19,7 @@ contract FeeHandlerWithOracle is IFeeHandler, AccessControl, ERC20Safe {
     address public immutable _bridgeAddress;
 
     address public _oracleAddress;
+    uint256 public override _fee = 0;
 
     uint32 public _gasUsed;
     uint16 public _feePercent; // multiplied by 100 to avoid precision loss

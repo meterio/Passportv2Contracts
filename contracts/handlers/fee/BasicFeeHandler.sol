@@ -13,7 +13,7 @@ import "../../utils/AccessControl.sol";
 contract BasicFeeHandler is IFeeHandler, AccessControl {
     address public immutable _bridgeAddress;
 
-    uint256 public _fee;
+    uint256 public override _fee;
 
     event FeeChanged(uint256 newFee);
 

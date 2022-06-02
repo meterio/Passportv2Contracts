@@ -16,9 +16,14 @@ export const RPCS = {
   },
   ropsten: {
     url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,
+    gasPrice: 3000000000,
+    accounts: {
+      mnemonic: process.env.MNEMONIC,
+    },
   },
   rinkeby: {
     url: `https://rinkeby.infura.io/v3/${process.env.INFURA_API_KEY}`,
+    gasPrice: 2000000000,
     accounts: {
       mnemonic: process.env.MNEMONIC,
     },
@@ -141,9 +146,9 @@ export const RPCS = {
     },
   },
   matictest: {
-    url: `https://rpc-mumbai.maticvigil.com`,
+    url: `https://matic-mumbai.chainstacklabs.com`,
     chainId: 80001,
-    gasPrice: 1000000000,
+    gasPrice: 10000000000,
     accounts: {
       mnemonic: process.env.MNEMONIC,
     },

@@ -31,6 +31,7 @@ interface BridgeInterface extends ethers.utils.Interface {
     "_depositCounts(uint8)": FunctionFragment;
     "_domainID()": FunctionFragment;
     "_expiry()": FunctionFragment;
+    "_fee()": FunctionFragment;
     "_feeHandler()": FunctionFragment;
     "_hasVotedOnProposal(uint72,bytes32,address)": FunctionFragment;
     "_relayerThreshold()": FunctionFragment;
@@ -96,6 +97,7 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "_domainID", values?: undefined): string;
   encodeFunctionData(functionFragment: "_expiry", values?: undefined): string;
+  encodeFunctionData(functionFragment: "_fee", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "_feeHandler",
     values?: undefined
@@ -274,6 +276,7 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "_domainID", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "_expiry", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "_fee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "_feeHandler",
     data: BytesLike
@@ -528,6 +531,14 @@ export class Bridge extends Contract {
 
     "_expiry()"(overrides?: CallOverrides): Promise<{
       0: number;
+    }>;
+
+    _fee(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
     }>;
 
     _feeHandler(overrides?: CallOverrides): Promise<{
@@ -1105,6 +1116,10 @@ export class Bridge extends Contract {
 
   "_expiry()"(overrides?: CallOverrides): Promise<number>;
 
+  _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   _feeHandler(overrides?: CallOverrides): Promise<string>;
 
   "_feeHandler()"(overrides?: CallOverrides): Promise<string>;
@@ -1608,6 +1623,10 @@ export class Bridge extends Contract {
     _expiry(overrides?: CallOverrides): Promise<number>;
 
     "_expiry()"(overrides?: CallOverrides): Promise<number>;
+
+    _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     _feeHandler(overrides?: CallOverrides): Promise<string>;
 
@@ -2160,6 +2179,10 @@ export class Bridge extends Contract {
 
     "_expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     _feeHandler(overrides?: CallOverrides): Promise<BigNumber>;
 
     "_feeHandler()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2653,6 +2676,10 @@ export class Bridge extends Contract {
     _expiry(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "_expiry()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    _fee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     _feeHandler(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

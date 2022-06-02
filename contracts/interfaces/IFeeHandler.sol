@@ -72,4 +72,6 @@ interface IFeeHandler {
         bytes calldata depositData,
         bytes calldata feeData
     ) external view returns (uint256, address);
+
+    function _fee() external view returns (uint256);
 }

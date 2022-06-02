@@ -22,10 +22,12 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface IFeeHandlerInterface extends ethers.utils.Interface {
   functions: {
+    "_fee()": FunctionFragment;
     "calculateFee(address,uint8,uint8,bytes32,bytes,bytes)": FunctionFragment;
     "collectFee(address,uint8,uint8,bytes32,bytes,bytes)": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "_fee", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "calculateFee",
     values: [
@@ -49,6 +51,7 @@ interface IFeeHandlerInterface extends ethers.utils.Interface {
     ]
   ): string;
 
+  decodeFunctionResult(functionFragment: "_fee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "calculateFee",
     data: BytesLike
@@ -78,6 +81,14 @@ export class IFeeHandler extends Contract {
   interface: IFeeHandlerInterface;
 
   functions: {
+    _fee(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
     calculateFee(
       sender: string,
       fromDomainID: BigNumberish,
@@ -124,6 +135,10 @@ export class IFeeHandler extends Contract {
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
   };
+
+  _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   calculateFee(
     sender: string,
@@ -172,6 +187,10 @@ export class IFeeHandler extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     calculateFee(
       sender: string,
       fromDomainID: BigNumberish,
@@ -237,6 +256,10 @@ export class IFeeHandler extends Contract {
   };
 
   estimateGas: {
+    _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     calculateFee(
       sender: string,
       fromDomainID: BigNumberish,
@@ -279,6 +302,10 @@ export class IFeeHandler extends Contract {
   };
 
   populateTransaction: {
+    _fee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     calculateFee(
       sender: string,
       fromDomainID: BigNumberish,

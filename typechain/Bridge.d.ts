@@ -52,6 +52,7 @@ interface BridgeInterface extends ethers.utils.Interface {
     "adminUnpauseTransfers()": FunctionFragment;
     "adminWithdraw(address,bytes)": FunctionFragment;
     "adminWithdrawETH(address,bytes)": FunctionFragment;
+    "calculateFee(uint8,bytes32,bytes,bytes)": FunctionFragment;
     "cancelProposal(uint8,uint64,bytes32)": FunctionFragment;
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "deposit(uint8,bytes32,bytes,bytes)": FunctionFragment;
@@ -177,6 +178,10 @@ interface BridgeInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "adminWithdrawETH",
     values: [string, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateFee",
+    values: [BigNumberish, BytesLike, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelProposal",
@@ -355,6 +360,10 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "adminWithdrawETH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -766,6 +775,26 @@ export class Bridge extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    calculateFee(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "calculateFee(uint8,bytes32,bytes,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     cancelProposal(
       domainID: BigNumberish,
@@ -1324,6 +1353,22 @@ export class Bridge extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  calculateFee(
+    destinationDomainID: BigNumberish,
+    resourceID: BytesLike,
+    depositData: BytesLike,
+    feeData: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "calculateFee(uint8,bytes32,bytes,bytes)"(
+    destinationDomainID: BigNumberish,
+    resourceID: BytesLike,
+    depositData: BytesLike,
+    feeData: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   cancelProposal(
     domainID: BigNumberish,
     depositNonce: BigNumberish,
@@ -1829,6 +1874,22 @@ export class Bridge extends Contract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    calculateFee(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calculateFee(uint8,bytes32,bytes,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     cancelProposal(
       domainID: BigNumberish,
@@ -2385,6 +2446,22 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    calculateFee(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calculateFee(uint8,bytes32,bytes,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     cancelProposal(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
@@ -2889,6 +2966,22 @@ export class Bridge extends Contract {
       handlerAddress: string,
       data: BytesLike,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    calculateFee(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "calculateFee(uint8,bytes32,bytes,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     cancelProposal(

@@ -86,8 +86,31 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         _;
     }
 
-    function _fee() external view returns(uint256){
+    function _fee() external view returns (uint256) {
         return _feeHandler._fee();
+    }
+
+    function calculateFee(
+        uint8 destinationDomainID,
+        bytes32 resourceID,
+        bytes calldata depositData,
+        bytes calldata feeData
+    ) external view returns (uint256) {
+        address sender = _msgSender();
+        if (address(_feeHandler) != address(0)) {
+            // Reverts on failure
+            (uint256 fee, ) = _feeHandler.calculateFee(
+                sender,
+                _domainID,
+                destinationDomainID,
+                resourceID,
+                depositData,
+                feeData
+            );
+            return fee;
+        } else {
+            return 0;
+        }
     }
 
     function _chainId() external view returns (uint256) {
@@ -418,11 +441,11 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         IERCHandler handler = IERCHandler(handlerAddress);
         handler.withdraw(data);
     }
-    
-    function adminWithdrawETH(
-        address handlerAddress,
-        bytes memory data
-    ) external onlyAdmin {
+
+    function adminWithdrawETH(address handlerAddress, bytes memory data)
+        external
+        onlyAdmin
+    {
         IERCHandler handler = IERCHandler(handlerAddress);
         handler.withdrawETH(data);
     }

@@ -1,9 +1,9 @@
 {
   "name": "@meterio/chainbridge-contracts",
-  "version": "1.0.6",
+  "version": "2.0.0",
   "description": "",
   "main": "dist/index.js",
-  "repository": "https://github.com/meterio/chainbridge-solidity.git",
+  "repository": "https://github.com/meterio/chainbridge-solidity-v2.0.0-eth.git",
   "files": [
     "dist"
   ],

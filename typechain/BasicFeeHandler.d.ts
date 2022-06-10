@@ -37,6 +37,8 @@ interface BasicFeeHandlerInterface extends ethers.utils.Interface {
     "hasRole(bytes32,address)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
+    "setSpecialFee(uint8,uint256)": FunctionFragment;
+    "specialFee(uint8)": FunctionFragment;
     "transferFee(address[],uint256[])": FunctionFragment;
   };
 
@@ -108,6 +110,14 @@ interface BasicFeeHandlerInterface extends ethers.utils.Interface {
     values: [BytesLike, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "setSpecialFee",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "specialFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferFee",
     values: [string[], BigNumberish[]]
   ): string;
@@ -150,6 +160,11 @@ interface BasicFeeHandlerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setSpecialFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "specialFee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferFee",
     data: BytesLike
@@ -376,6 +391,32 @@ export class BasicFeeHandler extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setSpecialFee(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setSpecialFee(uint8,uint256)"(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    specialFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "specialFee(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     transferFee(
       addrs: string[],
       amounts: BigNumberish[],
@@ -546,6 +587,25 @@ export class BasicFeeHandler extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setSpecialFee(
+    fromDomainID: BigNumberish,
+    _specialFee: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setSpecialFee(uint8,uint256)"(
+    fromDomainID: BigNumberish,
+    _specialFee: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  specialFee(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+  "specialFee(uint8)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   transferFee(
     addrs: string[],
     amounts: BigNumberish[],
@@ -712,6 +772,28 @@ export class BasicFeeHandler extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setSpecialFee(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setSpecialFee(uint8,uint256)"(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    specialFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "specialFee(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     transferFee(
       addrs: string[],
@@ -909,6 +991,28 @@ export class BasicFeeHandler extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setSpecialFee(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setSpecialFee(uint8,uint256)"(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    specialFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "specialFee(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     transferFee(
       addrs: string[],
       amounts: BigNumberish[],
@@ -1081,6 +1185,28 @@ export class BasicFeeHandler extends Contract {
       role: BytesLike,
       account: string,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setSpecialFee(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setSpecialFee(uint8,uint256)"(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    specialFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "specialFee(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     transferFee(

@@ -8,7 +8,7 @@ export const RPCS = {
     },
   },
   ganache: {
-    url: `http://127.0.0.1:8545`,
+    url: `http://127.0.0.1:7545`,
     chainId: 1337,
     accounts: {
       mnemonic: process.env.MNEMONIC,
@@ -36,6 +36,7 @@ export const RPCS = {
   },
   kovan: {
     url: `https://kovan.infura.io/v3/${process.env.INFURA_API_KEY}`,
+    gasPrice: 3000000000,
     accounts: {
       mnemonic: process.env.MNEMONIC,
     },
@@ -43,7 +44,7 @@ export const RPCS = {
   bsctest: {
     url: `https://data-seed-prebsc-1-s1.binance.org:8545`,
     chainId: 97,
-    gasPrice: 20000000000,
+    gasPrice: 10000000000,
     accounts: {
       mnemonic: process.env.MNEMONIC,
     },
@@ -260,7 +261,7 @@ export const RPCS = {
   moonbeamtest: {
     url: `https://rpc.testnet.moonbeam.network`,
     chainId: 1287,
-    gasPrice: 1000000000,
+    gasPrice: 3000000000,
     accounts: {
       mnemonic: process.env.MNEMONIC,
     },

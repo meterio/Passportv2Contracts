@@ -1,0 +1,1113 @@
+{
+  "contractName": "IFeeHandler",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "fromDomainID",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "destinationDomainID",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "resourceID",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "fee",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "tokenAddress",
+          "type": "address"
+        }
+      ],
+      "name": "FeeCollected",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "tokenAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "FeeDistributed",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "fromDomainID",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "destinationDomainID",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "resourceID",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes",
+          "name": "depositData",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "feeData",
+          "type": "bytes"
+        }
+      ],
+      "name": "collectFee",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "fromDomainID",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "destinationDomainID",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "resourceID",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes",
+          "name": "depositData",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "feeData",
+          "type": "bytes"
+        }
+      ],
+      "name": "calculateFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "_fee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"fromDomainID\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"destinationDomainID\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"FeeCollected\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"FeeDistributed\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"_fee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"fromDomainID\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"destinationDomainID\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"depositData\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"feeData\",\"type\":\"bytes\"}],\"name\":\"calculateFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"fromDomainID\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"destinationDomainID\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"depositData\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"feeData\",\"type\":\"bytes\"}],\"name\":\"collectFee\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"ChainSafe Systems.\",\"events\":{\"FeeCollected(address,uint8,uint8,bytes32,uint256,address)\":{\"params\":{\"destinationDomainID\":\"ID of chain deposit will be bridged to.\",\"fee\":\"Collected fee amount.\",\"fromDomainID\":\"ID of the source chain.\",\"resourceID\":\"ResourceID to be used when making deposits.\",\"sender\":\"Sender of the deposit.\",\"tokenAddress\":\"Address of the token in which the fee was collected (0 for the base currency).\"}},\"FeeDistributed(address,address,uint256)\":{\"params\":{\"amount\":\"Amount that is distributed.\",\"recipient\":\"Address that receives the distributed fee.\",\"tokenAddress\":\"Address of the token in which the fee was collected (0 for the base currency).\"}}},\"kind\":\"dev\",\"methods\":{\"calculateFee(address,uint8,uint8,bytes32,bytes,bytes)\":{\"params\":{\"depositData\":\"Additional data to be passed to specified handler.\",\"destinationDomainID\":\"ID of chain deposit will be bridged to.\",\"feeData\":\"Additional data to be passed to the fee handler.\",\"fromDomainID\":\"ID of the source chain.\",\"resourceID\":\"ResourceID to be used when making deposits.\",\"sender\":\"Sender of the deposit.\"},\"returns\":{\"_0\":\"Returns the fee amount.\"}},\"collectFee(address,uint8,uint8,bytes32,bytes,bytes)\":{\"params\":{\"depositData\":\"Additional data to be passed to specified handler.\",\"destinationDomainID\":\"ID of chain deposit will be bridged to.\",\"feeData\":\"Additional data to be passed to the fee handler.\",\"fromDomainID\":\"ID of the source chain.\",\"resourceID\":\"ResourceID to be used when making deposits.\",\"sender\":\"Sender of the deposit.\"}}},\"title\":\"Interface to be used with fee handlers.\",\"version\":1},\"userdoc\":{\"events\":{\"FeeCollected(address,uint8,uint8,bytes32,uint256,address)\":{\"notice\":\"This event is emitted when the fee is collected.\"},\"FeeDistributed(address,address,uint256)\":{\"notice\":\"This event is emitted when the fee is distributed to an address.\"}},\"kind\":\"user\",\"methods\":{\"calculateFee(address,uint8,uint8,bytes32,bytes,bytes)\":{\"notice\":\"Calculates fee for deposit.\"},\"collectFee(address,uint8,uint8,bytes32,bytes,bytes)\":{\"notice\":\"Collects fee for deposit.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IFeeHandler.sol\":\"IFeeHandler\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IFeeHandler.sol\":{\"keccak256\":\"0x0f8b6fd86f88f275b83c4a895cc30645be832f467f084c8bb805baa72069d39e\",\"license\":\"LGPL-3.0-only\",\"urls\":[\"bzz-raw://76ee7d90f56083f1c724e4c6072863641262bf01e3a0a0c5b7185d01bddc903e\",\"dweb:/ipfs/QmXGy1bFgA9JkApVAkj2DiqnzGJcAyLVA2Tb4Sgp82Jz4N\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: LGPL-3.0-only\npragma solidity 0.8.11;\n\n/**\n    @title Interface to be used with fee handlers.\n    @author ChainSafe Systems.\n */\ninterface IFeeHandler {\n    /**\n        @notice This event is emitted when the fee is collected.\n        @param sender Sender of the deposit.\n        @param fromDomainID ID of the source chain.\n        @param destinationDomainID ID of chain deposit will be bridged to.\n        @param resourceID ResourceID to be used when making deposits.\n        @param fee Collected fee amount.\n        @param tokenAddress Address of the token in which the fee was collected (0 for the base currency).\n     */\n    event FeeCollected(\n        address sender,\n        uint8 fromDomainID,\n        uint8 destinationDomainID,\n        bytes32 resourceID,\n        uint256 fee,\n        address tokenAddress\n    );\n\n    /**\n        @notice This event is emitted when the fee is distributed to an address.\n        @param tokenAddress Address of the token in which the fee was collected (0 for the base currency).\n        @param recipient Address that receives the distributed fee.\n        @param amount Amount that is distributed.\n     */\n    event FeeDistributed(\n        address tokenAddress,\n        address recipient,\n        uint256 amount\n    );\n\n    /**\n        @notice Collects fee for deposit.\n        @param sender Sender of the deposit.\n        @param fromDomainID ID of the source chain.\n        @param destinationDomainID ID of chain deposit will be bridged to.\n        @param resourceID ResourceID to be used when making deposits.\n        @param depositData Additional data to be passed to specified handler.\n        @param feeData Additional data to be passed to the fee handler.\n     */\n    function collectFee(\n        address sender,\n        uint8 fromDomainID,\n        uint8 destinationDomainID,\n        bytes32 resourceID,\n        bytes calldata depositData,\n        bytes calldata feeData\n    ) external payable;\n\n    /**\n        @notice Calculates fee for deposit.\n        @param sender Sender of the deposit.\n        @param fromDomainID ID of the source chain.\n        @param destinationDomainID ID of chain deposit will be bridged to.\n        @param resourceID ResourceID to be used when making deposits.\n        @param depositData Additional data to be passed to specified handler.\n        @param feeData Additional data to be passed to the fee handler.\n        @return Returns the fee amount.\n     */\n    function calculateFee(\n        address sender,\n        uint8 fromDomainID,\n        uint8 destinationDomainID,\n        bytes32 resourceID,\n        bytes calldata depositData,\n        bytes calldata feeData\n    ) external view returns (uint256, address);\n\n    function _fee() external view returns (uint256);\n}\n",
+  "sourcePath": "/Users/cuimiandashi/Documents/GitHub/chainbridge-solidity-v2.0.0-eth/contracts/interfaces/IFeeHandler.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/IFeeHandler.sol",
+    "exportedSymbols": {
+      "IFeeHandler": [
+        11683
+      ]
+    },
+    "id": 11684,
+    "license": "LGPL-3.0-only",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 11616,
+        "literals": [
+          "solidity",
+          "0.8",
+          ".11"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "42:23:58"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IFeeHandler",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 11617,
+          "nodeType": "StructuredDocumentation",
+          "src": "67:89:58",
+          "text": "@title Interface to be used with fee handlers.\n@author ChainSafe Systems."
+        },
+        "fullyImplemented": false,
+        "id": 11683,
+        "linearizedBaseContracts": [
+          11683
+        ],
+        "name": "IFeeHandler",
+        "nameLocation": "167:11:58",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": {
+              "id": 11618,
+              "nodeType": "StructuredDocumentation",
+              "src": "185:466:58",
+              "text": "@notice This event is emitted when the fee is collected.\n@param sender Sender of the deposit.\n@param fromDomainID ID of the source chain.\n@param destinationDomainID ID of chain deposit will be bridged to.\n@param resourceID ResourceID to be used when making deposits.\n@param fee Collected fee amount.\n@param tokenAddress Address of the token in which the fee was collected (0 for the base currency)."
+            },
+            "id": 11632,
+            "name": "FeeCollected",
+            "nameLocation": "662:12:58",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 11631,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11620,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "sender",
+                  "nameLocation": "692:6:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11632,
+                  "src": "684:14:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11619,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "684:7:58",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11622,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "fromDomainID",
+                  "nameLocation": "714:12:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11632,
+                  "src": "708:18:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 11621,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "708:5:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11624,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "destinationDomainID",
+                  "nameLocation": "742:19:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11632,
+                  "src": "736:25:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 11623,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "736:5:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11626,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "resourceID",
+                  "nameLocation": "779:10:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11632,
+                  "src": "771:18:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 11625,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "771:7:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11628,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "fee",
+                  "nameLocation": "807:3:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11632,
+                  "src": "799:11:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11627,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "799:7:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11630,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "tokenAddress",
+                  "nameLocation": "828:12:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11632,
+                  "src": "820:20:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11629,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "820:7:58",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "674:172:58"
+            },
+            "src": "656:191:58"
+          },
+          {
+            "anonymous": false,
+            "documentation": {
+              "id": 11633,
+              "nodeType": "StructuredDocumentation",
+              "src": "853:317:58",
+              "text": "@notice This event is emitted when the fee is distributed to an address.\n@param tokenAddress Address of the token in which the fee was collected (0 for the base currency).\n@param recipient Address that receives the distributed fee.\n@param amount Amount that is distributed."
+            },
+            "id": 11641,
+            "name": "FeeDistributed",
+            "nameLocation": "1181:14:58",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 11640,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11635,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "tokenAddress",
+                  "nameLocation": "1213:12:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11641,
+                  "src": "1205:20:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11634,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1205:7:58",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11637,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "recipient",
+                  "nameLocation": "1243:9:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11641,
+                  "src": "1235:17:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11636,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1235:7:58",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11639,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "1270:6:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11641,
+                  "src": "1262:14:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11638,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1262:7:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1195:87:58"
+            },
+            "src": "1175:108:58"
+          },
+          {
+            "documentation": {
+              "id": 11642,
+              "nodeType": "StructuredDocumentation",
+              "src": "1289:445:58",
+              "text": "@notice Collects fee for deposit.\n@param sender Sender of the deposit.\n@param fromDomainID ID of the source chain.\n@param destinationDomainID ID of chain deposit will be bridged to.\n@param resourceID ResourceID to be used when making deposits.\n@param depositData Additional data to be passed to specified handler.\n@param feeData Additional data to be passed to the fee handler."
+            },
+            "functionSelector": "25307065",
+            "id": 11657,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "collectFee",
+            "nameLocation": "1748:10:58",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 11655,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11644,
+                  "mutability": "mutable",
+                  "name": "sender",
+                  "nameLocation": "1776:6:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11657,
+                  "src": "1768:14:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11643,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1768:7:58",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11646,
+                  "mutability": "mutable",
+                  "name": "fromDomainID",
+                  "nameLocation": "1798:12:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11657,
+                  "src": "1792:18:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 11645,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1792:5:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11648,
+                  "mutability": "mutable",
+                  "name": "destinationDomainID",
+                  "nameLocation": "1826:19:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11657,
+                  "src": "1820:25:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 11647,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1820:5:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11650,
+                  "mutability": "mutable",
+                  "name": "resourceID",
+                  "nameLocation": "1863:10:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11657,
+                  "src": "1855:18:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 11649,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1855:7:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11652,
+                  "mutability": "mutable",
+                  "name": "depositData",
+                  "nameLocation": "1898:11:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11657,
+                  "src": "1883:26:58",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 11651,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1883:5:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11654,
+                  "mutability": "mutable",
+                  "name": "feeData",
+                  "nameLocation": "1934:7:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11657,
+                  "src": "1919:22:58",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 11653,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1919:5:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1758:189:58"
+            },
+            "returnParameters": {
+              "id": 11656,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1964:0:58"
+            },
+            "scope": 11683,
+            "src": "1739:226:58",
+            "stateMutability": "payable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 11658,
+              "nodeType": "StructuredDocumentation",
+              "src": "1971:487:58",
+              "text": "@notice Calculates fee for deposit.\n@param sender Sender of the deposit.\n@param fromDomainID ID of the source chain.\n@param destinationDomainID ID of chain deposit will be bridged to.\n@param resourceID ResourceID to be used when making deposits.\n@param depositData Additional data to be passed to specified handler.\n@param feeData Additional data to be passed to the fee handler.\n@return Returns the fee amount."
+            },
+            "functionSelector": "ef4f081f",
+            "id": 11677,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "calculateFee",
+            "nameLocation": "2472:12:58",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 11671,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11660,
+                  "mutability": "mutable",
+                  "name": "sender",
+                  "nameLocation": "2502:6:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11677,
+                  "src": "2494:14:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11659,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2494:7:58",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11662,
+                  "mutability": "mutable",
+                  "name": "fromDomainID",
+                  "nameLocation": "2524:12:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11677,
+                  "src": "2518:18:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 11661,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2518:5:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11664,
+                  "mutability": "mutable",
+                  "name": "destinationDomainID",
+                  "nameLocation": "2552:19:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11677,
+                  "src": "2546:25:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 11663,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2546:5:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11666,
+                  "mutability": "mutable",
+                  "name": "resourceID",
+                  "nameLocation": "2589:10:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11677,
+                  "src": "2581:18:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 11665,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2581:7:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11668,
+                  "mutability": "mutable",
+                  "name": "depositData",
+                  "nameLocation": "2624:11:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11677,
+                  "src": "2609:26:58",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 11667,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2609:5:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11670,
+                  "mutability": "mutable",
+                  "name": "feeData",
+                  "nameLocation": "2660:7:58",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11677,
+                  "src": "2645:22:58",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 11669,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2645:5:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2484:189:58"
+            },
+            "returnParameters": {
+              "id": 11676,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11673,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11677,
+                  "src": "2697:7:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11672,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2697:7:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 11675,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11677,
+                  "src": "2706:7:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 11674,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2706:7:58",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2696:18:58"
+            },
+            "scope": 11683,
+            "src": "2463:252:58",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "c5b37c22",
+            "id": 11682,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "_fee",
+            "nameLocation": "2730:4:58",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 11678,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2734:2:58"
+            },
+            "returnParameters": {
+              "id": 11681,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 11680,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11682,
+                  "src": "2760:7:58",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 11679,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2760:7:58",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2759:9:58"
+            },
+            "scope": 11683,
+            "src": "2721:48:58",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 11684,
+        "src": "157:2614:58",
+        "usedErrors": []
+      }
+    ],
+    "src": "42:2730:58"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.11+commit.d7f03943.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.7",
+  "updatedAt": "2022-06-05T16:30:50.872Z",
+  "devdoc": {
+    "author": "ChainSafe Systems.",
+    "events": {
+      "FeeCollected(address,uint8,uint8,bytes32,uint256,address)": {
+        "params": {
+          "destinationDomainID": "ID of chain deposit will be bridged to.",
+          "fee": "Collected fee amount.",
+          "fromDomainID": "ID of the source chain.",
+          "resourceID": "ResourceID to be used when making deposits.",
+          "sender": "Sender of the deposit.",
+          "tokenAddress": "Address of the token in which the fee was collected (0 for the base currency)."
+        }
+      },
+      "FeeDistributed(address,address,uint256)": {
+        "params": {
+          "amount": "Amount that is distributed.",
+          "recipient": "Address that receives the distributed fee.",
+          "tokenAddress": "Address of the token in which the fee was collected (0 for the base currency)."
+        }
+      }
+    },
+    "kind": "dev",
+    "methods": {
+      "calculateFee(address,uint8,uint8,bytes32,bytes,bytes)": {
+        "params": {
+          "depositData": "Additional data to be passed to specified handler.",
+          "destinationDomainID": "ID of chain deposit will be bridged to.",
+          "feeData": "Additional data to be passed to the fee handler.",
+          "fromDomainID": "ID of the source chain.",
+          "resourceID": "ResourceID to be used when making deposits.",
+          "sender": "Sender of the deposit."
+        },
+        "returns": {
+          "_0": "Returns the fee amount."
+        }
+      },
+      "collectFee(address,uint8,uint8,bytes32,bytes,bytes)": {
+        "params": {
+          "depositData": "Additional data to be passed to specified handler.",
+          "destinationDomainID": "ID of chain deposit will be bridged to.",
+          "feeData": "Additional data to be passed to the fee handler.",
+          "fromDomainID": "ID of the source chain.",
+          "resourceID": "ResourceID to be used when making deposits.",
+          "sender": "Sender of the deposit."
+        }
+      }
+    },
+    "title": "Interface to be used with fee handlers.",
+    "version": 1
+  },
+  "userdoc": {
+    "events": {
+      "FeeCollected(address,uint8,uint8,bytes32,uint256,address)": {
+        "notice": "This event is emitted when the fee is collected."
+      },
+      "FeeDistributed(address,address,uint256)": {
+        "notice": "This event is emitted when the fee is distributed to an address."
+      }
+    },
+    "kind": "user",
+    "methods": {
+      "calculateFee(address,uint8,uint8,bytes32,bytes,bytes)": {
+        "notice": "Calculates fee for deposit."
+      },
+      "collectFee(address,uint8,uint8,bytes32,bytes,bytes)": {
+        "notice": "Collects fee for deposit."
+      }
+    },
+    "version": 1
+  }
+}

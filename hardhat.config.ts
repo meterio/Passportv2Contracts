@@ -4,6 +4,7 @@ import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 import { task } from "hardhat/config";
 import { compileSetting, allowVerifyChain } from "./script/deployTool";
+import { mkdirSync, readFileSync, writeFileSync, existsSync } from "fs";
 import { RPCS } from "./script/network";
 const SHA256 = require('crypto-js/sha256')
 require('@openzeppelin/hardhat-upgrades');
@@ -12,10 +13,41 @@ dotenv.config();
 // import Colors = require("colors.ts");
 import { BigNumber, BytesLike, constants, utils, Signer } from "ethers";
 
-import { WETH9, Bridge, ERC20Handler, ERC721Handler, ERC1155Handler, GenericHandler, TokenERC20,BasicFeeHandler } from "./typechain"
+import {
+  Bridge,
+  ERC20Handler,
+  ERC721Handler,
+  ERC1155Handler,
+  GenericHandler,
+  TokenERC20,
+  BasicFeeHandler
+} from "./typechain"
 import { deployContract, getContract } from "./script/deployTool";
 import { boolean } from "hardhat/internal/core/params/argumentTypes";
 import { getSign } from "./script/permitSign";
+
+type Config = {
+  name: string;
+  type: string;
+  id: number;
+  from: string;
+  bridge: string;
+  erc20Handler: string;
+  erc721Handler: string;
+  erc1155Handler: string;
+  genericHandler: string;
+  feeHandler: string;
+  tokens: Token[];
+}
+
+type Token = {
+  address: string;
+  name: string;
+  symbol: string;
+  native: boolean;
+  decimals: number;
+  resourceId: string;
+}
 
 
 const toHex = (covertThis: BytesLike, padding: number): string => {
@@ -49,98 +81,299 @@ task("accounts", "Prints the list of accounts", async (taskArgs, bre) => {
     );
   }
 });
-// 0x5FbDB2315678afecb367f032d93F642f64180aa3
-task("depositToken", "deposit contract")
-  .addOptionalParam("force", "force deploy", false, boolean)
-  .addParam("domain", "domain id")
-  .setAction(
-    async ({ force, domain }, { ethers, run, network }) => {
-      await run("compile");
-      const [signer, relayer1, relayer2] = await ethers.getSigners();
-      let token: TokenERC20;
 
-      const tokenJson = getContract(network.name, "TokenERC20");
-      if (force || tokenJson == "") {
-        token = await deployContract(
-          "TokenERC20",
-          network.name,
-          ethers.getContractFactory,
-          signer,
-          ["TT", "TTT", "100000000000000000000000000"]
-        ) as TokenERC20;
-      } else {
-        token = await ethers.getContractAt("TokenERC20", tokenJson.address, signer) as TokenERC20;
+function loadConfig(network: string): Config {
+  const path = `./deployments/${network}/`;
+  const latest = `config.json`;
+
+  if (existsSync(path + latest)) {
+    let json = JSON.parse(readFileSync(path + latest).toString()) as Config;
+    return json;
+  } else {
+
+    let json: Config = {
+      name: "",
+      type: "",
+      id: 0,
+      from: "",
+      bridge: "",
+      erc20Handler: "",
+      erc721Handler: "",
+      erc1155Handler: "",
+      genericHandler: "",
+      feeHandler: "",
+      tokens: []
+    };
+    return json;
+  }
+}
+
+function saveConfig(network: string, json: Config) {
+  const path = `./deployments/${network}/`;
+  const latest = `config.json`;
+
+  mkdirSync(path, { recursive: true });
+  writeFileSync(path + latest, JSON.stringify(json));
+}
+
+task("deploy", "deploy contract")
+  .addParam("contract", "contract")
+  .addOptionalParam("domain", "domain id", "0")
+  .setAction(
+    async ({ contract, domain }, { ethers, run, network }) => {
+      await run("compile");
+      const signers = await ethers.getSigners();
+      const deployer = signers[0]
+      const relayer1 = signers[1]
+      const relayer2 = signers[2]
+      let config = loadConfig(network.name);
+
+      if (contract == 'bridge') {
+        domain = domain ? domain : config.id;
+        if (domain) {
+          const bridgeArgs = [
+            domain,
+            [relayer1.address, relayer2.address],
+            2,
+            999999
+          ]
+          const instant = await deployContract(
+            "Bridge",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            bridgeArgs
+          ) as Bridge;
+          config.bridge = instant.address;
+          config.name = network.name;
+          config.type = "evm";
+          config.from = deployer.address;
+          config.id = domain;
+        }
+      } else if (contract == "erc20Handler") {
+        const bridgeAddress = config.bridge;
+        if (bridgeAddress != "") {
+          const instant = await deployContract(
+            "ERC20Handler",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [bridgeAddress]
+          ) as ERC20Handler;
+          config.erc20Handler = instant.address;
+        }
+      } else if (contract == "erc721Handler") {
+        const bridgeAddress = config.bridge;
+        if (bridgeAddress != "") {
+          const instant = await deployContract(
+            "ERC721Handler",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [bridgeAddress]
+          ) as ERC721Handler;
+          config.erc721Handler = instant.address;
+        }
+      } else if (contract == "erc1155Handler") {
+        const bridgeAddress = config.bridge;
+        if (bridgeAddress != "") {
+          const instant = await deployContract(
+            "ERC1155Handler",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [bridgeAddress]
+          ) as ERC1155Handler;
+          config.erc1155Handler = instant.address;
+        }
+      } else if (contract == "genericHandler") {
+        const bridgeAddress = config.bridge;
+        if (bridgeAddress != "") {
+          const instant = await deployContract(
+            "GenericHandler",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [bridgeAddress]
+          ) as GenericHandler;
+          config.genericHandler = instant.address;
+        }
+      } else if (contract == "feeHandler") {
+        const bridgeAddress = config.bridge;
+        if (bridgeAddress != "") {
+          const instant = await deployContract(
+            "BasicFeeHandler",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [bridgeAddress]
+          ) as BasicFeeHandler;
+          config.feeHandler = instant.address;
+        }
       }
+      saveConfig(network.name, config);
+    }
+  );
+
+
+task("deploy-token", "deploy contract")
+  .addParam("name", "token name", "")
+  .addParam("symbol", "token symbol", "")
+  .addParam("amount", "token amount", "")
+  .setAction(
+    async ({ name, symbol, amount }, { ethers, run, network }) => {
+      await run("compile");
+      const signers = await ethers.getSigners();
+      const deployer = signers[3]
+      let config = loadConfig(network.name);
+      const instant = await deployContract(
+        "TokenERC20",
+        network.name,
+        ethers.getContractFactory,
+        deployer,
+        [name, symbol, amount]
+      ) as TokenERC20;
+      let token: Token = {
+        address: instant.address,
+        decimals: 18,
+        name: name,
+        symbol: symbol,
+        native: false,
+        resourceId: createResourceID(instant.address, config.id),
+      }
+      config.tokens.push(token);
+
+      saveConfig(network.name, config);
+    }
+  );
+
+
+task("depositToken", "deposit contract")
+  .addParam("from", "from domain id")
+  .addParam("to", "to domain id")
+  .setAction(
+    async ({ from, to }, { ethers, run, network }) => {
+      await run("compile");
+      const signers = await ethers.getSigners();
+      let token: TokenERC20;
+      const deployer = signers[5]
+
+      token = await deployContract(
+        "TokenERC20",
+        network.name,
+        ethers.getContractFactory,
+        deployer,
+        ["MoonAphla to Rinkeby", "MA2R", "100000000000000000000000000"]
+      ) as TokenERC20;
 
       const erc20HandlerJson = getContract(network.name, "ERC20Handler");
       if (erc20HandlerJson != "") {
-        await token.transfer(erc20HandlerJson.address, "100000000000000000000000000")
-      }
 
-      const bridgeJson = getContract(network.name, "Bridge");
-      if (bridgeJson != "") {
-        const resId = createResourceID(token.address, domain);
-        const bridgeInstant = await ethers.getContractAt("Bridge", bridgeJson.address, signer) as Bridge;
-        let receipt = await bridgeInstant.adminSetResource(
-          erc20HandlerJson.address,
-          resId,
-          token.address
-        )
-        console.log(await receipt.wait());
+        const bridgeJson = getContract(network.name, "Bridge");
+        if (bridgeJson != "") {
+          const resId = createResourceID(token.address, from);
+          const bridgeInstant = await ethers.getContractAt("Bridge", bridgeJson.address, deployer) as Bridge;
+          let receipt = await bridgeInstant.adminSetResource(
+            erc20HandlerJson.address,
+            resId,
+            token.address
+          )
+          console.log(await receipt.wait());
+          receipt = await token.approve(
+            erc20HandlerJson.address, "100000000000000000000000000"
+          )
+          console.log(await receipt.wait())
+          let data = encodeData("1", deployer.address);
+          console.log({
+            to: to,
+            resId: resId,
+            data: data
+          }
+          )
+          receipt = await bridgeInstant.deposit(
+            to,
+            resId,
+            data,
+            constants.HashZero
+          )
+          console.log(await receipt.wait());
+        }
       }
     }
   );
 
 task("approve", "approve")
-  .addParam("token", "token address")
-  .addParam("spender", "spender")
-  .addParam("amount", "amount")
   .setAction(
-    async ({ token, spender, amount }, { ethers, run, network }) => {
+    async ({ }, { ethers, run, network }) => {
       await run("compile");
-      const [signer, relayer1, relayer2] = await ethers.getSigners();
+      const signers = await ethers.getSigners();
+      const deployer = signers[5]
 
-      const erc20 = await ethers.getContractAt(
-        "TokenERC20",
-        token,
-        signer
-      ) as TokenERC20;
+      const tokenJson = getContract(network.name, "TokenERC20");
+      if (tokenJson != "") {
+        const erc20 = await ethers.getContractAt(
+          "TokenERC20",
+          tokenJson.address,
+          deployer
+        ) as TokenERC20;
+        const erc20HandlerJson = getContract(network.name, "ERC20Handler");
+        if (erc20HandlerJson != "") {
+          let receipt = await erc20.approve(
+            erc20HandlerJson.address, "100000000000000000000000000"
+          )
+          console.log(await receipt.wait())
+        }
+      }
+    }
+  );
 
-      let receipt = await erc20.approve(
-        spender, amount
-      )
-      console.log(await receipt.wait())
+task("setfee", "set fee handler")
+  .setAction(
+    async ({ }, { ethers, run, network }) => {
+      await run("compile");
+      const signers = await ethers.getSigners();
+      const deployer = signers[5]
+
+      const feeJson = getContract(network.name, "BasicFeeHandler");
+      if (feeJson != "") {
+        const bridgeJson = getContract(network.name, "Bridge");
+        if (bridgeJson != "") {
+          const bridgeInstant = await ethers.getContractAt("Bridge", bridgeJson.address, deployer) as Bridge;
+
+          let receipt = await bridgeInstant.adminChangeFeeHandler(
+            feeJson.address
+          )
+          console.log(await receipt.wait())
+        }
+      }
     }
   );
 
 task("deposit", "deposit")
-  .addParam("domain", "domain id")
+  .addParam("from", "from domain id")
+  .addParam("to", "to domain id")
   .setAction(
-    async ({ domain }, { ethers, run, network }) => {
+    async ({ from, to }, { ethers, run, network }) => {
       await run("compile");
-      const [signer, relayer1, relayer2] = await ethers.getSigners();
+      const signers = await ethers.getSigners();
+      const deployer = signers[0]
 
       const tokenJson = getContract(network.name, "TokenERC20");
-      const token = await ethers.getContractAt("TokenERC20", tokenJson.address, signer) as TokenERC20;
+      const token = await ethers.getContractAt("TokenERC20", tokenJson.address, deployer) as TokenERC20;
 
       const bridgeJson = getContract(network.name, "Bridge");
-      const bridgeInstant = await ethers.getContractAt("Bridge", bridgeJson.address, signer) as Bridge;
+      const bridgeInstant = await ethers.getContractAt("Bridge", bridgeJson.address, deployer) as Bridge;
 
-      const resId = createResourceID(token.address, domain);
-      const handlerAddress = await bridgeInstant._resourceIDToHandlerAddress(resId);
-
-      let receipt = await token.approve(handlerAddress, expandDecimals("1"));
-      console.log("Approve:", receipt.hash)
-
+      const resId = createResourceID(token.address, from);
       console.log(
-        domain,
+        to,
         resId,
-        encodeData("1", signer.address)
+        encodeData("1", deployer.address)
       )
-      receipt = await bridgeInstant.deposit(
-        domain,
+      let receipt = await bridgeInstant.deposit(
+        to,
         resId,
-        encodeData("1", signer.address),
+        encodeData("1", deployer.address),
         constants.HashZero
       )
       console.log(await receipt.wait());
@@ -148,101 +381,50 @@ task("deposit", "deposit")
     }
   );
 
-task("deploy", "deploy contract")
-  .addParam("domain", "domain id")
-  .addOptionalParam("force", "force deploy", false, boolean)
-  .setAction(
-    async ({ domain, force }, { ethers, run, network }) => {
-      await run("compile");
-      const signers = await ethers.getSigners();
-      let bridge: Bridge;
-      const deployer = signers[3]
-      const relayer1 = signers[4]
-      const relayer2 = signers[5]
-
-
-      const bridgeArgs = [
-        domain,
-        [relayer1.address, relayer2.address],
-        2,
-        999999
-      ]
-      bridge = await deployContract(
-        "Bridge",
-        network.name,
-        ethers.getContractFactory,
-        deployer,
-        bridgeArgs
-      ) as Bridge;
-
-
-      if (force || getContract(network.name, "ERC20Handler") == "") {
-        const erc20Handler = await deployContract(
-          "ERC20Handler",
-          network.name,
-          ethers.getContractFactory,
-          deployer,
-          [bridge.address]
-        ) as ERC20Handler;
-      }
-      if (force || getContract(network.name, "ERC721Handler") == "") {
-        const erc721Handler = await deployContract(
-          "ERC721Handler",
-          network.name,
-          ethers.getContractFactory,
-          deployer,
-          [bridge.address]
-        ) as ERC721Handler;
-      }
-      if (force || getContract(network.name, "BasicFeeHandler") == "") {
-        const basicFeeHandler = await deployContract(
-          "BasicFeeHandler",
-          network.name,
-          ethers.getContractFactory,
-          deployer,
-          [bridge.address]
-        ) as BasicFeeHandler;
-      }
-      // if (force || getContract(network.name, "ERC1155Handler") == "") {
-      //   const erc1155Handler = await deployContract(
-      //     "ERC1155Handler",
-      //     network.name,
-      //     ethers.getContractFactory,
-      //     deployer,
-      //     [bridge.address]
-      //   ) as ERC1155Handler;
-      // }
-      // if (force || getContract(network.name, "GenericHandler") == "") {
-      //   const genericHandler = await deployContract(
-      //     "GenericHandler",
-      //     network.name,
-      //     ethers.getContractFactory,
-      //     deployer,
-      //     [bridge.address]
-      //   ) as GenericHandler;
-      // }
-    }
-  );
 
 task("regresid", "get resource ID")
+  .addParam("restoken", "Token address")
   .addParam("token", "Token address")
-  .addParam("domain", "domain id")
-  .addParam("bridge", "bridge address")
-  .addParam("handler", "handler address")
+  .addParam("from", "from domain id")
   .setAction(
-    async ({ token, domain, bridge, handler }, { ethers, run, network }) => {
+    async ({ restoken, token, from }, { ethers, run, network }) => {
       await run("compile");
-      const [signer, relayer1, relayer2] = await ethers.getSigners();
+      const signers = await ethers.getSigners();
+      const deployer = signers[5]
 
-      const bridgeInstant = await ethers.getContractAt(
-        "Bridge",
-        bridge,
-        signer
-      ) as Bridge;
+      const bridgeJson = getContract(network.name, "Bridge");
+      const bridgeInstant = await ethers.getContractAt("Bridge", bridgeJson.address, deployer) as Bridge;
 
+      const erc20HandlerJson = getContract(network.name, "ERC20Handler");
+
+      console.log({
+        handler: erc20HandlerJson.address,
+        resid: createResourceID(restoken, from),
+        token: token
+      })
       let receipt = await bridgeInstant.adminSetResource(
-        handler,
-        createResourceID(token, domain),
+        erc20HandlerJson.address,
+        createResourceID(restoken, from),
+        token
+      )
+      console.log(await receipt.wait())
+    }
+  );
+task("setburn", "get resource ID")
+  .addParam("token", "Token address")
+  .setAction(
+    async ({ token, from }, { ethers, run, network }) => {
+      await run("compile");
+      const signers = await ethers.getSigners();
+      const deployer = signers[5]
+
+      const bridgeJson = getContract(network.name, "Bridge");
+      const bridgeInstant = await ethers.getContractAt("Bridge", bridgeJson.address, deployer) as Bridge;
+
+      const erc20HandlerJson = getContract(network.name, "ERC20Handler");
+
+      let receipt = await bridgeInstant.adminSetBurnable(
+        erc20HandlerJson.address,
         token
       )
       console.log(await receipt.wait())

@@ -38,6 +38,7 @@ interface BasicFeeHandlerInterface extends ethers.utils.Interface {
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "setSpecialFee(uint8,uint256)": FunctionFragment;
+    "special(uint8)": FunctionFragment;
     "specialFee(uint8)": FunctionFragment;
     "transferFee(address[],uint256[])": FunctionFragment;
   };
@@ -114,6 +115,10 @@ interface BasicFeeHandlerInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "special",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "specialFee",
     values: [BigNumberish]
   ): string;
@@ -164,6 +169,7 @@ interface BasicFeeHandlerInterface extends ethers.utils.Interface {
     functionFragment: "setSpecialFee",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "special", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "specialFee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferFee",
@@ -403,6 +409,20 @@ export class BasicFeeHandler extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    special(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "special(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     specialFee(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -599,6 +619,13 @@ export class BasicFeeHandler extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  special(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
+  "special(uint8)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   specialFee(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
   "specialFee(uint8)"(
@@ -784,6 +811,13 @@ export class BasicFeeHandler extends Contract {
       _specialFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    special(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
+    "special(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     specialFee(
       arg0: BigNumberish,
@@ -1003,6 +1037,13 @@ export class BasicFeeHandler extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    special(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "special(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     specialFee(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -1197,6 +1238,16 @@ export class BasicFeeHandler extends Contract {
       fromDomainID: BigNumberish,
       _specialFee: BigNumberish,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    special(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "special(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     specialFee(

@@ -15,6 +15,7 @@ contract BasicFeeHandler is IFeeHandler, AccessControl {
 
     uint256 public override _fee;
     mapping(uint8 => uint256) public specialFee;
+    mapping(uint8 => bool) public special;
 
     event FeeChanged(uint256 newFee);
 
@@ -39,6 +40,7 @@ contract BasicFeeHandler is IFeeHandler, AccessControl {
         public
         onlyAdmin
     {
+        special[fromDomainID] = true;
         specialFee[fromDomainID] = _specialFee;
     }
 
@@ -58,16 +60,14 @@ contract BasicFeeHandler is IFeeHandler, AccessControl {
         bytes calldata depositData,
         bytes calldata feeData
     ) external payable onlyBridge {
-        require(
-            msg.value == _fee + specialFee[fromDomainID],
-            "Incorrect fee supplied"
-        );
+        uint256 fee = special[fromDomainID] ? specialFee[fromDomainID] : _fee;
+        require(msg.value == fee, "Incorrect fee supplied");
         emit FeeCollected(
             sender,
             fromDomainID,
             destinationDomainID,
             resourceID,
-            _fee + specialFee[fromDomainID],
+            fee,
             address(0)
         );
     }
@@ -89,7 +89,10 @@ contract BasicFeeHandler is IFeeHandler, AccessControl {
         bytes calldata depositData,
         bytes calldata feeData
     ) external view returns (uint256, address) {
-        return (_fee + specialFee[fromDomainID], address(0));
+        return (
+            special[fromDomainID] ? specialFee[fromDomainID] : _fee,
+            address(0)
+        );
     }
 
     /**

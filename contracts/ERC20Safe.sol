@@ -63,6 +63,7 @@ contract ERC20Safe {
             address(this).balance == balanceBefore - amount,
             "ERC20: withdraw fail!"
         );
+        ETHReserve = address(this).balance;
     }
 
     /**

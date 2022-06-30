@@ -27,10 +27,10 @@ interface SignaturesInterface extends ethers.utils.Interface {
     "RELAYER_ROLE()": FunctionFragment;
     "_TYPE_HASH()": FunctionFragment;
     "_relayerThreshold(uint8)": FunctionFragment;
-    "_resourceIDToHandlerAddress(bytes32)": FunctionFragment;
     "adminChangeRelayerThreshold(uint8,uint256)": FunctionFragment;
-    "adminSetResource(address,bytes32,address)": FunctionFragment;
+    "adminSetDestChainId(uint8,uint8)": FunctionFragment;
     "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)": FunctionFragment;
+    "destChainId(uint8)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getRoleMember(bytes32,uint256)": FunctionFragment;
     "getRoleMemberCount(bytes32)": FunctionFragment;
@@ -65,16 +65,12 @@ interface SignaturesInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "_resourceIDToHandlerAddress",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
     functionFragment: "adminChangeRelayerThreshold",
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "adminSetResource",
-    values: [string, BytesLike, string]
+    functionFragment: "adminSetDestChainId",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "checkSignature",
@@ -87,6 +83,10 @@ interface SignaturesInterface extends ethers.utils.Interface {
       BytesLike,
       BytesLike
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "destChainId",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getRoleAdmin",
@@ -159,19 +159,19 @@ interface SignaturesInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "_resourceIDToHandlerAddress",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "adminChangeRelayerThreshold",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "adminSetResource",
+    functionFragment: "adminSetDestChainId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "checkSignature",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "destChainId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -280,20 +280,6 @@ export class Signatures extends Contract {
       0: number;
     }>;
 
-    _resourceIDToHandlerAddress(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "_resourceIDToHandlerAddress(bytes32)"(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     adminChangeRelayerThreshold(
       destinationDomainID: BigNumberish,
       newThreshold: BigNumberish,
@@ -306,17 +292,15 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    adminSetResource(
-      handlerAddress: string,
-      resourceID: BytesLike,
-      tokenAddress: string,
+    adminSetDestChainId(
+      destinationDomainID: BigNumberish,
+      chainId: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "adminSetResource(address,bytes32,address)"(
-      handlerAddress: string,
-      resourceID: BytesLike,
-      tokenAddress: string,
+    "adminSetDestChainId(uint8,uint8)"(
+      destinationDomainID: BigNumberish,
+      chainId: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -344,6 +328,20 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
+    }>;
+
+    destChainId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "destChainId(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
     }>;
 
     getRoleAdmin(
@@ -543,16 +541,6 @@ export class Signatures extends Contract {
     overrides?: CallOverrides
   ): Promise<number>;
 
-  _resourceIDToHandlerAddress(
-    arg0: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  "_resourceIDToHandlerAddress(bytes32)"(
-    arg0: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   adminChangeRelayerThreshold(
     destinationDomainID: BigNumberish,
     newThreshold: BigNumberish,
@@ -565,17 +553,15 @@ export class Signatures extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  adminSetResource(
-    handlerAddress: string,
-    resourceID: BytesLike,
-    tokenAddress: string,
+  adminSetDestChainId(
+    destinationDomainID: BigNumberish,
+    chainId: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "adminSetResource(address,bytes32,address)"(
-    handlerAddress: string,
-    resourceID: BytesLike,
-    tokenAddress: string,
+  "adminSetDestChainId(uint8,uint8)"(
+    destinationDomainID: BigNumberish,
+    chainId: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -600,6 +586,16 @@ export class Signatures extends Contract {
     signature: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  destChainId(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "destChainId(uint8)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
@@ -767,16 +763,6 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<number>;
 
-    _resourceIDToHandlerAddress(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "_resourceIDToHandlerAddress(bytes32)"(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     adminChangeRelayerThreshold(
       destinationDomainID: BigNumberish,
       newThreshold: BigNumberish,
@@ -789,17 +775,15 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    adminSetResource(
-      handlerAddress: string,
-      resourceID: BytesLike,
-      tokenAddress: string,
+    adminSetDestChainId(
+      destinationDomainID: BigNumberish,
+      chainId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "adminSetResource(address,bytes32,address)"(
-      handlerAddress: string,
-      resourceID: BytesLike,
-      tokenAddress: string,
+    "adminSetDestChainId(uint8,uint8)"(
+      destinationDomainID: BigNumberish,
+      chainId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -824,6 +808,16 @@ export class Signatures extends Contract {
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    destChainId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "destChainId(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
@@ -1022,16 +1016,6 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    _resourceIDToHandlerAddress(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "_resourceIDToHandlerAddress(bytes32)"(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     adminChangeRelayerThreshold(
       destinationDomainID: BigNumberish,
       newThreshold: BigNumberish,
@@ -1044,17 +1028,15 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    adminSetResource(
-      handlerAddress: string,
-      resourceID: BytesLike,
-      tokenAddress: string,
+    adminSetDestChainId(
+      destinationDomainID: BigNumberish,
+      chainId: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "adminSetResource(address,bytes32,address)"(
-      handlerAddress: string,
-      resourceID: BytesLike,
-      tokenAddress: string,
+    "adminSetDestChainId(uint8,uint8)"(
+      destinationDomainID: BigNumberish,
+      chainId: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1077,6 +1059,16 @@ export class Signatures extends Contract {
       resourceID: BytesLike,
       data: BytesLike,
       signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    destChainId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "destChainId(uint8)"(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1256,16 +1248,6 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    _resourceIDToHandlerAddress(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "_resourceIDToHandlerAddress(bytes32)"(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     adminChangeRelayerThreshold(
       destinationDomainID: BigNumberish,
       newThreshold: BigNumberish,
@@ -1278,17 +1260,15 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    adminSetResource(
-      handlerAddress: string,
-      resourceID: BytesLike,
-      tokenAddress: string,
+    adminSetDestChainId(
+      destinationDomainID: BigNumberish,
+      chainId: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "adminSetResource(address,bytes32,address)"(
-      handlerAddress: string,
-      resourceID: BytesLike,
-      tokenAddress: string,
+    "adminSetDestChainId(uint8,uint8)"(
+      destinationDomainID: BigNumberish,
+      chainId: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1311,6 +1291,16 @@ export class Signatures extends Contract {
       resourceID: BytesLike,
       data: BytesLike,
       signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    destChainId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "destChainId(uint8)"(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

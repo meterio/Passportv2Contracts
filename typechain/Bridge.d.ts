@@ -47,6 +47,7 @@ interface BridgeInterface extends ethers.utils.Interface {
     "adminSetDepositNonce(uint8,uint64)": FunctionFragment;
     "adminSetForwarder(address,bool)": FunctionFragment;
     "adminSetGenericResource(address,bytes32,address,bytes4,uint256,bytes4)": FunctionFragment;
+    "adminSetNativeResource(address)": FunctionFragment;
     "adminSetResource(address,bytes32,address)": FunctionFragment;
     "adminSetWtoken(bytes32,address,bool)": FunctionFragment;
     "adminUnpauseTransfers()": FunctionFragment;
@@ -158,6 +159,10 @@ interface BridgeInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "adminSetGenericResource",
     values: [string, BytesLike, string, BytesLike, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminSetNativeResource",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "adminSetResource",
@@ -340,6 +345,10 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "adminSetGenericResource",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminSetNativeResource",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -715,6 +724,16 @@ export class Bridge extends Contract {
       depositFunctionSig: BytesLike,
       depositFunctionDepositerOffset: BigNumberish,
       executeFunctionSig: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    adminSetNativeResource(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetNativeResource(address)"(
+      handlerAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1295,6 +1314,16 @@ export class Bridge extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  adminSetNativeResource(
+    handlerAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetNativeResource(address)"(
+    handlerAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   adminSetResource(
     handlerAddress: string,
     resourceID: BytesLike,
@@ -1816,6 +1845,16 @@ export class Bridge extends Contract {
       depositFunctionSig: BytesLike,
       depositFunctionDepositerOffset: BigNumberish,
       executeFunctionSig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    adminSetNativeResource(
+      handlerAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminSetNativeResource(address)"(
+      handlerAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2390,6 +2429,16 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    adminSetNativeResource(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminSetNativeResource(address)"(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     adminSetResource(
       handlerAddress: string,
       resourceID: BytesLike,
@@ -2907,6 +2956,16 @@ export class Bridge extends Contract {
       depositFunctionSig: BytesLike,
       depositFunctionDepositerOffset: BigNumberish,
       executeFunctionSig: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    adminSetNativeResource(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminSetNativeResource(address)"(
+      handlerAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

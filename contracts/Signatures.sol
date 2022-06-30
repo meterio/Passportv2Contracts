@@ -19,12 +19,9 @@ contract Signatures is AccessControl {
 
     bytes32 private _HASHED_NAME = keccak256(bytes("PermitBridge"));
     bytes32 private _HASHED_VERSION = keccak256(bytes("1.0"));
-    // destinationDomainID + depositNonce => dataHash => Proposal
-    mapping(uint72 => mapping(bytes32 => IBridge.Proposal)) private _proposals;
-    // resourceID => handler address
-    mapping(bytes32 => address) public _resourceIDToHandlerAddress;
 
     mapping(uint8 => uint8) public _relayerThreshold;
+    mapping(uint8 => uint256) public destChainId;
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
@@ -52,7 +49,7 @@ contract Signatures is AccessControl {
         bytes32 versionHash,
         uint256 chainId,
         address signatureContract
-    ) private view returns (bytes32) {
+    ) private pure returns (bytes32) {
         return
             keccak256(
                 abi.encode(
@@ -103,7 +100,9 @@ contract Signatures is AccessControl {
         );
         bytes32 hash = _hashTypedDataV4(
             structHash,
-            uint256(destinationDomainID),
+            destChainId[destinationDomainID] == 0
+                ? uint256(destinationDomainID)
+                : destChainId[destinationDomainID],
             destinationBridge
         );
         address sender = ECDSA.recover(hash, signature);
@@ -128,29 +127,18 @@ contract Signatures is AccessControl {
         bytes signature
     );
 
-    function getProposal(
-        uint8 originDomainID,
-        uint64 depositNonce,
-        bytes32 dataHash
-    ) internal view returns (IBridge.Proposal memory) {
-        uint72 nonceAndID = (uint72(depositNonce) << 8) |
-            uint72(originDomainID);
-        return _proposals[nonceAndID][dataHash];
-    }
-
-    function adminSetResource(
-        address handlerAddress,
-        bytes32 resourceID,
-        address tokenAddress
-    ) external onlyAdmin {
-        _resourceIDToHandlerAddress[resourceID] = handlerAddress;
-    }
-
     function adminChangeRelayerThreshold(
         uint8 destinationDomainID,
         uint256 newThreshold
     ) external onlyAdmin {
         _relayerThreshold[destinationDomainID] = newThreshold.toUint8();
+    }
+
+    function adminSetDestChainId(uint8 destinationDomainID, uint8 chainId)
+        external
+        onlyAdmin
+    {
+        destChainId[destinationDomainID] = chainId;
     }
 
     function submitSignature(
@@ -162,19 +150,6 @@ contract Signatures is AccessControl {
         bytes calldata data,
         bytes calldata signature
     ) external {
-        address handler = _resourceIDToHandlerAddress[resourceID];
-        bytes32 dataHash = keccak256(abi.encodePacked(handler, data));
-        IBridge.Proposal memory proposal = getProposal(
-            originDomainID,
-            depositNonce,
-            dataHash
-        );
-
-        require(handler != address(0), "no handler for resourceID");
-        require(
-            proposal._status == IBridge.ProposalStatus.Inactive,
-            "ProposalStatus not inactive"
-        );
         require(
             checkSignature(
                 originDomainID,

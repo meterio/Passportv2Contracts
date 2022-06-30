@@ -308,6 +308,17 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         handler.setResource(resourceID, tokenAddress);
     }
 
+    function adminSetNativeResource(address handlerAddress) external onlyAdmin {
+        address tokenAddress = address(1);
+        bytes32 resourceID = bytes32(
+            uint256(uint160(tokenAddress)) * 256 + _domainID
+        );
+        _resourceIDToHandlerAddress[resourceID] = handlerAddress;
+        IERCHandler handler = IERCHandler(handlerAddress);
+        handler.setResource(resourceID, tokenAddress);
+        handler.setWtoken(tokenAddress, true);
+    }
+
     /**
         @notice Sets a new resource for handler contracts that use the IGenericHandler interface,
         and maps the {handlerAddress} to {resourceID} in {_resourceIDToHandlerAddress}.

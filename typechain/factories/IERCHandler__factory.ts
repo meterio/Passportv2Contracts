@@ -52,6 +52,24 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "nativeAddress",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "_isNative",
+        type: "bool",
+      },
+    ],
+    name: "setNative",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes32",
         name: "resourceID",
         type: "bytes32",
@@ -63,24 +81,6 @@ const _abi = [
       },
     ],
     name: "setResource",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "wtokenAddress",
-        type: "address",
-      },
-      {
-        internalType: "bool",
-        name: "_isWtoken",
-        type: "bool",
-      },
-    ],
-    name: "setWtoken",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

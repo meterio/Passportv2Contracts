@@ -11,7 +11,6 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
  */
 contract HandlerHelpersUpgradeable is IERCHandler, Initializable {
     address public _bridgeAddress;
-    address public wtoken;
 
     // resourceID => token contract address
     mapping(bytes32 => address) public _resourceIDToTokenContractAddress;
@@ -24,8 +23,8 @@ contract HandlerHelpersUpgradeable is IERCHandler, Initializable {
 
     // token contract address => is burnable
     mapping(address => bool) public _burnList;
-    // wtoken => bool
-    mapping(address => bool) public isWtoken;
+    // native => bool
+    mapping(address => bool) public isNative;
 
     modifier onlyBridge() {
         _onlyBridge();
@@ -90,11 +89,11 @@ contract HandlerHelpersUpgradeable is IERCHandler, Initializable {
         _burnList[contractAddress] = true;
     }
 
-    function setWtoken(address wtokenAddress, bool _isWtoken)
+    function setNative(address nativeAddress, bool _isNative)
         external
         override
         onlyBridge
     {
-        isWtoken[wtokenAddress] = _isWtoken;
+        isNative[nativeAddress] = _isNative;
     }
 }

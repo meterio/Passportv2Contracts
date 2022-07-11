@@ -37,5 +37,5 @@ interface IERCHandler {
         view
         returns (address);
 
-    function setWtoken(address wtokenAddress,bool _isWtoken) external;
+    function setNative(address nativeAddress,bool _isNative) external;
 }

@@ -31,16 +31,15 @@ interface ERC1155HandlerUpgradeableInterface extends ethers.utils.Interface {
     "deposit(bytes32,address,bytes)": FunctionFragment;
     "executeProposal(bytes32,bytes)": FunctionFragment;
     "initialize(address)": FunctionFragment;
-    "isWtoken(address)": FunctionFragment;
+    "isNative(address)": FunctionFragment;
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setBurnable(address)": FunctionFragment;
+    "setNative(address,bool)": FunctionFragment;
     "setResource(bytes32,address)": FunctionFragment;
-    "setWtoken(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
     "withdrawETH(bytes)": FunctionFragment;
-    "wtoken()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -69,7 +68,7 @@ interface ERC1155HandlerUpgradeableInterface extends ethers.utils.Interface {
     values: [BytesLike, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "initialize", values: [string]): string;
-  encodeFunctionData(functionFragment: "isWtoken", values: [string]): string;
+  encodeFunctionData(functionFragment: "isNative", values: [string]): string;
   encodeFunctionData(
     functionFragment: "onERC1155BatchReceived",
     values: [string, string, BigNumberish[], BigNumberish[], BytesLike]
@@ -80,12 +79,12 @@ interface ERC1155HandlerUpgradeableInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "setBurnable", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "setResource",
-    values: [BytesLike, string]
+    functionFragment: "setNative",
+    values: [string, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: "setWtoken",
-    values: [string, boolean]
+    functionFragment: "setResource",
+    values: [BytesLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -96,7 +95,6 @@ interface ERC1155HandlerUpgradeableInterface extends ethers.utils.Interface {
     functionFragment: "withdrawETH",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "wtoken", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "_bridgeAddress",
@@ -121,7 +119,7 @@ interface ERC1155HandlerUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isWtoken", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isNative", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "onERC1155BatchReceived",
     data: BytesLike
@@ -134,11 +132,11 @@ interface ERC1155HandlerUpgradeableInterface extends ethers.utils.Interface {
     functionFragment: "setBurnable",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setNative", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setResource",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setWtoken", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -148,7 +146,6 @@ interface ERC1155HandlerUpgradeableInterface extends ethers.utils.Interface {
     functionFragment: "withdrawETH",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "wtoken", data: BytesLike): Result;
 
   events: {};
 }
@@ -267,14 +264,14 @@ export class ERC1155HandlerUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    isWtoken(
+    isNative(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
     }>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -327,6 +324,18 @@ export class ERC1155HandlerUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -336,18 +345,6 @@ export class ERC1155HandlerUpgradeable extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -384,14 +381,6 @@ export class ERC1155HandlerUpgradeable extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    wtoken(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
   };
 
   _bridgeAddress(overrides?: CallOverrides): Promise<string>;
@@ -468,9 +457,9 @@ export class ERC1155HandlerUpgradeable extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  isWtoken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  isNative(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
-  "isWtoken(address)"(
+  "isNative(address)"(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -521,6 +510,18 @@ export class ERC1155HandlerUpgradeable extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setNative(
+    nativeAddress: string,
+    _isNative: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setNative(address,bool)"(
+    nativeAddress: string,
+    _isNative: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   setResource(
     resourceID: BytesLike,
     contractAddress: string,
@@ -530,18 +531,6 @@ export class ERC1155HandlerUpgradeable extends Contract {
   "setResource(bytes32,address)"(
     resourceID: BytesLike,
     contractAddress: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setWtoken(
-    wtokenAddress: string,
-    _isWtoken: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setWtoken(address,bool)"(
-    wtokenAddress: string,
-    _isWtoken: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -574,10 +563,6 @@ export class ERC1155HandlerUpgradeable extends Contract {
     data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  wtoken(overrides?: CallOverrides): Promise<string>;
-
-  "wtoken()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     _bridgeAddress(overrides?: CallOverrides): Promise<string>;
@@ -654,9 +639,9 @@ export class ERC1155HandlerUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    isWtoken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+    isNative(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -707,6 +692,18 @@ export class ERC1155HandlerUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -716,18 +713,6 @@ export class ERC1155HandlerUpgradeable extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -754,10 +739,6 @@ export class ERC1155HandlerUpgradeable extends Contract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    wtoken(overrides?: CallOverrides): Promise<string>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -840,9 +821,9 @@ export class ERC1155HandlerUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    isWtoken(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    isNative(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -893,6 +874,18 @@ export class ERC1155HandlerUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -902,18 +895,6 @@ export class ERC1155HandlerUpgradeable extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -940,10 +921,6 @@ export class ERC1155HandlerUpgradeable extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    wtoken(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1029,12 +1006,12 @@ export class ERC1155HandlerUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    isWtoken(
+    isNative(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1085,6 +1062,18 @@ export class ERC1155HandlerUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -1094,18 +1083,6 @@ export class ERC1155HandlerUpgradeable extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1138,9 +1115,5 @@ export class ERC1155HandlerUpgradeable extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    wtoken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

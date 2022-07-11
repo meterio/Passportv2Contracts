@@ -31,6 +31,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "_depositCounts(uint8)": FunctionFragment;
     "_domainID()": FunctionFragment;
     "_expiry()": FunctionFragment;
+    "_fee()": FunctionFragment;
     "_feeHandler()": FunctionFragment;
     "_hasVotedOnProposal(uint72,bytes32,address)": FunctionFragment;
     "_relayerThreshold()": FunctionFragment;
@@ -46,11 +47,13 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "adminSetDepositNonce(uint8,uint64)": FunctionFragment;
     "adminSetForwarder(address,bool)": FunctionFragment;
     "adminSetGenericResource(address,bytes32,address,bytes4,uint256,bytes4)": FunctionFragment;
+    "adminSetNativeResource(address)": FunctionFragment;
     "adminSetResource(address,bytes32,address)": FunctionFragment;
-    "adminSetWtoken(bytes32,address,bool)": FunctionFragment;
     "adminUnpauseTransfers()": FunctionFragment;
     "adminWithdraw(address,bytes)": FunctionFragment;
     "adminWithdrawETH(address,bytes)": FunctionFragment;
+    "adminsetNative(bytes32,address,bool)": FunctionFragment;
+    "calculateFee(uint8,bytes32,bytes,bytes)": FunctionFragment;
     "cancelProposal(uint8,uint64,bytes32)": FunctionFragment;
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "deposit(uint8,bytes32,bytes,bytes)": FunctionFragment;
@@ -97,6 +100,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "_domainID", values?: undefined): string;
   encodeFunctionData(functionFragment: "_expiry", values?: undefined): string;
+  encodeFunctionData(functionFragment: "_fee", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "_feeHandler",
     values?: undefined
@@ -158,12 +162,12 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     values: [string, BytesLike, string, BytesLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "adminSetResource",
-    values: [string, BytesLike, string]
+    functionFragment: "adminSetNativeResource",
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "adminSetWtoken",
-    values: [BytesLike, string, boolean]
+    functionFragment: "adminSetResource",
+    values: [string, BytesLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "adminUnpauseTransfers",
@@ -176,6 +180,14 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "adminWithdrawETH",
     values: [string, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminsetNative",
+    values: [BytesLike, string, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateFee",
+    values: [BigNumberish, BytesLike, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelProposal",
@@ -279,6 +291,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "_domainID", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "_expiry", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "_fee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "_feeHandler",
     data: BytesLike
@@ -340,11 +353,11 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "adminSetResource",
+    functionFragment: "adminSetNativeResource",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "adminSetWtoken",
+    functionFragment: "adminSetResource",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -357,6 +370,14 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "adminWithdrawETH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminsetNative",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -536,6 +557,14 @@ export class BridgeUpgradeable extends Contract {
       0: number;
     }>;
 
+    _fee(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
     _feeHandler(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
@@ -704,6 +733,16 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    adminSetNativeResource(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetNativeResource(address)"(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     adminSetResource(
       handlerAddress: string,
       resourceID: BytesLike,
@@ -715,20 +754,6 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    adminSetWtoken(
-      resourceID: BytesLike,
-      wtokenAddress: string,
-      isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "adminSetWtoken(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      wtokenAddress: string,
-      isWtoken: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -761,6 +786,40 @@ export class BridgeUpgradeable extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    adminsetNative(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminsetNative(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    calculateFee(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "calculateFee(uint8,bytes32,bytes,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     cancelProposal(
       domainID: BigNumberish,
@@ -1127,6 +1186,10 @@ export class BridgeUpgradeable extends Contract {
 
   "_expiry()"(overrides?: CallOverrides): Promise<number>;
 
+  _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   _feeHandler(overrides?: CallOverrides): Promise<string>;
 
   "_feeHandler()"(overrides?: CallOverrides): Promise<string>;
@@ -1273,6 +1336,16 @@ export class BridgeUpgradeable extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  adminSetNativeResource(
+    handlerAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetNativeResource(address)"(
+    handlerAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   adminSetResource(
     handlerAddress: string,
     resourceID: BytesLike,
@@ -1284,20 +1357,6 @@ export class BridgeUpgradeable extends Contract {
     handlerAddress: string,
     resourceID: BytesLike,
     tokenAddress: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  adminSetWtoken(
-    resourceID: BytesLike,
-    wtokenAddress: string,
-    isWtoken: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "adminSetWtoken(bytes32,address,bool)"(
-    resourceID: BytesLike,
-    wtokenAddress: string,
-    isWtoken: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1330,6 +1389,36 @@ export class BridgeUpgradeable extends Contract {
     data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  adminsetNative(
+    resourceID: BytesLike,
+    nativeAddress: string,
+    isNative: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminsetNative(bytes32,address,bool)"(
+    resourceID: BytesLike,
+    nativeAddress: string,
+    isNative: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  calculateFee(
+    destinationDomainID: BigNumberish,
+    resourceID: BytesLike,
+    depositData: BytesLike,
+    feeData: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "calculateFee(uint8,bytes32,bytes,bytes)"(
+    destinationDomainID: BigNumberish,
+    resourceID: BytesLike,
+    depositData: BytesLike,
+    feeData: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   cancelProposal(
     domainID: BigNumberish,
@@ -1647,6 +1736,10 @@ export class BridgeUpgradeable extends Contract {
 
     "_expiry()"(overrides?: CallOverrides): Promise<number>;
 
+    _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     _feeHandler(overrides?: CallOverrides): Promise<string>;
 
     "_feeHandler()"(overrides?: CallOverrides): Promise<string>;
@@ -1793,6 +1886,16 @@ export class BridgeUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    adminSetNativeResource(
+      handlerAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminSetNativeResource(address)"(
+      handlerAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     adminSetResource(
       handlerAddress: string,
       resourceID: BytesLike,
@@ -1804,20 +1907,6 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    adminSetWtoken(
-      resourceID: BytesLike,
-      wtokenAddress: string,
-      isWtoken: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "adminSetWtoken(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      wtokenAddress: string,
-      isWtoken: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1848,6 +1937,36 @@ export class BridgeUpgradeable extends Contract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    adminsetNative(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminsetNative(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    calculateFee(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calculateFee(uint8,bytes32,bytes,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     cancelProposal(
       domainID: BigNumberish,
@@ -2214,6 +2333,10 @@ export class BridgeUpgradeable extends Contract {
 
     "_expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    _fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     _feeHandler(overrides?: CallOverrides): Promise<BigNumber>;
 
     "_feeHandler()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2360,6 +2483,16 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    adminSetNativeResource(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminSetNativeResource(address)"(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     adminSetResource(
       handlerAddress: string,
       resourceID: BytesLike,
@@ -2371,20 +2504,6 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    adminSetWtoken(
-      resourceID: BytesLike,
-      wtokenAddress: string,
-      isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "adminSetWtoken(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      wtokenAddress: string,
-      isWtoken: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2414,6 +2533,36 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       data: BytesLike,
       overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    adminsetNative(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminsetNative(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    calculateFee(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calculateFee(uint8,bytes32,bytes,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     cancelProposal(
@@ -2724,6 +2873,10 @@ export class BridgeUpgradeable extends Contract {
 
     "_expiry()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    _fee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "_fee()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     _feeHandler(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "_feeHandler()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2876,6 +3029,16 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    adminSetNativeResource(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminSetNativeResource(address)"(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     adminSetResource(
       handlerAddress: string,
       resourceID: BytesLike,
@@ -2887,20 +3050,6 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    adminSetWtoken(
-      resourceID: BytesLike,
-      wtokenAddress: string,
-      isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "adminSetWtoken(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      wtokenAddress: string,
-      isWtoken: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2932,6 +3081,36 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       data: BytesLike,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    adminsetNative(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminsetNative(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    calculateFee(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "calculateFee(uint8,bytes32,bytes,bytes)"(
+      destinationDomainID: BigNumberish,
+      resourceID: BytesLike,
+      depositData: BytesLike,
+      feeData: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     cancelProposal(

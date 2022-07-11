@@ -22,8 +22,8 @@ contract HandlerHelpers is IERCHandler {
 
     // token contract address => is burnable
     mapping(address => bool) public _burnList;
-    // wtoken => bool
-    mapping(address => bool) public isWtoken;
+    // native => bool
+    mapping(address => bool) public isNative;
 
     modifier onlyBridge() {
         _onlyBridge();
@@ -88,11 +88,11 @@ contract HandlerHelpers is IERCHandler {
         _burnList[contractAddress] = true;
     }
 
-    function setWtoken(address wtokenAddress, bool _isWtoken)
+    function setNative(address nativeAddress, bool _isNative)
         external
         override
         onlyBridge
     {
-        isWtoken[wtokenAddress] = _isWtoken;
+        isNative[nativeAddress] = _isNative;
     }
 }

@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity 0.8.11;
-pragma experimental ABIEncoderV2;
 
 import {AccessControlUpgradeable as AccessControl} from "./utils/AccessControlUpgradeable.sol";
 import "./utils/PausableUpgradeable.sol";
@@ -91,6 +90,37 @@ contract BridgeUpgradeable is
     modifier onlyRelayers() {
         _onlyRelayers();
         _;
+    }
+
+    function _fee() external view returns (uint256) {
+        if (address(_feeHandler) != address(0)) {
+            return _feeHandler._fee();
+        } else {
+            return 0;
+        }
+    }
+
+    function calculateFee(
+        uint8 destinationDomainID,
+        bytes32 resourceID,
+        bytes calldata depositData,
+        bytes calldata feeData
+    ) external view returns (uint256) {
+        address sender = _msgSender();
+        if (address(_feeHandler) != address(0)) {
+            // Reverts on failure
+            (uint256 fee, ) = _feeHandler.calculateFee(
+                sender,
+                _domainID,
+                destinationDomainID,
+                resourceID,
+                depositData,
+                feeData
+            );
+            return fee;
+        } else {
+            return 0;
+        }
     }
 
     function _chainId() external view returns (uint256) {
@@ -242,11 +272,7 @@ contract BridgeUpgradeable is
         @param relayerAddress Address of relayer to be added.
         @notice Emits {RelayerAdded} event.
      */
-    function adminAddRelayer(address relayerAddress) external {
-        require(
-            !hasRole(RELAYER_ROLE, relayerAddress),
-            "addr already has relayer role!"
-        );
+    function adminAddRelayer(address relayerAddress) external onlyAdmin {
         require(_totalRelayers() < MAX_RELAYERS, "relayers limit reached");
         grantRole(RELAYER_ROLE, relayerAddress);
         emit RelayerAdded(relayerAddress);
@@ -259,11 +285,7 @@ contract BridgeUpgradeable is
         @param relayerAddress Address of relayer to be removed.
         @notice Emits {RelayerRemoved} event.
      */
-    function adminRemoveRelayer(address relayerAddress) external {
-        require(
-            hasRole(RELAYER_ROLE, relayerAddress),
-            "addr doesn't have relayer role!"
-        );
+    function adminRemoveRelayer(address relayerAddress) external onlyAdmin {
         revokeRole(RELAYER_ROLE, relayerAddress);
         emit RelayerRemoved(relayerAddress);
     }
@@ -284,6 +306,17 @@ contract BridgeUpgradeable is
         _resourceIDToHandlerAddress[resourceID] = handlerAddress;
         IERCHandler handler = IERCHandler(handlerAddress);
         handler.setResource(resourceID, tokenAddress);
+    }
+
+    function adminSetNativeResource(address handlerAddress) external onlyAdmin {
+        address tokenAddress = address(1);
+        bytes32 resourceID = bytes32(
+            uint256(uint160(tokenAddress)) * 256 + _domainID
+        );
+        _resourceIDToHandlerAddress[resourceID] = handlerAddress;
+        IERCHandler handler = IERCHandler(handlerAddress);
+        handler.setResource(resourceID, tokenAddress);
+        handler.setNative(tokenAddress, true);
     }
 
     /**
@@ -357,15 +390,15 @@ contract BridgeUpgradeable is
         isValidForwarder[forwarder] = valid;
     }
 
-    function adminSetWtoken(
+    function adminsetNative(
         bytes32 resourceID,
-        address wtokenAddress,
-        bool isWtoken
+        address nativeAddress,
+        bool isNative
     ) external onlyAdmin {
         IERCHandler handler = IERCHandler(
             _resourceIDToHandlerAddress[resourceID]
         );
-        handler.setWtoken(wtokenAddress, isWtoken);
+        handler.setNative(nativeAddress, isNative);
     }
 
     /**
@@ -423,11 +456,11 @@ contract BridgeUpgradeable is
         IERCHandler handler = IERCHandler(handlerAddress);
         handler.withdraw(data);
     }
-    
-    function adminWithdrawETH(
-        address handlerAddress,
-        bytes memory data
-    ) external onlyAdmin {
+
+    function adminWithdrawETH(address handlerAddress, bytes memory data)
+        external
+        onlyAdmin
+    {
         IERCHandler handler = IERCHandler(handlerAddress);
         handler.withdrawETH(data);
     }

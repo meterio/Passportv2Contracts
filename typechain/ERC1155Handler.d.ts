@@ -30,12 +30,12 @@ interface ERC1155HandlerInterface extends ethers.utils.Interface {
     "_tokenContractAddressToResourceID(address)": FunctionFragment;
     "deposit(bytes32,address,bytes)": FunctionFragment;
     "executeProposal(bytes32,bytes)": FunctionFragment;
-    "isWtoken(address)": FunctionFragment;
+    "isNative(address)": FunctionFragment;
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setBurnable(address)": FunctionFragment;
+    "setNative(address,bool)": FunctionFragment;
     "setResource(bytes32,address)": FunctionFragment;
-    "setWtoken(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
     "withdrawETH(bytes)": FunctionFragment;
@@ -66,7 +66,7 @@ interface ERC1155HandlerInterface extends ethers.utils.Interface {
     functionFragment: "executeProposal",
     values: [BytesLike, BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "isWtoken", values: [string]): string;
+  encodeFunctionData(functionFragment: "isNative", values: [string]): string;
   encodeFunctionData(
     functionFragment: "onERC1155BatchReceived",
     values: [string, string, BigNumberish[], BigNumberish[], BytesLike]
@@ -77,12 +77,12 @@ interface ERC1155HandlerInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "setBurnable", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "setResource",
-    values: [BytesLike, string]
+    functionFragment: "setNative",
+    values: [string, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: "setWtoken",
-    values: [string, boolean]
+    functionFragment: "setResource",
+    values: [BytesLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -116,7 +116,7 @@ interface ERC1155HandlerInterface extends ethers.utils.Interface {
     functionFragment: "executeProposal",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "isWtoken", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isNative", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "onERC1155BatchReceived",
     data: BytesLike
@@ -129,11 +129,11 @@ interface ERC1155HandlerInterface extends ethers.utils.Interface {
     functionFragment: "setBurnable",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setNative", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setResource",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setWtoken", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -251,14 +251,14 @@ export class ERC1155Handler extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    isWtoken(
+    isNative(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
     }>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -311,6 +311,18 @@ export class ERC1155Handler extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -320,18 +332,6 @@ export class ERC1155Handler extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -434,9 +434,9 @@ export class ERC1155Handler extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  isWtoken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  isNative(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
-  "isWtoken(address)"(
+  "isNative(address)"(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -487,6 +487,18 @@ export class ERC1155Handler extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setNative(
+    nativeAddress: string,
+    _isNative: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setNative(address,bool)"(
+    nativeAddress: string,
+    _isNative: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   setResource(
     resourceID: BytesLike,
     contractAddress: string,
@@ -496,18 +508,6 @@ export class ERC1155Handler extends Contract {
   "setResource(bytes32,address)"(
     resourceID: BytesLike,
     contractAddress: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setWtoken(
-    wtokenAddress: string,
-    _isWtoken: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setWtoken(address,bool)"(
-    wtokenAddress: string,
-    _isWtoken: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -609,9 +609,9 @@ export class ERC1155Handler extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    isWtoken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+    isNative(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -662,6 +662,18 @@ export class ERC1155Handler extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -671,18 +683,6 @@ export class ERC1155Handler extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -781,9 +781,9 @@ export class ERC1155Handler extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    isWtoken(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    isNative(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -834,6 +834,18 @@ export class ERC1155Handler extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -843,18 +855,6 @@ export class ERC1155Handler extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -956,12 +956,12 @@ export class ERC1155Handler extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    isWtoken(
+    isNative(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1012,6 +1012,18 @@ export class ERC1155Handler extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -1021,18 +1033,6 @@ export class ERC1155Handler extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

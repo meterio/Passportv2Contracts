@@ -308,7 +308,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         _resourceIDToHandlerAddress[resourceID] = handlerAddress;
         IERCHandler handler = IERCHandler(handlerAddress);
         handler.setResource(resourceID, tokenAddress);
-        handler.setWtoken(tokenAddress, true);
+        handler.setNative(tokenAddress, true);
     }
 
     /**
@@ -382,15 +382,15 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         isValidForwarder[forwarder] = valid;
     }
 
-    function adminSetWtoken(
+    function adminsetNative(
         bytes32 resourceID,
-        address wtokenAddress,
-        bool isWtoken
+        address nativeAddress,
+        bool isNative
     ) external onlyAdmin {
         IERCHandler handler = IERCHandler(
             _resourceIDToHandlerAddress[resourceID]
         );
-        handler.setWtoken(wtokenAddress, isWtoken);
+        handler.setNative(nativeAddress, isNative);
     }
 
     /**

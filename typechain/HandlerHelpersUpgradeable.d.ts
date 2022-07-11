@@ -27,13 +27,12 @@ interface HandlerHelpersUpgradeableInterface extends ethers.utils.Interface {
     "_contractWhitelist(address)": FunctionFragment;
     "_resourceIDToTokenContractAddress(bytes32)": FunctionFragment;
     "_tokenContractAddressToResourceID(address)": FunctionFragment;
-    "isWtoken(address)": FunctionFragment;
+    "isNative(address)": FunctionFragment;
     "setBurnable(address)": FunctionFragment;
+    "setNative(address,bool)": FunctionFragment;
     "setResource(bytes32,address)": FunctionFragment;
-    "setWtoken(address,bool)": FunctionFragment;
     "withdraw(bytes)": FunctionFragment;
     "withdrawETH(bytes)": FunctionFragment;
-    "wtoken()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -53,22 +52,21 @@ interface HandlerHelpersUpgradeableInterface extends ethers.utils.Interface {
     functionFragment: "_tokenContractAddressToResourceID",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "isWtoken", values: [string]): string;
+  encodeFunctionData(functionFragment: "isNative", values: [string]): string;
   encodeFunctionData(functionFragment: "setBurnable", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "setNative",
+    values: [string, boolean]
+  ): string;
   encodeFunctionData(
     functionFragment: "setResource",
     values: [BytesLike, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setWtoken",
-    values: [string, boolean]
   ): string;
   encodeFunctionData(functionFragment: "withdraw", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "withdrawETH",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "wtoken", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "_bridgeAddress",
@@ -87,22 +85,21 @@ interface HandlerHelpersUpgradeableInterface extends ethers.utils.Interface {
     functionFragment: "_tokenContractAddressToResourceID",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "isWtoken", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isNative", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setBurnable",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setNative", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setResource",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setWtoken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "withdrawETH",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "wtoken", data: BytesLike): Result;
 
   events: {};
 }
@@ -185,14 +182,14 @@ export class HandlerHelpersUpgradeable extends Contract {
       0: string;
     }>;
 
-    isWtoken(
+    isNative(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
     }>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -209,6 +206,18 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -218,18 +227,6 @@ export class HandlerHelpersUpgradeable extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -252,14 +249,6 @@ export class HandlerHelpersUpgradeable extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    wtoken(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
   };
 
   _bridgeAddress(overrides?: CallOverrides): Promise<string>;
@@ -300,9 +289,9 @@ export class HandlerHelpersUpgradeable extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  isWtoken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  isNative(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
-  "isWtoken(address)"(
+  "isNative(address)"(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -317,6 +306,18 @@ export class HandlerHelpersUpgradeable extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setNative(
+    nativeAddress: string,
+    _isNative: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setNative(address,bool)"(
+    nativeAddress: string,
+    _isNative: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   setResource(
     resourceID: BytesLike,
     contractAddress: string,
@@ -326,18 +327,6 @@ export class HandlerHelpersUpgradeable extends Contract {
   "setResource(bytes32,address)"(
     resourceID: BytesLike,
     contractAddress: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setWtoken(
-    wtokenAddress: string,
-    _isWtoken: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setWtoken(address,bool)"(
-    wtokenAddress: string,
-    _isWtoken: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -360,10 +349,6 @@ export class HandlerHelpersUpgradeable extends Contract {
     data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  wtoken(overrides?: CallOverrides): Promise<string>;
-
-  "wtoken()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     _bridgeAddress(overrides?: CallOverrides): Promise<string>;
@@ -407,9 +392,9 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    isWtoken(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+    isNative(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -424,6 +409,18 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -433,18 +430,6 @@ export class HandlerHelpersUpgradeable extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -461,10 +446,6 @@ export class HandlerHelpersUpgradeable extends Contract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    wtoken(overrides?: CallOverrides): Promise<string>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -511,9 +492,9 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isWtoken(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    isNative(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -528,6 +509,18 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -537,18 +530,6 @@ export class HandlerHelpersUpgradeable extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -565,10 +546,6 @@ export class HandlerHelpersUpgradeable extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    wtoken(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -618,12 +595,12 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isWtoken(
+    isNative(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isWtoken(address)"(
+    "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -638,6 +615,18 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    setNative(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setNative(address,bool)"(
+      nativeAddress: string,
+      _isNative: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -647,18 +636,6 @@ export class HandlerHelpersUpgradeable extends Contract {
     "setResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setWtoken(
-      wtokenAddress: string,
-      _isWtoken: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setWtoken(address,bool)"(
-      wtokenAddress: string,
-      _isWtoken: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -681,9 +658,5 @@ export class HandlerHelpersUpgradeable extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    wtoken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "wtoken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

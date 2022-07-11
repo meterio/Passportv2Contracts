@@ -3,7 +3,6 @@ pragma solidity 0.8.11;
 pragma experimental ABIEncoderV2;
 
 import "../interfaces/IDepositExecute.sol";
-import "../interfaces/IWETH.sol";
 import "./HandlerHelpers.sol";
 import "../ERC20Safe.sol";
 
@@ -46,7 +45,7 @@ contract ERC20Handler is IDepositExecute, HandlerHelpers, ERC20Safe {
 
         if (_burnList[tokenAddress]) {
             burnERC20(tokenAddress, depositer, amount);
-        } else if (isWtoken[tokenAddress]) {
+        } else if (isNative[tokenAddress]) {
             depositETH(amount);
         } else {
             lockERC20(tokenAddress, depositer, address(this), amount);
@@ -95,7 +94,7 @@ contract ERC20Handler is IDepositExecute, HandlerHelpers, ERC20Safe {
 
         if (_burnList[tokenAddress]) {
             mintERC20(tokenAddress, address(recipientAddress), amount);
-        } else if (isWtoken[tokenAddress]) {
+        } else if (isNative[tokenAddress]) {
             withdrawETH(address(recipientAddress), amount);
         } else {
             releaseERC20(tokenAddress, address(recipientAddress), amount);

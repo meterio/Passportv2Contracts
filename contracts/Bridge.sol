@@ -382,7 +382,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         isValidForwarder[forwarder] = valid;
     }
 
-    function adminsetNative(
+    function adminSetNative(
         bytes32 resourceID,
         address nativeAddress,
         bool isNative
@@ -391,6 +391,10 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
             _resourceIDToHandlerAddress[resourceID]
         );
         handler.setNative(nativeAddress, isNative);
+    }
+
+    function adminSetDomainId(uint8 domainID) external onlyAdmin {
+        _domainID = domainID;
     }
 
     /**

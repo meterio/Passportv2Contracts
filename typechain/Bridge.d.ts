@@ -45,14 +45,15 @@ interface BridgeInterface extends ethers.utils.Interface {
     "adminRemoveRelayer(address)": FunctionFragment;
     "adminSetBurnable(address,address)": FunctionFragment;
     "adminSetDepositNonce(uint8,uint64)": FunctionFragment;
+    "adminSetDomainId(uint8)": FunctionFragment;
     "adminSetForwarder(address,bool)": FunctionFragment;
     "adminSetGenericResource(address,bytes32,address,bytes4,uint256,bytes4)": FunctionFragment;
+    "adminSetNative(bytes32,address,bool)": FunctionFragment;
     "adminSetNativeResource(address)": FunctionFragment;
     "adminSetResource(address,bytes32,address)": FunctionFragment;
     "adminUnpauseTransfers()": FunctionFragment;
     "adminWithdraw(address,bytes)": FunctionFragment;
     "adminWithdrawETH(address,bytes)": FunctionFragment;
-    "adminsetNative(bytes32,address,bool)": FunctionFragment;
     "calculateFee(uint8,bytes32,bytes,bytes)": FunctionFragment;
     "cancelProposal(uint8,uint64,bytes32)": FunctionFragment;
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
@@ -153,12 +154,20 @@ interface BridgeInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "adminSetDomainId",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "adminSetForwarder",
     values: [string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "adminSetGenericResource",
     values: [string, BytesLike, string, BytesLike, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminSetNative",
+    values: [BytesLike, string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "adminSetNativeResource",
@@ -179,10 +188,6 @@ interface BridgeInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "adminWithdrawETH",
     values: [string, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "adminsetNative",
-    values: [BytesLike, string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "calculateFee",
@@ -340,11 +345,19 @@ interface BridgeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "adminSetDomainId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "adminSetForwarder",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "adminSetGenericResource",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminSetNative",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -365,10 +378,6 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "adminWithdrawETH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "adminsetNative",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -695,6 +704,16 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    adminSetDomainId(
+      domainID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetDomainId(uint8)"(
+      domainID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     adminSetForwarder(
       forwarder: string,
       valid: boolean,
@@ -724,6 +743,20 @@ export class Bridge extends Contract {
       depositFunctionSig: BytesLike,
       depositFunctionDepositerOffset: BigNumberish,
       executeFunctionSig: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    adminSetNative(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetNative(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -778,20 +811,6 @@ export class Bridge extends Contract {
     "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    adminsetNative(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "adminsetNative(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1282,6 +1301,16 @@ export class Bridge extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  adminSetDomainId(
+    domainID: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetDomainId(uint8)"(
+    domainID: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   adminSetForwarder(
     forwarder: string,
     valid: boolean,
@@ -1311,6 +1340,20 @@ export class Bridge extends Contract {
     depositFunctionSig: BytesLike,
     depositFunctionDepositerOffset: BigNumberish,
     executeFunctionSig: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  adminSetNative(
+    resourceID: BytesLike,
+    nativeAddress: string,
+    isNative: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetNative(bytes32,address,bool)"(
+    resourceID: BytesLike,
+    nativeAddress: string,
+    isNative: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1365,20 +1408,6 @@ export class Bridge extends Contract {
   "adminWithdrawETH(address,bytes)"(
     handlerAddress: string,
     data: BytesLike,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  adminsetNative(
-    resourceID: BytesLike,
-    nativeAddress: string,
-    isNative: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "adminsetNative(bytes32,address,bool)"(
-    resourceID: BytesLike,
-    nativeAddress: string,
-    isNative: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1816,6 +1845,16 @@ export class Bridge extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    adminSetDomainId(
+      domainID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminSetDomainId(uint8)"(
+      domainID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     adminSetForwarder(
       forwarder: string,
       valid: boolean,
@@ -1845,6 +1884,20 @@ export class Bridge extends Contract {
       depositFunctionSig: BytesLike,
       depositFunctionDepositerOffset: BigNumberish,
       executeFunctionSig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    adminSetNative(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminSetNative(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1897,20 +1950,6 @@ export class Bridge extends Contract {
     "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    adminsetNative(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "adminsetNative(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2397,6 +2436,16 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    adminSetDomainId(
+      domainID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminSetDomainId(uint8)"(
+      domainID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     adminSetForwarder(
       forwarder: string,
       valid: boolean,
@@ -2426,6 +2475,20 @@ export class Bridge extends Contract {
       depositFunctionSig: BytesLike,
       depositFunctionDepositerOffset: BigNumberish,
       executeFunctionSig: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    adminSetNative(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminSetNative(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2478,20 +2541,6 @@ export class Bridge extends Contract {
     "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: BytesLike,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    adminsetNative(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "adminsetNative(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2927,6 +2976,16 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    adminSetDomainId(
+      domainID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminSetDomainId(uint8)"(
+      domainID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     adminSetForwarder(
       forwarder: string,
       valid: boolean,
@@ -2956,6 +3015,20 @@ export class Bridge extends Contract {
       depositFunctionSig: BytesLike,
       depositFunctionDepositerOffset: BigNumberish,
       executeFunctionSig: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    adminSetNative(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminSetNative(bytes32,address,bool)"(
+      resourceID: BytesLike,
+      nativeAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3010,20 +3083,6 @@ export class Bridge extends Contract {
     "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: BytesLike,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    adminsetNative(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "adminsetNative(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

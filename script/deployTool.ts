@@ -1,5 +1,6 @@
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from "fs";
-import { Contract, Signer } from "ethers";
+import { constants, Contract, Signer } from "ethers";
+import { ethers } from "hardhat";
 
 export const allowVerifyChain = [
   "mainnet",

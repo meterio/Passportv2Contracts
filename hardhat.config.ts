@@ -3,7 +3,7 @@ import "@nomiclabs/hardhat-truffle5";
 import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 import { task } from "hardhat/config";
-import { compileSetting, allowVerifyChain } from "./script/deployTool";
+import { compileSetting } from "./script/deployTool";
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from "fs";
 import { RPCS } from "./script/network";
 const SHA256 = require('crypto-js/sha256')
@@ -15,16 +15,22 @@ import { BigNumber, BytesLike, constants, utils, Signer } from "ethers";
 
 import {
   Bridge,
+  Bridge__factory,
   ERC20Handler,
   ERC721Handler,
   ERC1155Handler,
   GenericHandler,
   TokenERC20,
   BasicFeeHandler,
-  Signatures
+  Signatures,
+  BridgeUpgradeable,
+  ERC20HandlerUpgradeable,
+  ERC721HandlerUpgradeable,
+  ERC1155HandlerUpgradeable,
+  GenericHandlerUpgradeable,
+  TransparentUpgradeableProxy
 } from "./typechain"
-import { deployContract, getContract } from "./script/deployTool";
-import { boolean } from "hardhat/internal/core/params/argumentTypes";
+import { deployContract } from "./script/deployTool";
 import { getSign } from "./script/permitSign";
 
 type Config = {
@@ -85,9 +91,9 @@ task("accounts", "Prints the list of accounts", async (taskArgs, bre) => {
   }
 });
 
-function loadConfig(network: string): Config {
+function loadConfig(network: string, proxy: boolean = false): Config {
   const path = `./deployments/${network}/`;
-  const latest = `config.json`;
+  const latest = proxy ? `config-proxy.json` : `config.json`;
 
   if (existsSync(path + latest)) {
     let json = JSON.parse(readFileSync(path + latest).toString()) as Config;
@@ -111,9 +117,9 @@ function loadConfig(network: string): Config {
   }
 }
 
-function saveConfig(network: string, json: Config) {
+function saveConfig(network: string, json: Config, proxy: boolean = false) {
   const path = `./deployments/${network}/`;
-  const latest = `config.json`;
+  const latest = proxy ? `config-proxy.json` : `config.json`;
 
   mkdirSync(path, { recursive: true });
   writeFileSync(path + latest, JSON.stringify(json));
@@ -216,6 +222,182 @@ task("deploy", "deploy contract")
         }
       }
       saveConfig(network.name, config);
+    }
+  );
+
+task("proxy-admin", "transfer proxy admin")
+  .addParam("admin", "address")
+  .setAction(
+    async ({ admin }, { ethers, run, network }) => {
+      await run("compile");
+      const signers = await ethers.getSigners();
+      const deployer = signers[0]
+      let config = loadConfig(network.name, true);
+
+      const bridge = await ethers.getContractAt("TransparentUpgradeableProxy", config.bridge, deployer) as TransparentUpgradeableProxy;
+      await bridge.changeAdmin(admin);
+
+      const erc20Handler = await ethers.getContractAt("TransparentUpgradeableProxy", config.erc20Handler, deployer) as TransparentUpgradeableProxy;
+      await erc20Handler.changeAdmin(admin);
+
+      const erc721Handler = await ethers.getContractAt("TransparentUpgradeableProxy", config.erc721Handler, deployer) as TransparentUpgradeableProxy;
+      await erc721Handler.changeAdmin(admin);
+
+      const erc1155Handler = await ethers.getContractAt("TransparentUpgradeableProxy", config.erc1155Handler, deployer) as TransparentUpgradeableProxy;
+      await erc1155Handler.changeAdmin(admin);
+
+      const genericHandler = await ethers.getContractAt("TransparentUpgradeableProxy", config.genericHandler, deployer) as TransparentUpgradeableProxy;
+      await genericHandler.changeAdmin(admin);
+    }
+  );
+
+task("deploy-proxy", "deploy contract with proxy")
+  .addParam("contract", "contract")
+  .addOptionalParam("domain", "domain id", "0")
+  .setAction(
+    async ({ contract, domain }, { ethers, run, network }) => {
+      await run("compile");
+      const signers = await ethers.getSigners();
+      const deployer = signers[0]
+      let config = loadConfig(network.name, true);
+
+      if (contract == 'bridge') {
+        domain = domain ? domain : config.id;
+        if (domain) {
+          const impl = await deployContract(
+            "BridgeUpgradeable",
+            network.name,
+            ethers.getContractFactory,
+            deployer
+          ) as BridgeUpgradeable;
+
+          const proxy = await deployContract(
+            "TransparentUpgradeableProxy",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [
+              impl.address,
+              deployer.address,
+              impl.interface.encodeFunctionData("initialize", [domain, [], 1, 999999])
+            ]
+          ) as TransparentUpgradeableProxy;
+
+          config.bridge = proxy.address;
+          config.name = network.name;
+          config.type = "evm";
+          config.from = deployer.address;
+          config.id = domain;
+        }
+      } else if (contract == "erc20Handler") {
+        const bridgeAddress = config.bridge;
+        if (bridgeAddress != "") {
+          const impl = await deployContract(
+            "ERC20HandlerUpgradeable",
+            network.name,
+            ethers.getContractFactory,
+            deployer
+          ) as ERC20HandlerUpgradeable;
+
+          const proxy = await deployContract(
+            "TransparentUpgradeableProxy",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [
+              impl.address,
+              deployer.address,
+              impl.interface.encodeFunctionData("initialize", [bridgeAddress])]
+          ) as TransparentUpgradeableProxy;
+
+          config.erc20Handler = proxy.address;
+        }
+      } else if (contract == "erc721Handler") {
+        const bridgeAddress = config.bridge;
+        if (bridgeAddress != "") {
+          const impl = await deployContract(
+            "ERC721HandlerUpgradeable",
+            network.name,
+            ethers.getContractFactory,
+            deployer
+          ) as ERC721HandlerUpgradeable;
+
+          const proxy = await deployContract(
+            "TransparentUpgradeableProxy",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [
+              impl.address,
+              deployer.address,
+              impl.interface.encodeFunctionData("initialize", [bridgeAddress])]
+          ) as TransparentUpgradeableProxy;
+
+          config.erc721Handler = proxy.address;
+        }
+      } else if (contract == "erc1155Handler") {
+        const bridgeAddress = config.bridge;
+        if (bridgeAddress != "") {
+          const impl = await deployContract(
+            "ERC1155HandlerUpgradeable",
+            network.name,
+            ethers.getContractFactory,
+            deployer
+          ) as ERC1155HandlerUpgradeable;
+
+          const proxy = await deployContract(
+            "TransparentUpgradeableProxy",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [
+              impl.address,
+              deployer.address,
+              impl.interface.encodeFunctionData("initialize", [bridgeAddress])]
+          ) as TransparentUpgradeableProxy;
+
+          config.erc1155Handler = proxy.address;
+        }
+      } else if (contract == "genericHandler") {
+        const bridgeAddress = config.bridge;
+        if (bridgeAddress != "") {
+          const impl = await deployContract(
+            "GenericHandlerUpgradeable",
+            network.name,
+            ethers.getContractFactory,
+            deployer
+          ) as GenericHandlerUpgradeable;
+
+          const proxy = await deployContract(
+            "TransparentUpgradeableProxy",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [
+              impl.address,
+              deployer.address,
+              impl.interface.encodeFunctionData("initialize", [bridgeAddress])]
+          ) as TransparentUpgradeableProxy;
+
+          config.genericHandler = proxy.address;
+        }
+      } else if (contract == "feeHandler") {
+        const bridgeAddress = config.bridge;
+        if (bridgeAddress != "") {
+          const instant = await deployContract(
+            "BasicFeeHandler",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [bridgeAddress]
+          ) as BasicFeeHandler;
+          config.feeHandler = instant.address;
+          const bridgeInstant = await ethers.getContractAt("Bridge", config.bridge, deployer) as Bridge;
+          let receipt = await bridgeInstant.adminChangeFeeHandler(config.feeHandler);
+          console.log(await receipt.wait())
+        }
+      }
+      saveConfig(network.name, config, true);
     }
   );
 

@@ -264,11 +264,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         @param relayerAddress Address of relayer to be added.
         @notice Emits {RelayerAdded} event.
      */
-    function adminAddRelayer(address relayerAddress) external {
-        require(
-            !hasRole(RELAYER_ROLE, relayerAddress),
-            "addr already has relayer role!"
-        );
+    function adminAddRelayer(address relayerAddress) external onlyAdmin {
         require(_totalRelayers() < MAX_RELAYERS, "relayers limit reached");
         grantRole(RELAYER_ROLE, relayerAddress);
         emit RelayerAdded(relayerAddress);
@@ -281,11 +277,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         @param relayerAddress Address of relayer to be removed.
         @notice Emits {RelayerRemoved} event.
      */
-    function adminRemoveRelayer(address relayerAddress) external {
-        require(
-            hasRole(RELAYER_ROLE, relayerAddress),
-            "addr doesn't have relayer role!"
-        );
+    function adminRemoveRelayer(address relayerAddress) external onlyAdmin {
         revokeRole(RELAYER_ROLE, relayerAddress);
         emit RelayerRemoved(relayerAddress);
     }

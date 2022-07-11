@@ -245,7 +245,7 @@ task("deploy-token", "deploy contract")
     async ({ name, symbol, amount, from }, { ethers, run, network }) => {
       await run("compile");
       const signers = await ethers.getSigners();
-      const deployer = signers[4]
+      const deployer = signers[0]
       let config = loadConfig(network.name);
       const instant = await deployContract(
         "TokenERC20",

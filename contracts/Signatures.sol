@@ -7,17 +7,20 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract Signatures is AccessControl {
     using SafeCast for *;
+    // 0xc4cb5d35714699d6e85b9562b644e60393b418d974a5c1dd8efaadac37a142c5
     bytes32 public constant PERMIT_TYPEHASH =
         keccak256(
             "PermitBridge(uint8 domainID,uint64 depositNonce,bytes32 resourceID,bytes data)"
         );
+    // 0x8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f
     bytes32 public constant _TYPE_HASH =
         keccak256(
             "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
         );
     bytes32 public constant RELAYER_ROLE = keccak256("RELAYER_ROLE");
-
+    // 0x058443738ec3641a3233a9f285e16671e4ad9755445580d761017e695f75052b
     bytes32 private _HASHED_NAME = keccak256(bytes("PermitBridge"));
+    // 0xe6bbd6277e1bf288eed5e8d1780f9a50b239e86b153736bceebccf4ea79d90b3
     bytes32 private _HASHED_VERSION = keccak256(bytes("1.0"));
 
     mapping(uint8 => uint8) public _relayerThreshold;

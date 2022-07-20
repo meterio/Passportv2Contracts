@@ -8,6 +8,7 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy": "hardhat deploy",
+    "sign-test": "hardhat sign-test --network rinkeby",
     "flatten": "sh flatten.sh"
   },
   "license": "MIT",

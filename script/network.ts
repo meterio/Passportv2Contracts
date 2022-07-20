@@ -73,7 +73,7 @@ export const RPCS = {
     },
   },
   metertest: {
-    url: `http://s03.meter.io:8545`,
+    url: `https://rpctest.meter.io`,
     chainId: 83,
     gasPrice: 500000000000,
     accounts: {

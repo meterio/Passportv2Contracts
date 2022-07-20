@@ -59,7 +59,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "deposit(uint8,bytes32,bytes,bytes)": FunctionFragment;
     "executeProposal(uint8,uint64,bytes,bytes32,bool)": FunctionFragment;
-    "getProposal(uint8,uint64,bytes32)": FunctionFragment;
+    "getProposal(uint8,uint64,bytes32,bytes)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getRoleMember(bytes32,uint256)": FunctionFragment;
     "getRoleMemberCount(bytes32)": FunctionFragment;
@@ -212,7 +212,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getProposal",
-    values: [BigNumberish, BigNumberish, BytesLike]
+    values: [BigNumberish, BigNumberish, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getRoleAdmin",
@@ -913,7 +913,8 @@ export class BridgeUpgradeable extends Contract {
     getProposal(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
       0: {
@@ -928,10 +929,11 @@ export class BridgeUpgradeable extends Contract {
       };
     }>;
 
-    "getProposal(uint8,uint64,bytes32)"(
+    "getProposal(uint8,uint64,bytes32,bytes)"(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
       0: {
@@ -1518,7 +1520,8 @@ export class BridgeUpgradeable extends Contract {
   getProposal(
     originDomainID: BigNumberish,
     depositNonce: BigNumberish,
-    dataHash: BytesLike,
+    resourceID: BytesLike,
+    data: BytesLike,
     overrides?: CallOverrides
   ): Promise<{
     _status: number;
@@ -1531,10 +1534,11 @@ export class BridgeUpgradeable extends Contract {
     3: number;
   }>;
 
-  "getProposal(uint8,uint64,bytes32)"(
+  "getProposal(uint8,uint64,bytes32,bytes)"(
     originDomainID: BigNumberish,
     depositNonce: BigNumberish,
-    dataHash: BytesLike,
+    resourceID: BytesLike,
+    data: BytesLike,
     overrides?: CallOverrides
   ): Promise<{
     _status: number;
@@ -2076,7 +2080,8 @@ export class BridgeUpgradeable extends Contract {
     getProposal(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
       _status: number;
@@ -2089,10 +2094,11 @@ export class BridgeUpgradeable extends Contract {
       3: number;
     }>;
 
-    "getProposal(uint8,uint64,bytes32)"(
+    "getProposal(uint8,uint64,bytes32,bytes)"(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
       _status: number;
@@ -2683,14 +2689,16 @@ export class BridgeUpgradeable extends Contract {
     getProposal(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getProposal(uint8,uint64,bytes32)"(
+    "getProposal(uint8,uint64,bytes32,bytes)"(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -3241,14 +3249,16 @@ export class BridgeUpgradeable extends Contract {
     getProposal(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getProposal(uint8,uint64,bytes32)"(
+    "getProposal(uint8,uint64,bytes32,bytes)"(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -143,8 +143,13 @@ const _abi = [
       },
       {
         internalType: "bytes32",
-        name: "dataHash",
+        name: "resourceID",
         type: "bytes32",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
       },
     ],
     name: "getProposal",

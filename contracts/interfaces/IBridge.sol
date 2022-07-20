@@ -30,7 +30,8 @@ interface IBridge {
     function getProposal(
         uint8 originDomainID,
         uint64 depositNonce,
-        bytes32 dataHash
+        bytes32 resourceID,
+        bytes calldata data
     ) external view returns (Proposal memory);
 
     function _relayerThreshold() external view returns (uint8);

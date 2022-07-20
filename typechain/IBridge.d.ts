@@ -28,7 +28,7 @@ interface IBridgeInterface extends ethers.utils.Interface {
     "_resourceIDToHandlerAddress(bytes32)": FunctionFragment;
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "deposit(uint8,bytes32,bytes,bytes)": FunctionFragment;
-    "getProposal(uint8,uint64,bytes32)": FunctionFragment;
+    "getProposal(uint8,uint64,bytes32,bytes)": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "_domainID", values?: undefined): string;
@@ -50,7 +50,7 @@ interface IBridgeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getProposal",
-    values: [BigNumberish, BigNumberish, BytesLike]
+    values: [BigNumberish, BigNumberish, BytesLike, BytesLike]
   ): string;
 
   decodeFunctionResult(functionFragment: "_domainID", data: BytesLike): Result;
@@ -156,7 +156,8 @@ export class IBridge extends Contract {
     getProposal(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
       0: {
@@ -171,10 +172,11 @@ export class IBridge extends Contract {
       };
     }>;
 
-    "getProposal(uint8,uint64,bytes32)"(
+    "getProposal(uint8,uint64,bytes32,bytes)"(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
       0: {
@@ -245,7 +247,8 @@ export class IBridge extends Contract {
   getProposal(
     originDomainID: BigNumberish,
     depositNonce: BigNumberish,
-    dataHash: BytesLike,
+    resourceID: BytesLike,
+    data: BytesLike,
     overrides?: CallOverrides
   ): Promise<{
     _status: number;
@@ -258,10 +261,11 @@ export class IBridge extends Contract {
     3: number;
   }>;
 
-  "getProposal(uint8,uint64,bytes32)"(
+  "getProposal(uint8,uint64,bytes32,bytes)"(
     originDomainID: BigNumberish,
     depositNonce: BigNumberish,
-    dataHash: BytesLike,
+    resourceID: BytesLike,
+    data: BytesLike,
     overrides?: CallOverrides
   ): Promise<{
     _status: number;
@@ -330,7 +334,8 @@ export class IBridge extends Contract {
     getProposal(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
       _status: number;
@@ -343,10 +348,11 @@ export class IBridge extends Contract {
       3: number;
     }>;
 
-    "getProposal(uint8,uint64,bytes32)"(
+    "getProposal(uint8,uint64,bytes32,bytes)"(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
       _status: number;
@@ -418,14 +424,16 @@ export class IBridge extends Contract {
     getProposal(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getProposal(uint8,uint64,bytes32)"(
+    "getProposal(uint8,uint64,bytes32,bytes)"(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -488,14 +496,16 @@ export class IBridge extends Contract {
     getProposal(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getProposal(uint8,uint64,bytes32)"(
+    "getProposal(uint8,uint64,bytes32,bytes)"(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: BytesLike,
+      resourceID: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

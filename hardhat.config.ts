@@ -23,6 +23,7 @@ import {
   TokenERC20,
   BasicFeeHandler,
   Signatures,
+  SignaturesUpgradeable,
   BridgeUpgradeable,
   ERC20HandlerUpgradeable,
   ERC721HandlerUpgradeable,
@@ -44,6 +45,7 @@ type Config = {
   erc1155Handler: string;
   genericHandler: string;
   feeHandler: string;
+  signature: string;
   tokens: Token[];
 }
 
@@ -111,6 +113,7 @@ function loadConfig(network: string, proxy: boolean = false): Config {
       erc1155Handler: "",
       genericHandler: "",
       feeHandler: "",
+      signature: "",
       tokens: []
     };
     return json;
@@ -474,6 +477,56 @@ task("update-proxy", "deploy contract with proxy")
           await proxy.upgradeTo(impl.address)
         }
       }
+    }
+  );
+
+
+task("deploy-sig-proxy", "deploy signature contract")
+  .setAction(
+    async ({ }, { ethers, run, network }) => {
+      await run("compile");
+      const signers = await ethers.getSigners();
+      const deployer = signers[0]
+      const admin = signers[1]
+      let config = loadConfig(network.name, true);
+
+      const impl = await deployContract(
+        "SignaturesUpgradeable",
+        network.name,
+        ethers.getContractFactory,
+        deployer
+      ) as SignaturesUpgradeable;
+
+      const proxy = await deployContract(
+        "TransparentUpgradeableProxy",
+        network.name,
+        ethers.getContractFactory,
+        deployer,
+        [
+          impl.address,
+          deployer.address,
+          impl.interface.encodeFunctionData("initialize", [admin.address])
+        ]
+      ) as TransparentUpgradeableProxy;
+      config.signature = proxy.address;
+      saveConfig(network.name, config, true);
+    }
+  );
+
+
+task("update-signature", "deploy signature contract")
+  .setAction(
+    async ({ }, { ethers, run, network }) => {
+      await run("compile");
+      const signers = await ethers.getSigners();
+      const deployer = signers[0]
+
+      const instant = await deployContract(
+        "Signatures",
+        network.name,
+        ethers.getContractFactory,
+        deployer
+      ) as Signatures;
     }
   );
 

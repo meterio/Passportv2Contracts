@@ -173,6 +173,11 @@ contract Signatures is AccessControl {
                 keccak256(data)
             )
         );
+        require(
+            signatures[depositHash].length <
+                _relayerThreshold[destinationDomainID],
+            "Signture aleardy pass"
+        );
         signatures[depositHash].push(signature);
         emit SubmitSignature(
             originDomainID,

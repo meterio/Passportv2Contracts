@@ -185,7 +185,8 @@ contract BridgeUpgradeable is
         uint8 domainID,
         address[] memory initialRelayers,
         uint256 initialRelayerThreshold,
-        uint256 expiry
+        uint256 expiry,
+        address admin
     ) public initializer {
         __Pausable_init();
         __EIP712_init("PermitBridge", "1.0");
@@ -193,7 +194,7 @@ contract BridgeUpgradeable is
         _relayerThreshold = initialRelayerThreshold.toUint8();
         _expiry = expiry.toUint40();
 
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _setupRole(DEFAULT_ADMIN_ROLE, admin);
 
         for (uint256 i; i < initialRelayers.length; i++) {
             grantRole(RELAYER_ROLE, initialRelayers[i]);

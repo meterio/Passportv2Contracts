@@ -262,6 +262,7 @@ task("deploy-proxy", "deploy contract with proxy")
       await run("compile");
       const signers = await ethers.getSigners();
       const deployer = signers[0]
+      const admin = signers[1]
       let config = loadConfig(network.name, true);
 
       if (contract == 'bridge') {
@@ -282,7 +283,7 @@ task("deploy-proxy", "deploy contract with proxy")
             [
               impl.address,
               deployer.address,
-              impl.interface.encodeFunctionData("initialize", [domain, [], 1, 999999])
+              impl.interface.encodeFunctionData("initialize", [domain, [], 1, 999999, admin.address])
             ]
           ) as TransparentUpgradeableProxy;
 
@@ -396,6 +397,21 @@ task("deploy-proxy", "deploy contract with proxy")
           ) as BasicFeeHandler;
           config.feeHandler = instant.address;
           const bridgeInstant = await ethers.getContractAt("Bridge", config.bridge, deployer) as Bridge;
+          let receipt = await bridgeInstant.adminChangeFeeHandler(config.feeHandler);
+          console.log(await receipt.wait())
+        }
+      } else if (contract == "feeHandler") {
+        const bridgeAddress = config.bridge;
+        if (bridgeAddress != "") {
+          const instant = await deployContract(
+            "BasicFeeHandler",
+            network.name,
+            ethers.getContractFactory,
+            deployer,
+            [bridgeAddress]
+          ) as BasicFeeHandler;
+          config.feeHandler = instant.address;
+          const bridgeInstant = await ethers.getContractAt("Bridge", config.bridge, admin) as Bridge;
           let receipt = await bridgeInstant.adminChangeFeeHandler(config.feeHandler);
           console.log(await receipt.wait())
         }

@@ -66,7 +66,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "getRoleMemberIndex(bytes32,address)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
-    "initialize(uint8,address[],uint256,uint256)": FunctionFragment;
+    "initialize(uint8,address[],uint256,uint256,address)": FunctionFragment;
     "isRelayer(address)": FunctionFragment;
     "isValidForwarder(address)": FunctionFragment;
     "paused()": FunctionFragment;
@@ -240,7 +240,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [BigNumberish, string[], BigNumberish, BigNumberish]
+    values: [BigNumberish, string[], BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(functionFragment: "isRelayer", values: [string]): string;
   encodeFunctionData(
@@ -1041,14 +1041,16 @@ export class BridgeUpgradeable extends Contract {
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
+      admin: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(uint8,address[],uint256,uint256)"(
+    "initialize(uint8,address[],uint256,uint256,address)"(
       domainID: BigNumberish,
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
+      admin: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1621,14 +1623,16 @@ export class BridgeUpgradeable extends Contract {
     initialRelayers: string[],
     initialRelayerThreshold: BigNumberish,
     expiry: BigNumberish,
+    admin: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(uint8,address[],uint256,uint256)"(
+  "initialize(uint8,address[],uint256,uint256,address)"(
     domainID: BigNumberish,
     initialRelayers: string[],
     initialRelayerThreshold: BigNumberish,
     expiry: BigNumberish,
+    admin: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2181,14 +2185,16 @@ export class BridgeUpgradeable extends Contract {
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
+      admin: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(uint8,address[],uint256,uint256)"(
+    "initialize(uint8,address[],uint256,uint256,address)"(
       domainID: BigNumberish,
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
+      admin: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2775,14 +2781,16 @@ export class BridgeUpgradeable extends Contract {
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
+      admin: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(uint8,address[],uint256,uint256)"(
+    "initialize(uint8,address[],uint256,uint256,address)"(
       domainID: BigNumberish,
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
+      admin: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3335,14 +3343,16 @@ export class BridgeUpgradeable extends Contract {
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
+      admin: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(uint8,address[],uint256,uint256)"(
+    "initialize(uint8,address[],uint256,uint256,address)"(
       domainID: BigNumberish,
       initialRelayers: string[],
       initialRelayerThreshold: BigNumberish,
       expiry: BigNumberish,
+      admin: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

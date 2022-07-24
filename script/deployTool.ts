@@ -4,18 +4,18 @@ import { ethers } from "hardhat";
 
 export const allowVerifyChain = [
   "mainnet",
-  "ropsten",
-  "rinkeby",
-  "goerli",
-  "kovan",
-  "bsctest",
-  "bscmain",
-  "hecotest",
-  "hecomain",
-  "maticmain",
-  "ftmtest",
-  "ftmmain",
-  "hoomain",
+  // "ropsten",
+  // "rinkeby",
+  // "goerli",
+  // "kovan",
+  // "bsctest",
+  // "bscmain",
+  // "hecotest",
+  // "hecomain",
+  // "maticmain",
+  // "ftmtest",
+  // "ftmmain",
+  // "hoomain",
 ];
 
 type AddressMap = { [name: string]: string };

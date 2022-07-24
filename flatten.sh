@@ -1,1 +1,14 @@
+npx hardhat flatten contracts/proxy/TransparentUpgradeableProxy.sol > ./flattened/TransparentUpgradeableProxy.sol
 npx hardhat flatten contracts/Bridge.sol > ./flattened/Bridge.sol
+npx hardhat flatten contracts/BridgeUpgradeable.sol > ./flattened/BridgeUpgradeable.sol
+npx hardhat flatten contracts/Signatures.sol > ./flattened/Signatures.sol
+npx hardhat flatten contracts/SignaturesUpgradeable.sol > ./flattened/SignaturesUpgradeable.sol
+npx hardhat flatten contracts/handlers/ERC20Handler.sol > ./flattened/ERC20Handler.sol
+npx hardhat flatten contracts/handlers/ERC20HandlerUpgradeable.sol > ./flattened/ERC20HandlerUpgradeable.sol
+npx hardhat flatten contracts/handlers/ERC721Handler.sol > ./flattened/ERC721Handler.sol
+npx hardhat flatten contracts/handlers/ERC721HandlerUpgradeable.sol > ./flattened/ERC721HandlerUpgradeable.sol
+npx hardhat flatten contracts/handlers/ERC1155Handler.sol > ./flattened/ERC1155Handler.sol
+npx hardhat flatten contracts/handlers/ERC1155HandlerUpgradeable.sol > ./flattened/ERC1155HandlerUpgradeable.sol
+npx hardhat flatten contracts/handlers/GenericHandler.sol > ./flattened/GenericHandler.sol
+npx hardhat flatten contracts/handlers/GenericHandlerUpgradeable.sol > ./flattened/GenericHandlerUpgradeable.sol
+npx hardhat flatten contracts/handlers/fee/BasicFeeHandler.sol > ./flattened/BasicFeeHandler.sol

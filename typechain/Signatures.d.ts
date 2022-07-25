@@ -314,7 +314,7 @@ export class Signatures extends Contract {
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
-      0: boolean;
+      0: string;
     }>;
 
     "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
@@ -327,7 +327,7 @@ export class Signatures extends Contract {
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
-      0: boolean;
+      0: string;
     }>;
 
     destChainId(
@@ -574,7 +574,7 @@ export class Signatures extends Contract {
     data: BytesLike,
     signature: BytesLike,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<string>;
 
   "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
     domainID: BigNumberish,
@@ -585,7 +585,7 @@ export class Signatures extends Contract {
     data: BytesLike,
     signature: BytesLike,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<string>;
 
   destChainId(
     arg0: BigNumberish,
@@ -796,7 +796,7 @@ export class Signatures extends Contract {
       data: BytesLike,
       signature: BytesLike,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<string>;
 
     "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
       domainID: BigNumberish,
@@ -807,7 +807,7 @@ export class Signatures extends Contract {
       data: BytesLike,
       signature: BytesLike,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<string>;
 
     destChainId(
       arg0: BigNumberish,

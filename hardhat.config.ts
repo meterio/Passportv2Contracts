@@ -563,14 +563,23 @@ task("update-signature", "deploy signature contract")
     async ({ }, { ethers, run, network }) => {
       await run("compile");
       const signers = await ethers.getSigners();
-      const deployer = signers[0]
+      const deployer = signers[0];
+      const paoxyAdmin = signers[1];
+      let config = loadConfig(network.name, true);
 
       const instant = await deployContract(
-        "Signatures",
+        "SignaturesUpgradeable",
         network.name,
         ethers.getContractFactory,
         deployer
-      ) as Signatures;
+      ) as SignaturesUpgradeable;
+
+      const proxy = await ethers.getContractAt(
+        "TransparentUpgradeableProxy",
+        config.erc1155Handler,
+        deployer
+      ) as TransparentUpgradeableProxy;
+      await proxy.upgradeTo(instant.address)
     }
   );
 

@@ -91,7 +91,7 @@ contract Signatures is AccessControl {
         bytes32 resourceID,
         bytes calldata data,
         bytes calldata signature
-    ) public view returns (bool) {
+    ) public view returns (address) {
         bytes32 structHash = keccak256(
             abi.encode(
                 PERMIT_TYPEHASH,
@@ -108,8 +108,7 @@ contract Signatures is AccessControl {
                 : destChainId[destinationDomainID],
             destinationBridge
         );
-        address sender = ECDSA.recover(hash, signature);
-        return hasRole(RELAYER_ROLE, sender);
+        return ECDSA.recover(hash, signature);
     }
 
     mapping(bytes32 => bytes[]) public signatures;
@@ -154,14 +153,17 @@ contract Signatures is AccessControl {
         bytes calldata signature
     ) external {
         require(
-            checkSignature(
-                originDomainID,
-                destinationDomainID,
-                destinationBridge,
-                depositNonce,
-                resourceID,
-                data,
-                signature
+            hasRole(
+                RELAYER_ROLE,
+                checkSignature(
+                    originDomainID,
+                    destinationDomainID,
+                    destinationBridge,
+                    depositNonce,
+                    resourceID,
+                    data,
+                    signature
+                )
             ),
             "invalid signature"
         );

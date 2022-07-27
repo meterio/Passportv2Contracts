@@ -25,11 +25,6 @@ contract SignaturesUpgradeable is AccessControl {
 
     mapping(uint8 => uint8) public _relayerThreshold;
     mapping(uint8 => uint256) public destChainId;
-    /// @notice depositHash = keccak256(abi.encode(originDomainID,depositNonce,resourceID,keccak256(data)));
-    /// @notice depositHash => signature[]
-    mapping(bytes32 => bytes[]) public signatures;
-    /// @notice signature => bool
-    mapping(bytes => bool) public hasVote;
 
     function initialize(address admin) public initializer {
         _setupRole(DEFAULT_ADMIN_ROLE, admin);
@@ -115,6 +110,12 @@ contract SignaturesUpgradeable is AccessControl {
         );
         return ECDSAUpgradeable.recover(hash, signature);
     }
+
+    /// @notice depositHash = keccak256(abi.encode(originDomainID,depositNonce,resourceID,keccak256(data)));
+    /// @notice depositHash => signature[]
+    mapping(bytes32 => bytes[]) public signatures;
+    /// @notice signature => bool
+    mapping(bytes => bool) public hasVote;
 
     event SubmitSignature(
         uint8 indexed originDomainID,

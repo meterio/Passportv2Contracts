@@ -70,7 +70,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "isRelayer(address)": FunctionFragment;
     "isValidForwarder(address)": FunctionFragment;
     "paused()": FunctionFragment;
-    "permitDeposit(uint8,bytes32,bytes,bytes,bytes)": FunctionFragment;
     "renounceAdmin(address)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
@@ -249,10 +248,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "permitDeposit",
-    values: [BigNumberish, BytesLike, BytesLike, BytesLike, BytesLike]
-  ): string;
   encodeFunctionData(
     functionFragment: "renounceAdmin",
     values: [string]
@@ -436,10 +431,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "permitDeposit",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceAdmin",
     data: BytesLike
@@ -1099,24 +1090,6 @@ export class BridgeUpgradeable extends Contract {
       0: boolean;
     }>;
 
-    permitDeposit(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      signature: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    "permitDeposit(uint8,bytes32,bytes,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      signature: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
     renounceAdmin(
       newAdmin: string,
       overrides?: Overrides
@@ -1681,24 +1654,6 @@ export class BridgeUpgradeable extends Contract {
 
   "paused()"(overrides?: CallOverrides): Promise<boolean>;
 
-  permitDeposit(
-    destinationDomainID: BigNumberish,
-    resourceID: BytesLike,
-    depositData: BytesLike,
-    feeData: BytesLike,
-    signature: BytesLike,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  "permitDeposit(uint8,bytes32,bytes,bytes,bytes)"(
-    destinationDomainID: BigNumberish,
-    resourceID: BytesLike,
-    depositData: BytesLike,
-    feeData: BytesLike,
-    signature: BytesLike,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
   renounceAdmin(
     newAdmin: string,
     overrides?: Overrides
@@ -2260,24 +2215,6 @@ export class BridgeUpgradeable extends Contract {
     paused(overrides?: CallOverrides): Promise<boolean>;
 
     "paused()"(overrides?: CallOverrides): Promise<boolean>;
-
-    permitDeposit(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "permitDeposit(uint8,bytes32,bytes,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     renounceAdmin(newAdmin: string, overrides?: CallOverrides): Promise<void>;
 
@@ -2878,24 +2815,6 @@ export class BridgeUpgradeable extends Contract {
 
     "paused()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    permitDeposit(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      signature: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    "permitDeposit(uint8,bytes32,bytes,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      signature: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
     renounceAdmin(newAdmin: string, overrides?: Overrides): Promise<BigNumber>;
 
     "renounceAdmin(address)"(
@@ -3460,24 +3379,6 @@ export class BridgeUpgradeable extends Contract {
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "paused()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    permitDeposit(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      signature: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "permitDeposit(uint8,bytes32,bytes,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      signature: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
 
     renounceAdmin(
       newAdmin: string,

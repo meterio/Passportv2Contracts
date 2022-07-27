@@ -576,7 +576,7 @@ task("update-signature", "deploy signature contract")
 
       const proxy = await ethers.getContractAt(
         "TransparentUpgradeableProxy",
-        config.erc1155Handler,
+        config.signature,
         deployer
       ) as TransparentUpgradeableProxy;
       await proxy.upgradeTo(instant.address)

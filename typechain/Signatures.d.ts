@@ -210,8 +210,8 @@ interface SignaturesInterface extends ethers.utils.Interface {
   events: {
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
-    "SignturePass(uint8,uint64,bytes32,bytes,bytes)": EventFragment;
-    "SubmitSignature(uint8,uint64,bytes32,bytes,bytes)": EventFragment;
+    "SignturePass(uint8,uint8,uint64,bytes32,bytes,bytes)": EventFragment;
+    "SubmitSignature(uint8,uint8,uint64,bytes32,bytes,bytes)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
@@ -974,6 +974,7 @@ export class Signatures extends Contract {
 
     SignturePass(
       originDomainID: BigNumberish | null,
+      destinationDomainID: BigNumberish | null,
       depositNonce: null,
       resourceID: BytesLike | null,
       data: null,
@@ -982,6 +983,7 @@ export class Signatures extends Contract {
 
     SubmitSignature(
       originDomainID: BigNumberish | null,
+      destinationDomainID: BigNumberish | null,
       depositNonce: null,
       resourceID: BytesLike | null,
       data: null,

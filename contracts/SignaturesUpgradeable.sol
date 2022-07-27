@@ -115,6 +115,7 @@ contract SignaturesUpgradeable is AccessControl {
 
     event SubmitSignature(
         uint8 indexed originDomainID,
+        uint8 indexed destinationDomainID,
         uint64 depositNonce,
         bytes32 indexed resourceID,
         bytes data,
@@ -123,6 +124,7 @@ contract SignaturesUpgradeable is AccessControl {
 
     event SignturePass(
         uint8 indexed originDomainID,
+        uint8 indexed destinationDomainID,
         uint64 depositNonce,
         bytes32 indexed resourceID,
         bytes data,
@@ -183,6 +185,7 @@ contract SignaturesUpgradeable is AccessControl {
         signatures[depositHash].push(signature);
         emit SubmitSignature(
             originDomainID,
+            destinationDomainID,
             depositNonce,
             resourceID,
             data,
@@ -194,6 +197,7 @@ contract SignaturesUpgradeable is AccessControl {
         ) {
             emit SignturePass(
                 originDomainID,
+                destinationDomainID,
                 depositNonce,
                 resourceID,
                 data,

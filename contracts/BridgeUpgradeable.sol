@@ -498,27 +498,6 @@ contract BridgeUpgradeable is
         _deposit(sender, destinationDomainID, resourceID, depositData, feeData);
     }
 
-    function permitDeposit(
-        uint8 destinationDomainID,
-        bytes32 resourceID,
-        bytes calldata depositData,
-        bytes calldata feeData,
-        bytes calldata signature
-    ) external payable whenNotPaused {
-        bytes32 structHash = keccak256(
-            abi.encode(
-                PERMIT_TYPEHASH,
-                destinationDomainID,
-                resourceID,
-                keccak256(depositData),
-                keccak256(feeData)
-            )
-        );
-        bytes32 hash = _hashTypedDataV4(structHash);
-        address sender = ECDSAUpgradeable.recover(hash, signature);
-        _deposit(sender, destinationDomainID, resourceID, depositData, feeData);
-    }
-
     function _deposit(
         address sender,
         uint8 destinationDomainID,

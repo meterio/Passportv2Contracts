@@ -38,6 +38,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
     "getSignatures(uint8,uint64,bytes32,bytes)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
+    "hasVote(bytes)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "signatures(bytes32,uint256)": FunctionFragment;
@@ -116,6 +117,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
     functionFragment: "hasRole",
     values: [BytesLike, string]
   ): string;
+  encodeFunctionData(functionFragment: "hasVote", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "renounceRole",
     values: [BytesLike, string]
@@ -196,6 +198,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "hasVote", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceRole",
     data: BytesLike
@@ -452,6 +455,20 @@ export class Signatures extends Contract {
       0: boolean;
     }>;
 
+    hasVote(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "hasVote(bytes)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     renounceRole(
       role: BytesLike,
       account: string,
@@ -678,6 +695,13 @@ export class Signatures extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  hasVote(arg0: BytesLike, overrides?: CallOverrides): Promise<boolean>;
+
+  "hasVote(bytes)"(
+    arg0: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   renounceRole(
     role: BytesLike,
     account: string,
@@ -897,6 +921,13 @@ export class Signatures extends Contract {
     "hasRole(bytes32,address)"(
       role: BytesLike,
       account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    hasVote(arg0: BytesLike, overrides?: CallOverrides): Promise<boolean>;
+
+    "hasVote(bytes)"(
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1158,6 +1189,13 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    hasVote(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "hasVote(bytes)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     renounceRole(
       role: BytesLike,
       account: string,
@@ -1387,6 +1425,16 @@ export class Signatures extends Contract {
     "hasRole(bytes32,address)"(
       role: BytesLike,
       account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    hasVote(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "hasVote(bytes)"(
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

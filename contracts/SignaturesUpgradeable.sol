@@ -149,6 +149,20 @@ contract SignaturesUpgradeable is AccessControl {
         destChainId[destinationDomainID] = chainId;
     }
 
+    struct Proposal {
+        uint8 originDomainID;
+        uint8 destinationDomainID;
+        address destinationBridge;
+        uint64 depositNonce;
+        bytes32 resourceID;
+        bytes data;
+        uint256 proposalIndex;
+    }
+
+    uint256 public proposalIndex;
+    mapping(bytes32 => Proposal) public proposals;
+    mapping(uint256 => bytes32) public indexToProposal;
+
     function submitSignature(
         uint8 originDomainID,
         uint8 destinationDomainID,
@@ -187,8 +201,22 @@ contract SignaturesUpgradeable is AccessControl {
                 _relayerThreshold[destinationDomainID],
             "Signture aleardy pass"
         );
+        if (signatures[depositHash].length == 0) {
+            proposalIndex++;
+            proposals[depositHash] = Proposal({
+                originDomainID: originDomainID,
+                destinationDomainID: destinationDomainID,
+                destinationBridge: destinationBridge,
+                depositNonce: depositNonce,
+                resourceID: resourceID,
+                data: data,
+                proposalIndex: proposalIndex
+            });
+            indexToProposal[proposalIndex] = depositHash;
+        }
         signatures[depositHash].push(signature);
         hasVote[signature] = true;
+
         emit SubmitSignature(
             originDomainID,
             destinationDomainID,
@@ -229,5 +257,19 @@ contract SignaturesUpgradeable is AccessControl {
                     )
                 )
             ];
+    }
+
+    function getProposal(uint256 index) public view returns (Proposal memory) {
+        require(index <= proposalIndex, "Proposal not exist");
+        return proposals[indexToProposal[index]];
+    }
+
+    function getSignatures(uint256 index)
+        external
+        view
+        returns (bytes[] memory)
+    {
+        require(index <= proposalIndex, "Proposal not exist");
+        return signatures[indexToProposal[index]];
     }
 }

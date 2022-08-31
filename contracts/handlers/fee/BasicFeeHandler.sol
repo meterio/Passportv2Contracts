@@ -36,6 +36,18 @@ contract BasicFeeHandler is IFeeHandler, AccessControl {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
+    /**
+        @notice Removes admin role from {_msgSender()} and grants it to {newAdmin}.
+        @notice Only callable by an address that currently has the admin role.
+        @param newAdmin Address that admin role will be granted to.
+     */
+    function renounceAdmin(address newAdmin) external onlyAdmin {
+        address sender = _msgSender();
+        require(sender != newAdmin, "Cannot renounce oneself");
+        grantRole(DEFAULT_ADMIN_ROLE, newAdmin);
+        renounceRole(DEFAULT_ADMIN_ROLE, sender);
+    }
+
     function setSpecialFee(uint8 fromDomainID, uint256 _specialFee)
         public
         onlyAdmin
@@ -60,7 +72,9 @@ contract BasicFeeHandler is IFeeHandler, AccessControl {
         bytes calldata depositData,
         bytes calldata feeData
     ) external payable onlyBridge {
-        uint256 fee = special[fromDomainID] ? specialFee[fromDomainID] : _fee;
+        uint256 fee = special[destinationDomainID]
+            ? specialFee[destinationDomainID]
+            : _fee;
         require(msg.value == fee, "Incorrect fee supplied");
         emit FeeCollected(
             sender,
@@ -90,7 +104,9 @@ contract BasicFeeHandler is IFeeHandler, AccessControl {
         bytes calldata feeData
     ) external view returns (uint256, address) {
         return (
-            special[fromDomainID] ? specialFee[fromDomainID] : _fee,
+            special[destinationDomainID]
+                ? specialFee[destinationDomainID]
+                : _fee,
             address(0)
         );
     }

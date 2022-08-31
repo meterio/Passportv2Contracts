@@ -19,9 +19,9 @@ contract SignaturesUpgradeable is AccessControl {
         );
     bytes32 public constant RELAYER_ROLE = keccak256("RELAYER_ROLE");
     // 0x058443738ec3641a3233a9f285e16671e4ad9755445580d761017e695f75052b
-    bytes32 private _HASHED_NAME = keccak256(bytes("PermitBridge"));
+    bytes32 private constant _HASHED_NAME = keccak256(bytes("PermitBridge"));
     // 0xe6bbd6277e1bf288eed5e8d1780f9a50b239e86b153736bceebccf4ea79d90b3
-    bytes32 private _HASHED_VERSION = keccak256(bytes("1.0"));
+    bytes32 private constant _HASHED_VERSION = keccak256(bytes("1.0"));
 
     mapping(uint8 => uint8) public _relayerThreshold;
     mapping(uint8 => uint256) public destChainId;

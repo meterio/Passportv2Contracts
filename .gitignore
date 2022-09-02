@@ -2,7 +2,6 @@ node_modules
 .idea/*
 .vscode/
 cache/
-deployments/
 typechain/
 flattened
 .env.development

@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "../interfaces/IDepositExecute.sol";
 import {HandlerHelpersUpgradeable as HandlerHelpers} from "./HandlerHelpersUpgradeable.sol";
 import "../ERC721Safe.sol";
-import {IERC721MetadataUpgradeable as IERC721Metadata} from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721MetadataUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import {ERC165CheckerUpgradeable as ERC165Checker} from "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165CheckerUpgradeable.sol";
 
 /**

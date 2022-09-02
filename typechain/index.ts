@@ -6,8 +6,6 @@ export type { IERC1155ReceiverUpgradeable } from "./IERC1155ReceiverUpgradeable"
 export type { IERC1155Upgradeable } from "./IERC1155Upgradeable";
 export type { ERC1155HolderUpgradeable } from "./ERC1155HolderUpgradeable";
 export type { ERC1155ReceiverUpgradeable } from "./ERC1155ReceiverUpgradeable";
-export type { IERC721MetadataUpgradeable } from "./IERC721MetadataUpgradeable";
-export type { IERC721Upgradeable } from "./IERC721Upgradeable";
 export type { ERC165Upgradeable } from "./ERC165Upgradeable";
 export type { IERC165Upgradeable } from "./IERC165Upgradeable";
 export type { AccessControl } from "./AccessControl";
@@ -90,8 +88,6 @@ export { IERC1155ReceiverUpgradeable__factory } from "./factories/IERC1155Receiv
 export { IERC1155Upgradeable__factory } from "./factories/IERC1155Upgradeable__factory";
 export { ERC1155HolderUpgradeable__factory } from "./factories/ERC1155HolderUpgradeable__factory";
 export { ERC1155ReceiverUpgradeable__factory } from "./factories/ERC1155ReceiverUpgradeable__factory";
-export { IERC721MetadataUpgradeable__factory } from "./factories/IERC721MetadataUpgradeable__factory";
-export { IERC721Upgradeable__factory } from "./factories/IERC721Upgradeable__factory";
 export { ERC165Upgradeable__factory } from "./factories/ERC165Upgradeable__factory";
 export { IERC165Upgradeable__factory } from "./factories/IERC165Upgradeable__factory";
 export { AccessControl__factory } from "./factories/AccessControl__factory";

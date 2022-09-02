@@ -38,6 +38,7 @@ interface FeeHandlerWithOracleInterface extends ethers.utils.Interface {
     "getRoleMemberIndex(bytes32,address)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
+    "renounceAdmin(address)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "setFeeOracle(address)": FunctionFragment;
@@ -114,6 +115,10 @@ interface FeeHandlerWithOracleInterface extends ethers.utils.Interface {
     values: [BytesLike, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "renounceAdmin",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceRole",
     values: [BytesLike, string]
   ): string;
@@ -176,6 +181,10 @@ interface FeeHandlerWithOracleInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceAdmin",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceRole",
     data: BytesLike
@@ -415,6 +424,16 @@ export class FeeHandlerWithOracle extends Contract {
       0: boolean;
     }>;
 
+    renounceAdmin(
+      newAdmin: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "renounceAdmin(address)"(
+      newAdmin: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     renounceRole(
       role: BytesLike,
       account: string,
@@ -619,6 +638,16 @@ export class FeeHandlerWithOracle extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  renounceAdmin(
+    newAdmin: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "renounceAdmin(address)"(
+    newAdmin: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   renounceRole(
     role: BytesLike,
     account: string,
@@ -822,6 +851,13 @@ export class FeeHandlerWithOracle extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    renounceAdmin(newAdmin: string, overrides?: CallOverrides): Promise<void>;
+
+    "renounceAdmin(address)"(
+      newAdmin: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     renounceRole(
       role: BytesLike,
@@ -1050,6 +1086,13 @@ export class FeeHandlerWithOracle extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    renounceAdmin(newAdmin: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "renounceAdmin(address)"(
+      newAdmin: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     renounceRole(
       role: BytesLike,
       account: string,
@@ -1254,6 +1297,16 @@ export class FeeHandlerWithOracle extends Contract {
       role: BytesLike,
       account: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    renounceAdmin(
+      newAdmin: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "renounceAdmin(address)"(
+      newAdmin: string,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     renounceRole(

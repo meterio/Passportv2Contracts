@@ -10,7 +10,7 @@ export const RPCS = {
   ganache: {
     url: `http://127.0.0.1:7545`,
     chainId: 1337,
-    accounts: [process.env.PRIVATEKEY]
+    accounts: [process.env.PRIVATE_KEY_0]
   },
   ropsten: {
     url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,

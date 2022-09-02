@@ -826,6 +826,26 @@ task("set-threshold", "set threshold")
     }
   );
 
+task("grantRole", "Grant Role")
+  .addParam("address", "address")
+  .setAction(
+    async ({ address }, { ethers, run, network }) => {
+      await run("compile");
+      const signers = await ethers.getSigners();
+      const admin = signers[1];
+
+      let config = loadConfig(network.name,true);
+
+      const bridgeInstant = await ethers.getContractAt("Bridge", config.bridge, admin) as Bridge;
+
+      let receipt = await bridgeInstant.grantRole(
+        ethers.constants.HashZero,
+        address
+      )
+      console.log(await receipt.wait())
+    }
+  );
+
 task("setburn", "setburn")
   .setAction(
     async ({ }, { ethers, run, network }) => {

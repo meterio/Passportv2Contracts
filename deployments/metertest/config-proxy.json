@@ -1,0 +1,14 @@
+{
+    "name": "",
+    "type": "",
+    "id": 0,
+    "from": "",
+    "bridge": "",
+    "erc20Handler": "",
+    "erc721Handler": "",
+    "erc1155Handler": "",
+    "genericHandler": "",
+    "feeHandler": "",
+    "signature": "0xcB37622C10856A77A17100021deF20F5C5E88156",
+    "tokens": []
+}

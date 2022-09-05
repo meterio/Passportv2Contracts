@@ -28,7 +28,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
     "_TYPE_HASH()": FunctionFragment;
     "_relayerThreshold(uint8)": FunctionFragment;
     "adminChangeRelayerThreshold(uint8,uint256)": FunctionFragment;
-    "adminSetDestChainId(uint8,uint8)": FunctionFragment;
+    "adminSetDestChainId(uint8,uint256)": FunctionFragment;
     "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "destChainId(uint8)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
@@ -301,7 +301,7 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "adminSetDestChainId(uint8,uint8)"(
+    "adminSetDestChainId(uint8,uint256)"(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
       overrides?: Overrides
@@ -576,7 +576,7 @@ export class Signatures extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "adminSetDestChainId(uint8,uint8)"(
+  "adminSetDestChainId(uint8,uint256)"(
     destinationDomainID: BigNumberish,
     chainId: BigNumberish,
     overrides?: Overrides
@@ -805,7 +805,7 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "adminSetDestChainId(uint8,uint8)"(
+    "adminSetDestChainId(uint8,uint256)"(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
       overrides?: CallOverrides
@@ -1067,7 +1067,7 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "adminSetDestChainId(uint8,uint8)"(
+    "adminSetDestChainId(uint8,uint256)"(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
       overrides?: Overrides
@@ -1306,7 +1306,7 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "adminSetDestChainId(uint8,uint8)"(
+    "adminSetDestChainId(uint8,uint256)"(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
       overrides?: Overrides

@@ -4,7 +4,7 @@ export const RPCS = {
   hardhat: {
     allowUnlimitedContractSize: false,
     accounts: {
-      mnemonic: process.env.MNEMONIC,
+      mnemonic: process.env.MNEMONIC1,
     },
   },
   ganache: {

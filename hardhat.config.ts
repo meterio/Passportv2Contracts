@@ -831,17 +831,23 @@ task("grantRole", "Grant Role")
   .setAction(
     async ({ address }, { ethers, run, network }) => {
       await run("compile");
-      const signers = await ethers.getSigners();
-      const admin = signers[1];
+      const [deployer, admin] = await ethers.getSigners();
 
-      let config = loadConfig(network.name,true);
+      let config = loadConfig(network.name, true);
 
       const bridgeInstant = await ethers.getContractAt("Bridge", config.bridge, admin) as Bridge;
 
       let receipt = await bridgeInstant.grantRole(
         ethers.constants.HashZero,
         address
-      )
+      );
+      console.log(await receipt.wait())
+
+      const feeHandler = await ethers.getContractAt("BasicFeeHandler", config.feeHandler, deployer) as BasicFeeHandler;
+      receipt = await feeHandler.grantRole(
+        ethers.constants.HashZero,
+        address
+      );
       console.log(await receipt.wait())
     }
   );

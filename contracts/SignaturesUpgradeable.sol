@@ -142,7 +142,7 @@ contract SignaturesUpgradeable is AccessControl {
         _relayerThreshold[destinationDomainID] = newThreshold.toUint8();
     }
 
-    function adminSetDestChainId(uint8 destinationDomainID, uint8 chainId)
+    function adminSetDestChainId(uint8 destinationDomainID, uint256 chainId)
         external
         onlyAdmin
     {

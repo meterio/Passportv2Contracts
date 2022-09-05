@@ -62,3 +62,15 @@ npx hardhat revoke --account 0x319a0cfD7595b0085fF6003643C7eD685269F851 --networ
 npx hardhat veri --network metermain
 ```
 
+## Deploy all contracts by proxy, use custom rpc and provate key
+- --domain domain id default 1
+- rpc rpc address
+- proxyadmin proxy administrator private key
+- bridgeadmin bridge administrator private key, not the same as a proxy admin
+```
+npx hardhat deploy-proxy-all \
+    --domain 1 \
+    --rpc https://rpctest.meter.io \
+    --proxyadmin 0x123.....890 \
+    --bridgeadmin 0x098.....321
+```

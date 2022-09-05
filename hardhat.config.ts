@@ -18,7 +18,6 @@ import { BigNumber, BytesLike, constants, utils, Signer, VoidSigner } from "ethe
 
 import {
   Bridge,
-  Bridge__factory,
   ERC20Handler,
   ERC721Handler,
   ERC1155Handler,
@@ -254,6 +253,143 @@ task("proxy-admin", "transfer proxy admin")
 
       const genericHandler = await ethers.getContractAt("TransparentUpgradeableProxy", config.genericHandler, deployer) as TransparentUpgradeableProxy;
       await genericHandler.changeAdmin(admin);
+    }
+  );
+/**
+npx hardhat deploy-proxy-all \
+--domain 1 \
+--rpc https://rpctest.meter.io \
+--proxyadmin 0x123.....890 \
+--bridgeadmin 0x098.....321
+ */
+task("deploy-proxy-all", "deploy all contract with proxy")
+  .addParam("domain", "domain id", "0")
+  .addParam("rpc", "rpc connect")
+  .addParam("proxyadmin", "proxy admin private key")
+  .addParam("bridgeadmin", "bridge admin private key")
+  .setAction(
+    async ({ domain, rpc, proxyadmin, bridgeadmin }, { ethers, run }) => {
+      await run("compile");
+      let provider = new ethers.providers.JsonRpcProvider(rpc);
+      const proxyWallet = new ethers.Wallet(proxyadmin, provider);
+      const adminWallet = new ethers.Wallet(bridgeadmin, provider);
+
+      const proxy_factory = await ethers.getContractFactory("TransparentUpgradeableProxy", proxyWallet);
+      // Bridge contract
+      const bridgeImpl = await (
+        await (
+          await ethers.getContractFactory("BridgeUpgradeable", proxyWallet)
+        ).deploy()
+      ).deployed();
+      console.log("bridge Impl:", bridgeImpl.address);
+      // Bridge Proxy
+      const bridgeProxy = await (
+        await proxy_factory.deploy(
+          bridgeImpl.address,
+          proxyWallet.address,
+          bridgeImpl.interface.encodeFunctionData("initialize", [domain, [], 1, 999999, adminWallet.address])
+        )
+      ).deployed();
+      console.log("bridge Proxy:", bridgeProxy.address);
+      // erc20Handler contract
+      const erc20HandlerImpl = await (
+        await (
+          await ethers.getContractFactory("ERC20HandlerUpgradeable", proxyWallet)
+        ).deploy()
+      ).deployed();
+      console.log("erc20Handler Impl:", erc20HandlerImpl.address);
+      // erc20Handler Proxy
+      const erc20HandlerProxy = await (
+        await proxy_factory.deploy(
+          erc20HandlerImpl.address,
+          proxyWallet.address,
+          erc20HandlerImpl.interface.encodeFunctionData("initialize", [bridgeProxy.address])
+        )
+      ).deployed();
+      console.log("erc20Handler Proxy:", erc20HandlerProxy.address);
+      // erc721Handler contract
+      const erc721HandlerImpl = await (
+        await (
+          await ethers.getContractFactory("ERC721HandlerUpgradeable", proxyWallet)
+        ).deploy()
+      ).deployed();
+      console.log("erc721Handler Impl:", erc721HandlerImpl.address);
+      // erc721Handler Proxy
+      const erc721HandlerProxy = await (
+        await proxy_factory.deploy(
+          erc721HandlerImpl.address,
+          proxyWallet.address,
+          erc721HandlerImpl.interface.encodeFunctionData("initialize", [bridgeProxy.address])
+        )
+      ).deployed();
+      console.log("erc721Handler Proxy:", erc721HandlerProxy.address);
+      // erc1155Handler contract
+      const erc1155HandlerImpl = await (
+        await (
+          await ethers.getContractFactory("ERC1155HandlerUpgradeable", proxyWallet)
+        ).deploy()
+      ).deployed();
+      console.log("erc1155Handler Impl:", erc1155HandlerImpl.address);
+      // erc1155Handler Proxy
+      const erc1155HandlerProxy = await (
+        await proxy_factory.deploy(
+          erc1155HandlerImpl.address,
+          proxyWallet.address,
+          erc1155HandlerImpl.interface.encodeFunctionData("initialize", [bridgeProxy.address])
+        )
+      ).deployed();
+      console.log("erc1155Handler Proxy:", erc1155HandlerProxy.address);
+      // genericHandler contract
+      const genericHandlerImpl = await (
+        await (
+          await ethers.getContractFactory("GenericHandlerUpgradeable", proxyWallet)
+        ).deploy()
+      ).deployed();
+      console.log("genericHandler Impl:", genericHandlerImpl.address);
+      // genericHandler Proxy
+      const genericHandlerProxy = await (
+        await proxy_factory.deploy(
+          genericHandlerImpl.address,
+          proxyWallet.address,
+          genericHandlerImpl.interface.encodeFunctionData("initialize", [bridgeProxy.address])
+        )
+      ).deployed();
+      console.log("genericHandler Proxy:", genericHandlerProxy.address);
+
+      // feeHandler contract
+      const feeHandler = await (
+        await (
+          await ethers.getContractFactory("BasicFeeHandler", proxyWallet)
+        ).deploy(bridgeProxy.address)
+      ).deployed();
+      console.log("feeHandler Contract:", feeHandler.address);
+
+      const bridgeInstant = await ethers.getContractAt("Bridge", bridgeProxy.address, adminWallet) as Bridge;
+      let receipt = await bridgeInstant.adminChangeFeeHandler(feeHandler.address);
+      console.log("adminChangeFeeHandler tx:", receipt.hash)
+    }
+  );
+
+/**
+npx hardhat add-proxy-relayer \
+--bridge 0x7FeD332D165e8FcCE15E7eC6A4D4A51edF0dF515 \
+--rpc https://rpctest.meter.io \
+--bridgeadmin 0x123.....890
+ */
+task("add-proxy-relayer", "adminAddRelayer")
+  .addParam("bridge", "bridge contract")
+  .addParam("rpc", "rpc connect")
+  .addParam("bridgeadmin", "bridge admin private key")
+  .addParam("relayer", "relayer address")
+  .setAction(
+    async ({ bridge, relayer, rpc, bridgeadmin }, { ethers, run, network }) => {
+      await run("compile");
+      let provider = new ethers.providers.JsonRpcProvider(rpc);
+      const adminWallet = new ethers.Wallet(bridgeadmin, provider);
+
+      const bridgeInstant = await ethers.getContractAt("Bridge", bridge, adminWallet) as Bridge;
+      let receipt = await bridgeInstant.adminAddRelayer(relayer)
+      console.log("adminAddRelayer tx:", receipt.hash)
     }
   );
 

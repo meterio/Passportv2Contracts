@@ -327,13 +327,16 @@ contract BridgeUpgradeable is
         @param handlerAddress Address of handler resource will be set for.
         @param resourceID ResourceID to be used when making deposits.
         @param contractAddress Address of contract to be called when a deposit is made and a deposited is executed.
+        @param depositFunctionSig Function signature of method to be called in {contractAddress} when a deposit is made.
+        @param depositFunctionDepositorOffset Depositor address position offset in the metadata, in bytes.
+        @param executeFunctionSig Function signature of method to be called in {contractAddress} when a deposit is executed.
      */
     function adminSetGenericResource(
         address handlerAddress,
         bytes32 resourceID,
         address contractAddress,
         bytes4 depositFunctionSig,
-        uint256 depositFunctionDepositerOffset,
+        uint256 depositFunctionDepositorOffset,
         bytes4 executeFunctionSig
     ) external onlyAdmin {
         _resourceIDToHandlerAddress[resourceID] = handlerAddress;
@@ -342,7 +345,7 @@ contract BridgeUpgradeable is
             resourceID,
             contractAddress,
             depositFunctionSig,
-            depositFunctionDepositerOffset,
+            depositFunctionDepositorOffset,
             executeFunctionSig
         );
     }
@@ -424,7 +427,7 @@ contract BridgeUpgradeable is
         bytes calldata data
     ) external view returns (Proposal memory) {
         address handler = _resourceIDToHandlerAddress[resourceID];
-        bytes32 dataHash = keccak256(abi.encodePacked(handler, data));
+        bytes32 dataHash = keccak256(abi.encodePacked(resourceID, handler, data));
         uint72 nonceAndID = (uint72(depositNonce) << 8) |
             uint72(originDomainID);
         return _proposals[nonceAndID][dataHash];
@@ -553,7 +556,7 @@ contract BridgeUpgradeable is
         );
     }
 
-    error InviladSignature(address signer, uint256 index);
+    error InvalidSignature(address signer, uint256 index);
 
     function checkSignature(
         uint8 domainID,
@@ -584,28 +587,22 @@ contract BridgeUpgradeable is
         bytes[] memory signatures
     ) external whenNotPaused {
         address handler = _resourceIDToHandlerAddress[resourceID];
-        uint72 nonceAndID = (uint72(depositNonce) << 8) | uint72(domainID);
-        bytes32 dataHash = keccak256(abi.encodePacked(handler, data));
-        Proposal memory proposal = _proposals[nonceAndID][dataHash];
-
+        require(handler != address(0), "no handler for resourceID");
+        bytes32 dataHash = keccak256(abi.encodePacked(resourceID, handler, data));
+        uint256 length = signatures.length;
         require(
-            _resourceIDToHandlerAddress[resourceID] != address(0),
-            "no handler for resourceID"
+            length >= _relayerThreshold,
+            "Signatures length >= relayerThreshold"
         );
+        Proposal memory proposal = Proposal({
+            _status: ProposalStatus.Active,
+            _yesVotes: 0,
+            _yesVotesTotal: 0,
+            _proposedBlock: uint40(block.number) // Overflow is desired.
+        });
 
-        for (uint256 i; i < signatures.length; i++) {
-            if (proposal._status == ProposalStatus.Passed) {
-                proposal._status = ProposalStatus.Executed;
-                IDepositExecute depositHandler = IDepositExecute(handler);
-                depositHandler.executeProposal(resourceID, data);
-                emit ProposalEvent(
-                    domainID,
-                    depositNonce,
-                    ProposalStatus.Executed,
-                    dataHash
-                );
-            }
-            bytes32 structHash = keccak256(
+        bytes32 hash = _hashTypedDataV4(
+            keccak256(
                 abi.encode(
                     PERMIT_TYPEHASH,
                     domainID,
@@ -613,80 +610,42 @@ contract BridgeUpgradeable is
                     resourceID,
                     keccak256(data)
                 )
-            );
-            bytes32 hash = _hashTypedDataV4(structHash);
-            address sender = ECDSAUpgradeable.recover(hash, signatures[i]);
-            if (!hasRole(RELAYER_ROLE, sender)) {
-                revert InviladSignature(sender, i);
+            )
+        );
+
+        for (uint256 i; i < length; ++i) {
+            address signer = ECDSAUpgradeable.recover(hash, signatures[i]);
+            if (!hasRole(RELAYER_ROLE, signer)) {
+                revert InvalidSignature(signer, i);
             }
-            require(
-                uint256(proposal._status) <= 1,
-                "proposal already executed/cancelled"
-            );
-            require(!_hasVoted(proposal, sender), "relayer already voted");
-            if (proposal._status == ProposalStatus.Inactive) {
-                proposal = Proposal({
-                    _status: ProposalStatus.Active,
-                    _yesVotes: 0,
-                    _yesVotesTotal: 0,
-                    _proposedBlock: uint40(block.number) // Overflow is desired.
-                });
 
-                emit ProposalEvent(
-                    domainID,
-                    depositNonce,
-                    ProposalStatus.Active,
-                    dataHash
-                );
-            } else if (
-                uint40(sub(block.number, proposal._proposedBlock)) > _expiry
-            ) {
-                // if the number of blocks that has passed since this proposal was
-                // submitted exceeds the expiry threshold set, cancel the proposal
-                proposal._status = ProposalStatus.Cancelled;
+            require(!_hasVoted(proposal, signer), "relayer already voted");
+            proposal._yesVotes = (proposal._yesVotes | _relayerBit(signer))
+                .toUint200();
+            proposal._yesVotesTotal++; // TODO: check if bit counting is cheaper.
 
-                emit ProposalEvent(
-                    domainID,
-                    depositNonce,
-                    ProposalStatus.Cancelled,
-                    dataHash
-                );
-            }
-            if (proposal._status != ProposalStatus.Cancelled) {
-                proposal._yesVotes = (proposal._yesVotes | _relayerBit(sender))
-                    .toUint200();
-                proposal._yesVotesTotal++; // TODO: check if bit counting is cheaper.
-
-                emit ProposalVote(
-                    domainID,
-                    depositNonce,
-                    proposal._status,
-                    dataHash
-                );
-
-                // Finalize if _relayerThreshold has been reached
-                if (proposal._yesVotesTotal >= _relayerThreshold) {
-                    proposal._status = ProposalStatus.Passed;
-                    emit ProposalEvent(
-                        domainID,
-                        depositNonce,
-                        ProposalStatus.Passed,
-                        dataHash
-                    );
-                }
-            }
-        }
-        if (proposal._status == ProposalStatus.Passed) {
-            proposal._status = ProposalStatus.Executed;
-            IDepositExecute depositHandler = IDepositExecute(handler);
-            depositHandler.executeProposal(resourceID, data);
-            emit ProposalEvent(
+            emit ProposalVote(
                 domainID,
                 depositNonce,
-                ProposalStatus.Executed,
+                proposal._status,
                 dataHash
             );
         }
+        proposal._status = ProposalStatus.Executed;
+        IDepositExecute depositHandler = IDepositExecute(handler);
+        depositHandler.executeProposal(resourceID, data);
+        emit ProposalEvent(
+            domainID,
+            depositNonce,
+            ProposalStatus.Executed,
+            dataHash
+        );
+
+        uint72 nonceAndID = (uint72(depositNonce) << 8) | uint72(domainID);
+        require(
+            uint256(_proposals[nonceAndID][dataHash]._status) <= 1,
+            "proposal already executed/cancelled"
+        );
         _proposals[nonceAndID][dataHash] = proposal;
     }
 
@@ -709,7 +668,7 @@ contract BridgeUpgradeable is
     ) external onlyRelayers whenNotPaused {
         address handler = _resourceIDToHandlerAddress[resourceID];
         uint72 nonceAndID = (uint72(depositNonce) << 8) | uint72(domainID);
-        bytes32 dataHash = keccak256(abi.encodePacked(handler, data));
+        bytes32 dataHash = keccak256(abi.encodePacked(resourceID, handler, data));
         Proposal memory proposal = _proposals[nonceAndID][dataHash];
 
         require(
@@ -840,6 +799,9 @@ contract BridgeUpgradeable is
         @notice Hash of {data} must equal proposal's {dataHash}.
         @notice Emits {ProposalEvent} event with status {Executed}.
         @notice Emits {FailedExecution} event with the failed reason.
+        @notice Behaviour of this function is different for {GenericHandler} and other specific ERC handlers.
+        In the case of ERC handler, when execution fails, the handler will terminate the function with revert.
+        In the case of {GenericHandler}, when execution fails, the handler will emit a failure event and terminate the function normally.
      */
     function executeProposal(
         uint8 domainID,
@@ -850,7 +812,7 @@ contract BridgeUpgradeable is
     ) public onlyRelayers whenNotPaused {
         address handler = _resourceIDToHandlerAddress[resourceID];
         uint72 nonceAndID = (uint72(depositNonce) << 8) | uint72(domainID);
-        bytes32 dataHash = keccak256(abi.encodePacked(handler, data));
+        bytes32 dataHash = keccak256(abi.encodePacked(resourceID, handler, data));
         Proposal storage proposal = _proposals[nonceAndID][dataHash];
 
         require(

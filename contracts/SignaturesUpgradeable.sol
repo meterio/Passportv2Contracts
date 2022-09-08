@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity 0.8.11;
 import "./interfaces/IBridge.sol";
+import "./utils/PausableUpgradeable.sol";
 import {AccessControlUpgradeable as AccessControl} from "./utils/AccessControlUpgradeable.sol";
 import "./utils/SafeCast.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
 
-contract SignaturesUpgradeable is AccessControl {
+contract SignaturesUpgradeable is PausableUpgradeable, AccessControl {
     using SafeCast for *;
     // 0xc4cb5d35714699d6e85b9562b644e60393b418d974a5c1dd8efaadac37a142c5
     bytes32 public constant PERMIT_TYPEHASH =
@@ -28,14 +29,6 @@ contract SignaturesUpgradeable is AccessControl {
 
     function initialize(address admin) public initializer {
         _setupRole(DEFAULT_ADMIN_ROLE, admin);
-    }
-
-    modifier onlyRelayers() {
-        require(
-            hasRole(RELAYER_ROLE, _msgSender()),
-            "sender doesn't have relayer role"
-        );
-        _;
     }
 
     modifier onlyAdmin() {
@@ -171,7 +164,7 @@ contract SignaturesUpgradeable is AccessControl {
         bytes32 resourceID,
         bytes calldata data,
         bytes calldata signature
-    ) external {
+    ) external whenNotPaused{
         require(
             hasRole(
                 RELAYER_ROLE,

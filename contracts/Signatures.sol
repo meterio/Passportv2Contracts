@@ -3,9 +3,10 @@ pragma solidity 0.8.11;
 import "./interfaces/IBridge.sol";
 import "./utils/AccessControl.sol";
 import "./utils/SafeCast.sol";
+import "./utils/Pausable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-contract Signatures is AccessControl {
+contract Signatures is Pausable, AccessControl {
     using SafeCast for *;
     // 0xc4cb5d35714699d6e85b9562b644e60393b418d974a5c1dd8efaadac37a142c5
     bytes32 public constant PERMIT_TYPEHASH =
@@ -28,14 +29,6 @@ contract Signatures is AccessControl {
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-    }
-
-    modifier onlyRelayers() {
-        require(
-            hasRole(RELAYER_ROLE, _msgSender()),
-            "sender doesn't have relayer role"
-        );
-        _;
     }
 
     modifier onlyAdmin() {
@@ -157,7 +150,7 @@ contract Signatures is AccessControl {
         bytes32 resourceID,
         bytes calldata data,
         bytes calldata signature
-    ) external {
+    ) external whenNotPaused{
         require(
             hasRole(
                 RELAYER_ROLE,

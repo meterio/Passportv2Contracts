@@ -11,7 +11,7 @@ const WETH = artifacts.require("WETH9");
 contract('Bridge - [execute - FailedHandlerExecution]', async accounts => {
     const relayerThreshold = 2;
     const domainID = 1;
-    const depositerAddress = accounts[1];
+    const depositorAddress = accounts[1];
     const recipientAddress = accounts[2];
     const relayer1Address = accounts[3];
     const relayer2Address = accounts[4];
@@ -50,11 +50,11 @@ contract('Bridge - [execute - FailedHandlerExecution]', async accounts => {
         ERC20HandlerInstance = await ERC20HandlerContract.new(BridgeInstance.address);
 
         await Promise.all([
-            ERC20MintableInstance.mint(depositerAddress, initialTokenAmount),
+            ERC20MintableInstance.mint(depositorAddress, initialTokenAmount),
             BridgeInstance.adminSetResource(ERC20HandlerInstance.address, resourceID, ERC20MintableInstance.address)
         ]);
         
-        await ERC20MintableInstance.approve(ERC20HandlerInstance.address, depositAmount, { from: depositerAddress });
+        await ERC20MintableInstance.approve(ERC20HandlerInstance.address, depositAmount, { from: depositorAddress });
 
         depositData = Helpers.createERCDepositData(depositAmount, 20, recipientAddress)
         depositProposalData = Helpers.createERCDepositData(depositAmount, 20, recipientAddress)

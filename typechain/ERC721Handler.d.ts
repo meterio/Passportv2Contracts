@@ -200,14 +200,14 @@ export class ERC721Handler extends Contract {
 
     deposit(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
@@ -333,14 +333,14 @@ export class ERC721Handler extends Contract {
 
   deposit(
     resourceID: BytesLike,
-    depositer: string,
+    depositor: string,
     data: BytesLike,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   "deposit(bytes32,address,bytes)"(
     resourceID: BytesLike,
-    depositer: string,
+    depositor: string,
     data: BytesLike,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
@@ -462,14 +462,14 @@ export class ERC721Handler extends Contract {
 
     deposit(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
@@ -588,14 +588,14 @@ export class ERC721Handler extends Contract {
 
     deposit(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
@@ -717,14 +717,14 @@ export class ERC721Handler extends Contract {
 
     deposit(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;

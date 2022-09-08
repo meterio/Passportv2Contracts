@@ -16,7 +16,7 @@ contract('Gas Benchmark - [Vote Proposal]', async (accounts) => {
     const relayerThreshold = 2;
     const relayer1Address = accounts[0];
     const relayer2Address = accounts[1]
-    const depositerAddress = accounts[2];
+    const depositorAddress = accounts[2];
     const recipientAddress = accounts[3];
     const lenRecipientAddress = 20;
     const depositNonce = 1;
@@ -46,7 +46,7 @@ contract('Gas Benchmark - [Vote Proposal]', async (accounts) => {
         await ERC20HandlerContract.new(BridgeInstance.address).then(instance => ERC20HandlerInstance = instance);
 
         await Promise.all([
-            ERC20MintableInstance.approve(ERC20HandlerInstance.address, erc20TokenAmount, { from: depositerAddress }),
+            ERC20MintableInstance.approve(ERC20HandlerInstance.address, erc20TokenAmount, { from: depositorAddress }),
             BridgeInstance.adminSetResource(ERC20HandlerInstance.address, erc20ResourceID, ERC20MintableInstance.address),
         ]);
     });

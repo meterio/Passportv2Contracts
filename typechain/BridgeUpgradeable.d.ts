@@ -737,7 +737,7 @@ export class BridgeUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -747,7 +747,7 @@ export class BridgeUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -1354,7 +1354,7 @@ export class BridgeUpgradeable extends Contract {
     resourceID: BytesLike,
     contractAddress: string,
     depositFunctionSig: BytesLike,
-    depositFunctionDepositerOffset: BigNumberish,
+    depositFunctionDepositorOffset: BigNumberish,
     executeFunctionSig: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1364,7 +1364,7 @@ export class BridgeUpgradeable extends Contract {
     resourceID: BytesLike,
     contractAddress: string,
     depositFunctionSig: BytesLike,
-    depositFunctionDepositerOffset: BigNumberish,
+    depositFunctionDepositorOffset: BigNumberish,
     executeFunctionSig: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1918,7 +1918,7 @@ export class BridgeUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1928,7 +1928,7 @@ export class BridgeUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -2529,7 +2529,7 @@ export class BridgeUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -2539,7 +2539,7 @@ export class BridgeUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -3089,7 +3089,7 @@ export class BridgeUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -3099,7 +3099,7 @@ export class BridgeUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

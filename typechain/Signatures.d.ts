@@ -39,6 +39,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "hasVote(bytes)": FunctionFragment;
+    "paused()": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "signatures(bytes32,uint256)": FunctionFragment;
@@ -118,6 +119,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
     values: [BytesLike, string]
   ): string;
   encodeFunctionData(functionFragment: "hasVote", values: [BytesLike]): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceRole",
     values: [BytesLike, string]
@@ -199,6 +201,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasVote", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceRole",
     data: BytesLike
@@ -211,16 +214,20 @@ interface SignaturesInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
+    "Paused(address)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
     "SignturePass(uint8,uint8,uint64,bytes32,bytes,bytes)": EventFragment;
     "SubmitSignature(uint8,uint8,uint64,bytes32,bytes,bytes)": EventFragment;
+    "Unpaused(address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SignturePass"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SubmitSignature"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
 export class Signatures extends Contract {
@@ -469,6 +476,14 @@ export class Signatures extends Contract {
       0: boolean;
     }>;
 
+    paused(overrides?: CallOverrides): Promise<{
+      0: boolean;
+    }>;
+
+    "paused()"(overrides?: CallOverrides): Promise<{
+      0: boolean;
+    }>;
+
     renounceRole(
       role: BytesLike,
       account: string,
@@ -702,6 +717,10 @@ export class Signatures extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  paused(overrides?: CallOverrides): Promise<boolean>;
+
+  "paused()"(overrides?: CallOverrides): Promise<boolean>;
+
   renounceRole(
     role: BytesLike,
     account: string,
@@ -931,6 +950,10 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    paused(overrides?: CallOverrides): Promise<boolean>;
+
+    "paused()"(overrides?: CallOverrides): Promise<boolean>;
+
     renounceRole(
       role: BytesLike,
       account: string,
@@ -991,6 +1014,8 @@ export class Signatures extends Contract {
   };
 
   filters: {
+    Paused(account: null): EventFilter;
+
     RoleGranted(
       role: BytesLike | null,
       account: string | null,
@@ -1020,6 +1045,8 @@ export class Signatures extends Contract {
       data: null,
       signature: null
     ): EventFilter;
+
+    Unpaused(account: null): EventFilter;
   };
 
   estimateGas: {
@@ -1195,6 +1222,10 @@ export class Signatures extends Contract {
       arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "paused()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceRole(
       role: BytesLike,
@@ -1437,6 +1468,10 @@ export class Signatures extends Contract {
       arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "paused()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceRole(
       role: BytesLike,

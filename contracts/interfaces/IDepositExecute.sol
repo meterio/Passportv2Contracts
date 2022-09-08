@@ -8,12 +8,12 @@ pragma solidity 0.8.11;
 interface IDepositExecute {
     /**
         @notice It is intended that deposit are made using the Bridge contract.
-        @param depositer Address of account making the deposit in the Bridge contract.
+        @param depositor Address of account making the deposit in the Bridge contract.
         @param data Consists of additional data needed for a specific deposit.
      */
     function deposit(
         bytes32 resourceID,
-        address depositer,
+        address depositor,
         bytes calldata data
     ) external payable returns (bytes memory);
 

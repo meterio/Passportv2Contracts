@@ -19,7 +19,7 @@ contract('E2E ERC721 - Two EVM Chains', async accounts => {
     const destinationRelayer1Address = accounts[3];
     const destinationRelayer2Address = accounts[4];
 
-    const depositerAddress = accounts[1];
+    const depositorAddress = accounts[1];
     const recipientAddress = accounts[2];
     const tokenID = 1;
     const expectedDepositNonce = 1;
@@ -69,10 +69,10 @@ contract('E2E ERC721 - Two EVM Chains', async accounts => {
                 .then(instance => DestinationERC721HandlerInstance = instance)
         ]);
 
-        await OriginERC721MintableInstance.mint(depositerAddress, tokenID, "");
+        await OriginERC721MintableInstance.mint(depositorAddress, tokenID, "");
 
         await Promise.all([
-            OriginERC721MintableInstance.approve(OriginERC721HandlerInstance.address, tokenID, { from: depositerAddress }),
+            OriginERC721MintableInstance.approve(OriginERC721HandlerInstance.address, tokenID, { from: depositorAddress }),
             DestinationERC721MintableInstance.grantRole(await DestinationERC721MintableInstance.MINTER_ROLE(), DestinationERC721HandlerInstance.address),
             OriginBridgeInstance.adminSetResource(OriginERC721HandlerInstance.address, originResourceID, OriginERC721MintableInstance.address),
             DestinationBridgeInstance.adminSetResource(DestinationERC721HandlerInstance.address, destinationResourceID, DestinationERC721MintableInstance.address),
@@ -82,17 +82,17 @@ contract('E2E ERC721 - Two EVM Chains', async accounts => {
         originDepositData = Helpers.createERCDepositData(tokenID, 20, recipientAddress);
         originDepositProposalData = Helpers.createERC721DepositProposalData(tokenID, 20, recipientAddress, 32, 0);
 
-        destinationDepositData = Helpers.createERCDepositData(tokenID, 20, depositerAddress);
-        destinationDepositProposalData = Helpers.createERC721DepositProposalData(tokenID, 20, depositerAddress, 32, 0)
+        destinationDepositData = Helpers.createERCDepositData(tokenID, 20, depositorAddress);
+        destinationDepositProposalData = Helpers.createERC721DepositProposalData(tokenID, 20, depositorAddress, 32, 0)
         destinationDepositProposalDataHash = Ethers.utils.keccak256(OriginERC721HandlerInstance.address + destinationDepositProposalData.substr(2));
     });
 
-    it("[sanity] depositerAddress' should own tokenID", async () => {
+    it("[sanity] depositorAddress' should own tokenID", async () => {
         const tokenOwner = await OriginERC721MintableInstance.ownerOf(tokenID);
-        assert.strictEqual(depositerAddress, tokenOwner);
+        assert.strictEqual(depositorAddress, tokenOwner);
     });
 
-    it("[sanity] ERC721HandlerInstance.address should have an allowance for tokenID from depositerAddress", async () => {
+    it("[sanity] ERC721HandlerInstance.address should have an allowance for tokenID from depositorAddress", async () => {
         const allowedAddress = await OriginERC721MintableInstance.getApproved(tokenID);
         assert.strictEqual(OriginERC721HandlerInstance.address, allowedAddress);
     });
@@ -105,12 +105,12 @@ contract('E2E ERC721 - Two EVM Chains', async accounts => {
     it("E2E: tokenID of Origin ERC721 owned by depositAddress to Destination ERC721 owned by recipientAddress and back again", async () => {
         let tokenOwner;
 
-        // depositerAddress makes initial deposit of tokenID
+        // depositorAddress makes initial deposit of tokenID
         await TruffleAssert.passes(OriginBridgeInstance.deposit(
             destinationDomainID,
             originResourceID,
             originDepositData,
-            { from: depositerAddress }
+            { from: depositorAddress }
         ));
 
         // Handler should own tokenID
@@ -142,13 +142,13 @@ contract('E2E ERC721 - Two EVM Chains', async accounts => {
         tokenOwner = await OriginERC721MintableInstance.ownerOf(tokenID);
         assert.strictEqual(OriginERC721HandlerInstance.address, tokenOwner, 'OriginERC721HandlerInstance.address does not own tokenID');
 
-        // Assert ERC721 balance was transferred from depositerAddress
+        // Assert ERC721 balance was transferred from depositorAddress
         tokenOwner = await DestinationERC721MintableInstance.ownerOf(tokenID);
-        assert.strictEqual(tokenOwner, recipientAddress, "tokenID wasn't transferred from depositerAddress to recipientAddress");
+        assert.strictEqual(tokenOwner, recipientAddress, "tokenID wasn't transferred from depositorAddress to recipientAddress");
 
         // At this point a representation of OriginERC721Mintable has been transferred from
-        // depositer to the recipient using Both Bridges and DestinationERC721Mintable.
-        // Next we will transfer DestinationERC721Mintable back to the depositer
+        // depositor to the recipient using Both Bridges and DestinationERC721Mintable.
+        // Next we will transfer DestinationERC721Mintable back to the depositor
 
         await DestinationERC721MintableInstance.approve(DestinationERC721HandlerInstance.address, tokenID, { from: recipientAddress });
 
@@ -189,6 +189,6 @@ contract('E2E ERC721 - Two EVM Chains', async accounts => {
 
         // Assert DestinationERC721MintableInstance tokenID was transferred to recipientAddress
         tokenOwner = await OriginERC721MintableInstance.ownerOf(tokenID);
-        assert.strictEqual(depositerAddress, tokenOwner, 'OriginERC721MintableInstance tokenID was not transferred back to depositerAddress');
+        assert.strictEqual(depositorAddress, tokenOwner, 'OriginERC721MintableInstance tokenID was not transferred back to depositorAddress');
     });
 });

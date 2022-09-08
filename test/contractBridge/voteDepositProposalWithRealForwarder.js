@@ -30,8 +30,8 @@ contract('Bridge - [voteProposal through forwarder]', async (accounts) => {
     const relayer1Bit = 1 << 0;
     const relayer2Bit = 1 << 1;
     const relayer3Bit = 1 << 2;
-    const depositer = Wallet.generate();
-    const depositerAddress = depositer.getAddressString();
+    const depositor = Wallet.generate();
+    const depositorAddress = depositor.getAddressString();
     const destinationChainRecipientAddress = accounts[4];
     const depositAmount = 10;
     const expectedDepositNonce = 1;
@@ -127,7 +127,7 @@ contract('Bridge - [voteProposal through forwarder]', async (accounts) => {
         await signer.sendTransaction({ to: relayer2Address, value: Ethers.utils.parseEther("0.1") });
         await signer.sendTransaction({ to: relayer3Address, value: Ethers.utils.parseEther("0.1") });
         await signer.sendTransaction({ to: relayer4Address, value: Ethers.utils.parseEther("0.1") });
-        await signer.sendTransaction({ to: depositerAddress, value: Ethers.utils.parseEther("0.1") });
+        await signer.sendTransaction({ to: depositorAddress, value: Ethers.utils.parseEther("0.1") });
         let chainId = await ForwarderInstance.getChainId();
         domain = {
             name,
@@ -250,9 +250,9 @@ contract('Bridge - [voteProposal through forwarder]', async (accounts) => {
         assert.strictEqual(depositProposalAfterThirdVoteWithExecute._status, STATUS.Executed); // Executed
     });
 
-    it('should not create proposal because depositerAddress is not a relayer', async () => {
+    it('should not create proposal because depositorAddress is not a relayer', async () => {
         const request = {
-            from: depositerAddress,
+            from: depositorAddress,
             to: BridgeInstance.address,
             value: '0',
             gas: '300000',
@@ -260,7 +260,7 @@ contract('Bridge - [voteProposal through forwarder]', async (accounts) => {
             data: voteCallData
         }
         const sign = ethSigUtil.signTypedMessage(
-            depositer.getPrivateKey(),
+            depositor.getPrivateKey(),
             {
                 data: {
                     types: types,

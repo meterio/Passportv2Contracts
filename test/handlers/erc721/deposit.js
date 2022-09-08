@@ -16,7 +16,7 @@ contract('ERC721Handler - [Deposit ERC721]', async (accounts) => {
     const relayerThreshold = 2;
     const domainID = 1;
     const expectedDepositNonce = 1;
-    const depositerAddress = accounts[1];
+    const depositorAddress = accounts[1];
     const tokenID = 1;
 
     let BridgeInstance;
@@ -43,18 +43,18 @@ contract('ERC721Handler - [Deposit ERC721]', async (accounts) => {
 
         await Promise.all([
             ERC721HandlerContract.new(BridgeInstance.address).then(instance => ERC721HandlerInstance = instance),
-            ERC721MintableInstance.mint(depositerAddress, tokenID, "")
+            ERC721MintableInstance.mint(depositorAddress, tokenID, "")
         ]);
 
         await Promise.all([
-            ERC721MintableInstance.approve(ERC721HandlerInstance.address, tokenID, { from: depositerAddress }),
+            ERC721MintableInstance.approve(ERC721HandlerInstance.address, tokenID, { from: depositorAddress }),
             BridgeInstance.adminSetResource(ERC721HandlerInstance.address, resourceID, ERC721MintableInstance.address)
         ]);
     });
 
-    it('[sanity] depositer owns ERC721 with tokenID', async () => {
+    it('[sanity] depositor owns ERC721 with tokenID', async () => {
         const tokenOwner = await ERC721MintableInstance.ownerOf(tokenID);
-        assert.equal(depositerAddress, tokenOwner);
+        assert.equal(depositorAddress, tokenOwner);
     });
 
     it('[sanity] ERC721HandlerInstance.address has an allowance for tokenID', async () => {
@@ -73,14 +73,14 @@ contract('ERC721Handler - [Deposit ERC721]', async (accounts) => {
                 tokenID,
                 lenRecipientAddress,
                 recipientAddress),
-            { from: depositerAddress }
+            { from: depositorAddress }
         );
 
         TruffleAssert.eventEmitted(depositTx, 'Deposit', (event) => {
             return event.destinationDomainID.toNumber() === domainID &&
                 event.resourceID === resourceID.toLowerCase() &&
                 event.depositNonce.toNumber() === expectedDepositNonce &&
-                event.user === depositerAddress &&
+                event.user === depositorAddress &&
                 event.data === Helpers.createERCDepositData(
                     tokenID,
                     lenRecipientAddress,
@@ -100,14 +100,14 @@ contract('ERC721Handler - [Deposit ERC721]', async (accounts) => {
                 tokenID,
                 lenRecipientAddress,
                 recipientAddress),
-            { from: depositerAddress }
+            { from: depositorAddress }
         );
 
         TruffleAssert.eventEmitted(depositTx, 'Deposit', (event) => {
             return event.destinationDomainID.toNumber() === domainID &&
                 event.resourceID === resourceID.toLowerCase() &&
                 event.depositNonce.toNumber() === expectedDepositNonce &&
-                event.user === depositerAddress &&
+                event.user === depositorAddress &&
                 event.data === Helpers.createERCDepositData(
                     tokenID,
                     lenRecipientAddress,

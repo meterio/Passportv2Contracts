@@ -23,7 +23,7 @@ contract('Bridge - [deposit - Generic]', async () => {
     let initialResourceIDs;
     let initialContractAddresses;
     let initialDepositFunctionSignatures;
-    let initialDepositFunctionDepositerOffsets;
+    let initialDepositFunctionDepositorOffsets;
     let initialExecuteFunctionSignatures;
 
     beforeEach(async () => {
@@ -38,13 +38,13 @@ contract('Bridge - [deposit - Generic]', async () => {
         initialResourceIDs = [resourceID];
         initialContractAddresses = [CentrifugeAssetInstance.address];
         initialDepositFunctionSignatures = [Helpers.blankFunctionSig];
-        initialDepositFunctionDepositerOffsets = [Helpers.blankFunctionDepositerOffset];
+        initialDepositFunctionDepositorOffsets = [Helpers.blankFunctionDepositorOffset];
         initialExecuteFunctionSignatures = [Helpers.getFunctionSignature(CentrifugeAssetInstance, 'store')];
 
         GenericHandlerInstance = await GenericHandlerContract.new(
             BridgeInstance.address);
             
-        await BridgeInstance.adminSetGenericResource(GenericHandlerInstance.address, resourceID,  initialContractAddresses[0], initialDepositFunctionSignatures[0], initialDepositFunctionDepositerOffsets[0], initialExecuteFunctionSignatures[0]);
+        await BridgeInstance.adminSetGenericResource(GenericHandlerInstance.address, resourceID,  initialContractAddresses[0], initialDepositFunctionSignatures[0], initialDepositFunctionDepositorOffsets[0], initialExecuteFunctionSignatures[0]);
 
         depositData = Helpers.createGenericDepositData('0xdeadbeef');
     });

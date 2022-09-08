@@ -24,7 +24,7 @@ contract('Bridge - [voteProposal through forwarder]', async (accounts) => {
     const relayer1Bit = 1 << 0;
     const relayer2Bit = 1 << 1;
     const relayer3Bit = 1 << 2;
-    const depositerAddress = accounts[4];
+    const depositorAddress = accounts[4];
     const destinationChainRecipientAddress = accounts[4];
     const depositAmount = 10;
     const expectedDepositNonce = 1;
@@ -131,8 +131,8 @@ contract('Bridge - [voteProposal through forwarder]', async (accounts) => {
         assert.strictEqual(depositProposalAfterThirdVoteWithExecute._status, STATUS.Executed); // Executed
     });
 
-    it('should revert because depositerAddress is not a relayer', async () => {
-        await TruffleAssert.reverts(ForwarderInstance.execute(voteCallData, BridgeInstance.address, depositerAddress));
+    it('should revert because depositorAddress is not a relayer', async () => {
+        await TruffleAssert.reverts(ForwarderInstance.execute(voteCallData, BridgeInstance.address, depositorAddress));
     });
 
     it("depositProposal shouldn't be voted on if it has a Passed status", async () => {

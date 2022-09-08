@@ -592,7 +592,7 @@ task("update-proxy", "deploy contract with proxy")
       await run("compile");
       const signers = await ethers.getSigners();
       const deployer = signers[0];
-      const paoxyAdmin = signers[1];
+      const proxyAdmin = signers[1];
       let config = loadConfig(network.name, true);
 
       if (contract == 'bridge') {
@@ -602,7 +602,7 @@ task("update-proxy", "deploy contract with proxy")
           ethers.getContractFactory,
           deployer
         ) as BridgeUpgradeable;
-        const proxy = await ethers.getContractAt("TransparentUpgradeableProxy", config.bridge, paoxyAdmin) as TransparentUpgradeableProxy;
+        const proxy = await ethers.getContractAt("TransparentUpgradeableProxy", config.bridge, proxyAdmin) as TransparentUpgradeableProxy;
         await proxy.upgradeTo(impl.address);
       } else if (contract == "erc20Handler") {
         const bridgeAddress = config.bridge;
@@ -614,7 +614,7 @@ task("update-proxy", "deploy contract with proxy")
             deployer
           ) as ERC20HandlerUpgradeable;
 
-          const proxy = await ethers.getContractAt("TransparentUpgradeableProxy", config.erc20Handler, paoxyAdmin) as TransparentUpgradeableProxy;
+          const proxy = await ethers.getContractAt("TransparentUpgradeableProxy", config.erc20Handler, proxyAdmin) as TransparentUpgradeableProxy;
           await proxy.upgradeTo(impl.address)
         }
       } else if (contract == "erc721Handler") {
@@ -627,7 +627,7 @@ task("update-proxy", "deploy contract with proxy")
             deployer
           ) as ERC721HandlerUpgradeable;
 
-          const proxy = await ethers.getContractAt("TransparentUpgradeableProxy", config.erc721Handler, paoxyAdmin) as TransparentUpgradeableProxy;
+          const proxy = await ethers.getContractAt("TransparentUpgradeableProxy", config.erc721Handler, proxyAdmin) as TransparentUpgradeableProxy;
           await proxy.upgradeTo(impl.address)
         }
       } else if (contract == "erc1155Handler") {
@@ -640,7 +640,7 @@ task("update-proxy", "deploy contract with proxy")
             deployer
           ) as ERC1155HandlerUpgradeable;
 
-          const proxy = await ethers.getContractAt("TransparentUpgradeableProxy", config.erc1155Handler, paoxyAdmin) as TransparentUpgradeableProxy;
+          const proxy = await ethers.getContractAt("TransparentUpgradeableProxy", config.erc1155Handler, proxyAdmin) as TransparentUpgradeableProxy;
           await proxy.upgradeTo(impl.address)
         }
       } else if (contract == "genericHandler") {
@@ -653,7 +653,7 @@ task("update-proxy", "deploy contract with proxy")
             deployer
           ) as GenericHandlerUpgradeable;
 
-          const proxy = await ethers.getContractAt("TransparentUpgradeableProxy", config.genericHandler, paoxyAdmin) as TransparentUpgradeableProxy;
+          const proxy = await ethers.getContractAt("TransparentUpgradeableProxy", config.genericHandler, proxyAdmin) as TransparentUpgradeableProxy;
           await proxy.upgradeTo(impl.address)
         }
       }
@@ -700,7 +700,7 @@ task("update-signature", "deploy signature contract")
       await run("compile");
       const signers = await ethers.getSigners();
       const deployer = signers[0];
-      const paoxyAdmin = signers[1];
+      const proxyAdmin = signers[1];
       let config = loadConfig(network.name, true);
 
       const instant = await deployContract(

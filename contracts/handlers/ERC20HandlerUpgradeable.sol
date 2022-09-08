@@ -22,9 +22,9 @@ contract ERC20HandlerUpgradeable is IDepositExecute, HandlerHelpers, ERC20Safe {
     error ProvidedTokenAddressIsNotWhitelisted();
 
     /**
-        @notice A deposit is initiatied by making a deposit in the Bridge contract.
+        @notice A deposit is initiated by making a deposit in the Bridge contract.
         @param resourceID ResourceID used to find address of token to be used for deposit.
-        @param depositer Address of account making the deposit in the Bridge contract.
+        @param depositor Address of account making the deposit in the Bridge contract.
         @param data Consists of {amount} padded to 32 bytes.
         @notice Data passed into the function should be constructed as follows:
         amount                      uint256     bytes   0 - 32
@@ -34,7 +34,7 @@ contract ERC20HandlerUpgradeable is IDepositExecute, HandlerHelpers, ERC20Safe {
      */
     function deposit(
         bytes32 resourceID,
-        address depositer,
+        address depositor,
         bytes calldata data
     ) external payable override onlyBridge returns (bytes memory) {
         uint256 amount;
@@ -46,11 +46,11 @@ contract ERC20HandlerUpgradeable is IDepositExecute, HandlerHelpers, ERC20Safe {
         }
 
         if (_burnList[tokenAddress]) {
-            burnERC20(tokenAddress, depositer, amount);
+            burnERC20(tokenAddress, depositor, amount);
         } else if (isNative[tokenAddress]) {
             depositETH(amount);
         } else {
-            lockERC20(tokenAddress, depositer, address(this), amount);
+            lockERC20(tokenAddress, depositor, address(this), amount);
         }
         return new bytes(0);
     }

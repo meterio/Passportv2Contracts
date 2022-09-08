@@ -36,7 +36,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "depositFunctionDepositerOffset",
+        name: "depositFunctionDepositorOffset",
         type: "uint256",
       },
       {

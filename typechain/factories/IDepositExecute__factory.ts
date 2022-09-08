@@ -26,7 +26,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "depositer",
+        name: "depositor",
         type: "address",
       },
       {

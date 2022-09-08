@@ -16,7 +16,7 @@ contract('ERC1155Handler - [Deposit Burn ERC1155]', async (accounts) => {
     const relayerThreshold = 2;
     const domainID = 1;
 
-    const depositerAddress = accounts[1];
+    const depositorAddress = accounts[1];
 
     const tokenID = 1;
     const tokenAmount = 100;
@@ -49,11 +49,11 @@ contract('ERC1155Handler - [Deposit Burn ERC1155]', async (accounts) => {
 
         await Promise.all([
             ERC1155HandlerContract.new(BridgeInstance.address).then(instance => ERC1155HandlerInstance = instance),
-            ERC1155MintableInstance1.mintBatch(depositerAddress, [tokenID], [tokenAmount], "0x0")
+            ERC1155MintableInstance1.mintBatch(depositorAddress, [tokenID], [tokenAmount], "0x0")
         ]);
 
         await Promise.all([
-            ERC1155MintableInstance1.setApprovalForAll(ERC1155HandlerInstance.address, true, { from: depositerAddress }),
+            ERC1155MintableInstance1.setApprovalForAll(ERC1155HandlerInstance.address, true, { from: depositorAddress }),
             BridgeInstance.adminSetResource(ERC1155HandlerInstance.address, resourceID1, ERC1155MintableInstance1.address),
             BridgeInstance.adminSetResource(ERC1155HandlerInstance.address, resourceID2, ERC1155MintableInstance2.address),
             BridgeInstance.adminSetBurnable(ERC1155HandlerInstance.address, ERC1155MintableInstance1.address),
@@ -74,13 +74,13 @@ contract('ERC1155Handler - [Deposit Burn ERC1155]', async (accounts) => {
             domainID,
             resourceID1,
             depositData,
-            { from: depositerAddress }
+            { from: depositorAddress }
         );
 
         const handlerBalance = await ERC1155MintableInstance1.balanceOf(ERC1155HandlerInstance.address, tokenID);
         assert.strictEqual(handlerBalance.toNumber(), 0);
 
-        const depositerBalance = await ERC1155MintableInstance1.balanceOf(depositerAddress, tokenID);
-        assert.strictEqual(depositerBalance.toNumber(), 0);
+        const depositorBalance = await ERC1155MintableInstance1.balanceOf(depositorAddress, tokenID);
+        assert.strictEqual(depositorBalance.toNumber(), 0);
     });
 });

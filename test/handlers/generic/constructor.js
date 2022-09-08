@@ -18,7 +18,7 @@ contract('GenericHandler - [constructor]', async () => {
     const domainID = 1;
     const centrifugeAssetMinCount = 1;
     const blankFunctionSig = '0x00000000';
-    const blankFunctionDepositerOffset = 0;
+    const blankFunctionDepositorOffset = 0;
     const centrifugeAssetStoreFuncSig = 'store(bytes32)';
 
     let BridgeInstance;
@@ -28,7 +28,7 @@ contract('GenericHandler - [constructor]', async () => {
     let initialResourceIDs;
     let initialContractAddresses;
     let initialDepositFunctionSignatures;
-    let initialDepositFunctionDepositerOffsets;
+    let initialDepositFunctionDepositorOffsets;
     let initialExecuteFunctionSignatures;
 
     beforeEach(async () => {
@@ -51,7 +51,7 @@ contract('GenericHandler - [constructor]', async () => {
         const executeProposalFuncSig = Ethers.utils.keccak256(Ethers.utils.hexlify(Ethers.utils.toUtf8Bytes(centrifugeAssetStoreFuncSig))).substr(0, 10);
 
         initialDepositFunctionSignatures = [blankFunctionSig, blankFunctionSig, blankFunctionSig];
-        initialDepositFunctionDepositerOffsets = [blankFunctionDepositerOffset, blankFunctionDepositerOffset, blankFunctionDepositerOffset];
+        initialDepositFunctionDepositorOffsets = [blankFunctionDepositorOffset, blankFunctionDepositorOffset, blankFunctionDepositorOffset];
         initialExecuteFunctionSignatures = [executeProposalFuncSig, executeProposalFuncSig, executeProposalFuncSig];
     });
 
@@ -66,7 +66,7 @@ contract('GenericHandler - [constructor]', async () => {
             BridgeInstance.address);
 
         for (let i = 0; i < initialResourceIDs.length; i++) {
-            await BridgeInstance.adminSetGenericResource(GenericHandlerInstance.address, initialResourceIDs[i], initialContractAddresses[i], initialDepositFunctionSignatures[i], initialDepositFunctionDepositerOffsets[i], initialExecuteFunctionSignatures[i]);
+            await BridgeInstance.adminSetGenericResource(GenericHandlerInstance.address, initialResourceIDs[i], initialContractAddresses[i], initialDepositFunctionSignatures[i], initialDepositFunctionDepositorOffsets[i], initialExecuteFunctionSignatures[i]);
         }
         
         for (let i = 0; i < initialResourceIDs.length; i++) {
@@ -79,8 +79,8 @@ contract('GenericHandler - [constructor]', async () => {
             const retrievedDepositFunctionSig = await GenericHandlerInstance._contractAddressToDepositFunctionSignature.call(initialContractAddresses[i]);
             assert.strictEqual(initialDepositFunctionSignatures[i].toLowerCase(), retrievedDepositFunctionSig.toLowerCase());
 
-            const retrievedDepositFunctionDepositerOffset = await GenericHandlerInstance._contractAddressToDepositFunctionDepositerOffset.call(initialContractAddresses[i]);
-            assert.strictEqual(initialDepositFunctionDepositerOffsets[i], retrievedDepositFunctionDepositerOffset.toNumber());
+            const retrievedDepositFunctionDepositorOffset = await GenericHandlerInstance._contractAddressToDepositFunctionDepositorOffset.call(initialContractAddresses[i]);
+            assert.strictEqual(initialDepositFunctionDepositorOffsets[i], retrievedDepositFunctionDepositorOffset.toNumber());
 
             const retrievedExecuteFunctionSig = await GenericHandlerInstance._contractAddressToExecuteFunctionSignature.call(initialContractAddresses[i]);
             assert.strictEqual(initialExecuteFunctionSignatures[i].toLowerCase(), retrievedExecuteFunctionSig.toLowerCase());

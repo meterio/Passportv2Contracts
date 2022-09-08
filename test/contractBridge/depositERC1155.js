@@ -16,7 +16,7 @@ contract('Bridge - [deposit - ERC1155]', async (accounts) => {
     const originDomainID = 1;
     const destinationDomainID = 2;
     const relayerThreshold = 0;
-    const depositerAddress = accounts[1];
+    const depositorAddress = accounts[1];
     const originChainTokenID = 42;
     const originChainInitialTokenAmount = 100;
     const depositAmount = 10;
@@ -42,20 +42,20 @@ contract('Bridge - [deposit - ERC1155]', async (accounts) => {
 
         await Promise.all([
             BridgeInstance.adminSetResource(OriginERC1155HandlerInstance.address, resourceID, OriginERC1155MintableInstance.address),
-            OriginERC1155MintableInstance.mintBatch(depositerAddress, [originChainTokenID], [originChainInitialTokenAmount], "0x0")
+            OriginERC1155MintableInstance.mintBatch(depositorAddress, [originChainTokenID], [originChainInitialTokenAmount], "0x0")
         ]);
-        await OriginERC1155MintableInstance.setApprovalForAll(OriginERC1155HandlerInstance.address, true, { from: depositerAddress });
+        await OriginERC1155MintableInstance.setApprovalForAll(OriginERC1155HandlerInstance.address, true, { from: depositorAddress });
 
         depositData = Helpers.createERC1155DepositData([originChainTokenID], [depositAmount]);
     });
 
-    it("[sanity] test depositerAddress' balance", async () => {
-        const originChainDepositerBalance = await OriginERC1155MintableInstance.balanceOf(depositerAddress, originChainTokenID);
-        assert.strictEqual(originChainDepositerBalance.toNumber(), originChainInitialTokenAmount);
+    it("[sanity] test depositorAddress' balance", async () => {
+        const originChainDepositorBalance = await OriginERC1155MintableInstance.balanceOf(depositorAddress, originChainTokenID);
+        assert.strictEqual(originChainDepositorBalance.toNumber(), originChainInitialTokenAmount);
     });
 
     it("[sanity] test OriginERC1155HandlerInstance.address' allowance", async () => {
-        const originChainHandlerApprovedStatus = await OriginERC1155MintableInstance.isApprovedForAll(depositerAddress, OriginERC1155HandlerInstance.address);
+        const originChainHandlerApprovedStatus = await OriginERC1155MintableInstance.isApprovedForAll(depositorAddress, OriginERC1155HandlerInstance.address);
         assert.strictEqual(originChainHandlerApprovedStatus, true);
     });
 
@@ -64,7 +64,7 @@ contract('Bridge - [deposit - ERC1155]', async (accounts) => {
             destinationDomainID,
             resourceID,
             depositData,
-            { from: depositerAddress }
+            { from: depositorAddress }
         ));
     });
 
@@ -73,7 +73,7 @@ contract('Bridge - [deposit - ERC1155]', async (accounts) => {
             destinationDomainID,
             resourceID,
             depositData,
-            { from: depositerAddress }
+            { from: depositorAddress }
         );
 
         const depositCount = await BridgeInstance._depositCounts.call(destinationDomainID);
@@ -85,11 +85,11 @@ contract('Bridge - [deposit - ERC1155]', async (accounts) => {
             destinationDomainID,
             resourceID,
             depositData,
-            { from: depositerAddress }
+            { from: depositorAddress }
         );
 
-        const originChainDepositerBalance = await OriginERC1155MintableInstance.balanceOf(depositerAddress, originChainTokenID);
-        assert.strictEqual(originChainDepositerBalance.toNumber(), originChainInitialTokenAmount - depositAmount);
+        const originChainDepositorBalance = await OriginERC1155MintableInstance.balanceOf(depositorAddress, originChainTokenID);
+        assert.strictEqual(originChainDepositorBalance.toNumber(), originChainInitialTokenAmount - depositAmount);
 
         const originChainHandlerBalance = await OriginERC1155MintableInstance.balanceOf(OriginERC1155HandlerInstance.address, originChainTokenID);
         assert.strictEqual(originChainHandlerBalance.toNumber(), depositAmount);
@@ -100,7 +100,7 @@ contract('Bridge - [deposit - ERC1155]', async (accounts) => {
             destinationDomainID,
             resourceID,
             depositData,
-            { from: depositerAddress }
+            { from: depositorAddress }
         );
 
         TruffleAssert.eventEmitted(depositTx, 'Deposit', (event) => {
@@ -113,7 +113,7 @@ contract('Bridge - [deposit - ERC1155]', async (accounts) => {
             destinationDomainID,
             resourceID,
             depositData,
-            { from: depositerAddress }
+            { from: depositorAddress }
         );
 
         TruffleAssert.eventEmitted(depositTx, 'Deposit', (event) => {
@@ -124,6 +124,6 @@ contract('Bridge - [deposit - ERC1155]', async (accounts) => {
     });
 
     it('deposit requires resourceID that is mapped to a handler', async () => {
-        await TruffleAssert.reverts(BridgeInstance.deposit(destinationDomainID, '0x0', depositData, { from: depositerAddress }), "resourceID not mapped to handler");
+        await TruffleAssert.reverts(BridgeInstance.deposit(destinationDomainID, '0x0', depositData, { from: depositorAddress }), "resourceID not mapped to handler");
     });
 });

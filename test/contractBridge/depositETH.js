@@ -17,7 +17,7 @@ contract('Bridge - [deposit - ETH]', async (accounts) => {
     const originDomainID = 1;
     const destinationDomainID = 2;
     const relayerThreshold = 0;
-    const depositerAddress = accounts[1];
+    const depositorAddress = accounts[1];
     const recipientAddress = accounts[2];
     let originChainInitialTokenAmount;
     let depositAmount;
@@ -30,7 +30,7 @@ contract('Bridge - [deposit - ETH]', async (accounts) => {
     let ETHresourceID;
 
     beforeEach(async () => {
-        originChainInitialTokenAmount = await balance.current(depositerAddress, unit = 'wei');
+        originChainInitialTokenAmount = await balance.current(depositorAddress, unit = 'wei');
         depositAmount = ethers.utils.parseEther('10');
         WethInstance = await WETH.new();
         ETHresourceID = Helpers.createResourceID(WethInstance.address, originDomainID);
@@ -51,7 +51,7 @@ contract('Bridge - [deposit - ETH]', async (accounts) => {
             destinationDomainID,
             ETHresourceID,
             depositData,
-            { from: depositerAddress, value: depositAmount }
+            { from: depositorAddress, value: depositAmount }
         ));
     });
 
@@ -60,7 +60,7 @@ contract('Bridge - [deposit - ETH]', async (accounts) => {
             destinationDomainID,
             ETHresourceID,
             depositData,
-            { from: depositerAddress, value: depositAmount }
+            { from: depositorAddress, value: depositAmount }
         );
 
         const depositCount = await BridgeInstance._depositCounts.call(destinationDomainID);
@@ -72,7 +72,7 @@ contract('Bridge - [deposit - ETH]', async (accounts) => {
             destinationDomainID,
             ETHresourceID,
             depositData,
-            { from: depositerAddress, value: depositAmount }
+            { from: depositorAddress, value: depositAmount }
         );
 
         const originChainHandlerBalance = await WethInstance.balanceOf(OriginERC20HandlerInstance.address);
@@ -84,7 +84,7 @@ contract('Bridge - [deposit - ETH]', async (accounts) => {
             destinationDomainID,
             ETHresourceID,
             depositData,
-            { from: depositerAddress, value: depositAmount }
+            { from: depositorAddress, value: depositAmount }
         );
 
         TruffleAssert.eventEmitted(depositTx, 'Deposit', (event) => {
@@ -97,7 +97,7 @@ contract('Bridge - [deposit - ETH]', async (accounts) => {
             destinationDomainID,
             ETHresourceID,
             depositData,
-            { from: depositerAddress, value: depositAmount }
+            { from: depositorAddress, value: depositAmount }
         );
 
         TruffleAssert.eventEmitted(depositTx, 'Deposit', (event) => {
@@ -108,6 +108,6 @@ contract('Bridge - [deposit - ETH]', async (accounts) => {
     });
 
     it('deposit requires ETHresourceID that is mapped to a handler', async () => {
-        await TruffleAssert.reverts(BridgeInstance.depositETH(destinationDomainID, '0x0', depositData, { from: depositerAddress, value: depositAmount }), "resourceID not WETH");
+        await TruffleAssert.reverts(BridgeInstance.depositETH(destinationDomainID, '0x0', depositData, { from: depositorAddress, value: depositAmount }), "resourceID not WETH");
     });
 });

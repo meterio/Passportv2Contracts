@@ -23,7 +23,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface GenericHandlerUpgradeableInterface extends ethers.utils.Interface {
   functions: {
     "_bridgeAddress()": FunctionFragment;
-    "_contractAddressToDepositFunctionDepositerOffset(address)": FunctionFragment;
+    "_contractAddressToDepositFunctionDepositorOffset(address)": FunctionFragment;
     "_contractAddressToDepositFunctionSignature(address)": FunctionFragment;
     "_contractAddressToExecuteFunctionSignature(address)": FunctionFragment;
     "_contractAddressToResourceID(address)": FunctionFragment;
@@ -40,7 +40,7 @@ interface GenericHandlerUpgradeableInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "_contractAddressToDepositFunctionDepositerOffset",
+    functionFragment: "_contractAddressToDepositFunctionDepositorOffset",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -82,7 +82,7 @@ interface GenericHandlerUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "_contractAddressToDepositFunctionDepositerOffset",
+    functionFragment: "_contractAddressToDepositFunctionDepositorOffset",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -141,14 +141,14 @@ export class GenericHandlerUpgradeable extends Contract {
       0: string;
     }>;
 
-    _contractAddressToDepositFunctionDepositerOffset(
+    _contractAddressToDepositFunctionDepositorOffset(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "_contractAddressToDepositFunctionDepositerOffset(address)"(
+    "_contractAddressToDepositFunctionDepositorOffset(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -227,14 +227,14 @@ export class GenericHandlerUpgradeable extends Contract {
 
     deposit(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -265,7 +265,7 @@ export class GenericHandlerUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -274,7 +274,7 @@ export class GenericHandlerUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -284,12 +284,12 @@ export class GenericHandlerUpgradeable extends Contract {
 
   "_bridgeAddress()"(overrides?: CallOverrides): Promise<string>;
 
-  _contractAddressToDepositFunctionDepositerOffset(
+  _contractAddressToDepositFunctionDepositorOffset(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  "_contractAddressToDepositFunctionDepositerOffset(address)"(
+  "_contractAddressToDepositFunctionDepositorOffset(address)"(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -343,14 +343,14 @@ export class GenericHandlerUpgradeable extends Contract {
 
   deposit(
     resourceID: BytesLike,
-    depositer: string,
+    depositor: string,
     data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "deposit(bytes32,address,bytes)"(
     resourceID: BytesLike,
-    depositer: string,
+    depositor: string,
     data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -381,7 +381,7 @@ export class GenericHandlerUpgradeable extends Contract {
     resourceID: BytesLike,
     contractAddress: string,
     depositFunctionSig: BytesLike,
-    depositFunctionDepositerOffset: BigNumberish,
+    depositFunctionDepositorOffset: BigNumberish,
     executeFunctionSig: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -390,7 +390,7 @@ export class GenericHandlerUpgradeable extends Contract {
     resourceID: BytesLike,
     contractAddress: string,
     depositFunctionSig: BytesLike,
-    depositFunctionDepositerOffset: BigNumberish,
+    depositFunctionDepositorOffset: BigNumberish,
     executeFunctionSig: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -400,12 +400,12 @@ export class GenericHandlerUpgradeable extends Contract {
 
     "_bridgeAddress()"(overrides?: CallOverrides): Promise<string>;
 
-    _contractAddressToDepositFunctionDepositerOffset(
+    _contractAddressToDepositFunctionDepositorOffset(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "_contractAddressToDepositFunctionDepositerOffset(address)"(
+    "_contractAddressToDepositFunctionDepositorOffset(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -462,14 +462,14 @@ export class GenericHandlerUpgradeable extends Contract {
 
     deposit(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
@@ -497,7 +497,7 @@ export class GenericHandlerUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -506,7 +506,7 @@ export class GenericHandlerUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -519,12 +519,12 @@ export class GenericHandlerUpgradeable extends Contract {
 
     "_bridgeAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    _contractAddressToDepositFunctionDepositerOffset(
+    _contractAddressToDepositFunctionDepositorOffset(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "_contractAddressToDepositFunctionDepositerOffset(address)"(
+    "_contractAddressToDepositFunctionDepositorOffset(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -581,14 +581,14 @@ export class GenericHandlerUpgradeable extends Contract {
 
     deposit(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -619,7 +619,7 @@ export class GenericHandlerUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -628,7 +628,7 @@ export class GenericHandlerUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -641,12 +641,12 @@ export class GenericHandlerUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    _contractAddressToDepositFunctionDepositerOffset(
+    _contractAddressToDepositFunctionDepositorOffset(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "_contractAddressToDepositFunctionDepositerOffset(address)"(
+    "_contractAddressToDepositFunctionDepositorOffset(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -703,14 +703,14 @@ export class GenericHandlerUpgradeable extends Contract {
 
     deposit(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "deposit(bytes32,address,bytes)"(
       resourceID: BytesLike,
-      depositer: string,
+      depositor: string,
       data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -741,7 +741,7 @@ export class GenericHandlerUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -750,7 +750,7 @@ export class GenericHandlerUpgradeable extends Contract {
       resourceID: BytesLike,
       contractAddress: string,
       depositFunctionSig: BytesLike,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

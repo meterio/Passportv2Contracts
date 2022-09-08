@@ -28,14 +28,14 @@ contract ERC1155HandlerUpgradeable is
     }
 
     /**
-        @notice A deposit is initiatied by making a deposit in the Bridge contract.
+        @notice A deposit is initiated by making a deposit in the Bridge contract.
         @param resourceID ResourceID used to find address of token to be used for deposit.
-        @param depositer Address of account making the deposit in the Bridge contract.
+        @param depositor Address of account making the deposit in the Bridge contract.
         @param data Consists of ABI-encoded arrays of tokenIDs and amounts.
      */
     function deposit(
         bytes32 resourceID,
-        address depositer,
+        address depositor,
         bytes calldata data
     ) external payable override onlyBridge returns (bytes memory) {
         require(msg.value == 0, "msg.value != 0");
@@ -51,11 +51,11 @@ contract ERC1155HandlerUpgradeable is
         );
 
         if (_burnList[tokenAddress]) {
-            burnBatchERC1155(tokenAddress, depositer, tokenIDs, amounts);
+            burnBatchERC1155(tokenAddress, depositor, tokenIDs, amounts);
         } else {
             lockBatchERC1155(
                 tokenAddress,
-                depositer,
+                depositor,
                 address(this),
                 tokenIDs,
                 amounts,
@@ -70,6 +70,11 @@ contract ERC1155HandlerUpgradeable is
         by a relayer on the deposit's destination chain.
         @param data Consists of ABI-encoded {tokenIDs}, {amounts}, {recipient},
         and {transferData} of types uint[], uint[], bytes, bytes.
+        @notice Data passed into the function should be constructed as ABI encoding of:
+        tokenIDs                                    uint256[]  bytes
+        amounts                                     uint256[]  bytes
+        destinationRecipientAddress                   bytes    bytes
+        transferData                                  bytes    bytes
      */
     function executeProposal(bytes32 resourceID, bytes calldata data)
         external

@@ -114,17 +114,11 @@ contract ERC20Safe {
     }
 
     function _safeTransferETH(address to, uint256 value) private {
-        (bool success, bytes memory returndata) = address(to).call{
-            value: value
-        }("");
-        require(success, "ERC20: call failed");
-
-        if (returndata.length > 0) {
-            require(
-                abi.decode(returndata, (bool)),
-                "ERC20: operation did not succeed"
-            );
-        }
+        (bool success, ) = to.call{value: value}(new bytes(0));
+        require(
+            success,
+            "TransferHelper::safeTransferETH: ETH transfer failed"
+        );
     }
 
     /**

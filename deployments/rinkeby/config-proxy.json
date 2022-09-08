@@ -1,0 +1,14 @@
+{
+    "name": "rinkeby",
+    "type": "evm",
+    "id": 3,
+    "from": "0x1381C573b97Bf393A81fA42760DD21E109d8092B",
+    "bridge": "0x3C267eF01Ff5062570Bc132Ef6749eb5621aA98D",
+    "erc20Handler": "0xd41e9B138DC2ac42ca6028f6E4D256aD66028693",
+    "erc721Handler": "0xd060298D5f7FE1E422CA23435AaE29aB63f9794A",
+    "erc1155Handler": "0xe0bb0D154827084f24FB87D0aE99E23FE77Ba3E6",
+    "genericHandler": "0xf5f07093F28Eb7aA4bFb737F3D7aa2277852646C",
+    "feeHandler": "0x647f839c5A4d5596dbec3E7D43D6db394c30b487",
+    "signature": "",
+    "tokens": []
+}

@@ -7,7 +7,7 @@ const Ethers = require('ethers');
 const { time } = require('@openzeppelin/test-helpers');
 
 const blankFunctionSig = '0x00000000';
-const blankFunctionDepositerOffset = 0;
+const blankFunctionDepositorOffset = 0;
 const AbiCoder = new Ethers.utils.AbiCoder;
 
 const toHex = (covertThis, padding) => {
@@ -127,7 +127,7 @@ const nonceAndId = (nonce, id) => {
 module.exports = {
     advanceBlock,
     blankFunctionSig,
-    blankFunctionDepositerOffset,
+    blankFunctionDepositorOffset,
     toHex,
     abiEncode,
     getFunctionSignature,

@@ -940,8 +940,8 @@ task("setfee", "set fee handler")
     async ({ }, { ethers, run, network }) => {
       await run("compile");
       const signers = await ethers.getSigners();
-      const deployer = signers[0];
-      let config = loadConfig(network.name);
+      const deployer = signers[1];
+      let config = loadConfig(network.name, true);
       const bridgeInstant = await ethers.getContractAt("Bridge", config.bridge, deployer) as Bridge;
       let receipt = await bridgeInstant.adminChangeFeeHandler(config.feeHandler);
       console.log(await receipt.wait())

@@ -3,12 +3,12 @@
     "type": "evm",
     "id": "10",
     "from": "0x1381C573b97Bf393A81fA42760DD21E109d8092B",
-    "bridge": "0x0872B14C6fc1dF9b9070ECbEd22547627d012A58",
-    "erc20Handler": "0xb78AAc38F1dc8E4aA244A196085011d7931E087d",
-    "erc721Handler": "0x0b2e287309A8728A01C6Ec8683349E524e103b25",
-    "erc1155Handler": "0x0C4CCda8e0eCeB0ef3B2477f9bF6751CF52Be7b9",
-    "genericHandler": "0xAFfe8B72a29A28999a472a056374d8B8607e4347",
-    "feeHandler": "0xF11b121ecE714a006CdDBb6167f3DA048183EE5e",
+    "bridge": "0x720B2e034501F4af81a142D3A454b2A3c240B7d9",
+    "erc20Handler": "0x7cE1AB4890Da9bF0A190BbB6FEaBcCb0Eddb56e8",
+    "erc721Handler": "0xf8445010989A2Ae0857082D8d1728Decede966c0",
+    "erc1155Handler": "0xDd8eb5947Bb223328d2bfb6572F360d5eC28Aef9",
+    "genericHandler": "0x647f839c5A4d5596dbec3E7D43D6db394c30b487",
+    "feeHandler": "0x2bcf667F0Ba1e18736d0284caa9FD630421B8d0D",
     "signature": "",
     "tokens": []
 }

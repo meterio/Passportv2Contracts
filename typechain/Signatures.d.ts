@@ -28,9 +28,11 @@ interface SignaturesInterface extends ethers.utils.Interface {
     "_TYPE_HASH()": FunctionFragment;
     "_relayerThreshold(uint8)": FunctionFragment;
     "adminChangeRelayerThreshold(uint8,uint256)": FunctionFragment;
-    "adminSetDestChainId(uint8,uint256)": FunctionFragment;
+    "adminSetDestChainId(uint8,uint256,address)": FunctionFragment;
     "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "destChainId(uint8)": FunctionFragment;
+    "destinationBridgeAddress(uint8)": FunctionFragment;
+    "getProposal(uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getRoleMember(bytes32,uint256)": FunctionFragment;
     "getRoleMemberCount(bytes32)": FunctionFragment;
@@ -39,7 +41,11 @@ interface SignaturesInterface extends ethers.utils.Interface {
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "hasVote(bytes)": FunctionFragment;
+    "indexToProposal(uint256)": FunctionFragment;
     "paused()": FunctionFragment;
+    "proposalIndex()": FunctionFragment;
+    "proposals(bytes32)": FunctionFragment;
+    "relayerVote(bytes32,address)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "signatures(bytes32,uint256)": FunctionFragment;
@@ -72,7 +78,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "adminSetDestChainId",
-    values: [BigNumberish, BigNumberish]
+    values: [BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "checkSignature",
@@ -88,6 +94,14 @@ interface SignaturesInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "destChainId",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "destinationBridgeAddress",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getProposal",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -119,7 +133,23 @@ interface SignaturesInterface extends ethers.utils.Interface {
     values: [BytesLike, string]
   ): string;
   encodeFunctionData(functionFragment: "hasVote", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "indexToProposal",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "proposalIndex",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "proposals",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "relayerVote",
+    values: [BytesLike, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "renounceRole",
     values: [BytesLike, string]
@@ -179,6 +209,14 @@ interface SignaturesInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "destinationBridgeAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getProposal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getRoleAdmin",
     data: BytesLike
   ): Result;
@@ -201,7 +239,20 @@ interface SignaturesInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasVote", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "indexToProposal",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "proposalIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "proposals", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "relayerVote",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceRole",
     data: BytesLike
@@ -305,12 +356,14 @@ export class Signatures extends Contract {
     adminSetDestChainId(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
+      destinationBridge: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "adminSetDestChainId(uint8,uint256)"(
+    "adminSetDestChainId(uint8,uint256,address)"(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
+      destinationBridge: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -352,6 +405,64 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
+    }>;
+
+    destinationBridgeAddress(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "destinationBridgeAddress(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    getProposal(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: {
+        originDomainID: number;
+        destinationDomainID: number;
+        destinationBridge: string;
+        depositNonce: BigNumber;
+        resourceID: string;
+        data: string;
+        proposalIndex: BigNumber;
+        0: number;
+        1: number;
+        2: string;
+        3: BigNumber;
+        4: string;
+        5: string;
+        6: BigNumber;
+      };
+    }>;
+
+    "getProposal(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: {
+        originDomainID: number;
+        destinationDomainID: number;
+        destinationBridge: string;
+        depositNonce: BigNumber;
+        resourceID: string;
+        data: string;
+        proposalIndex: BigNumber;
+        0: number;
+        1: number;
+        2: string;
+        3: BigNumber;
+        4: string;
+        5: string;
+        6: BigNumber;
+      };
     }>;
 
     getRoleAdmin(
@@ -414,7 +525,7 @@ export class Signatures extends Contract {
       0: BigNumber;
     }>;
 
-    getSignatures(
+    "getSignatures(uint8,uint64,bytes32,bytes)"(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
@@ -424,11 +535,8 @@ export class Signatures extends Contract {
       0: string[];
     }>;
 
-    "getSignatures(uint8,uint64,bytes32,bytes)"(
-      domainID: BigNumberish,
-      depositNonce: BigNumberish,
-      resourceID: BytesLike,
-      data: BytesLike,
+    "getSignatures(uint256)"(
+      index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: string[];
@@ -476,11 +584,89 @@ export class Signatures extends Contract {
       0: boolean;
     }>;
 
+    indexToProposal(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "indexToProposal(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     paused(overrides?: CallOverrides): Promise<{
       0: boolean;
     }>;
 
     "paused()"(overrides?: CallOverrides): Promise<{
+      0: boolean;
+    }>;
+
+    proposalIndex(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "proposalIndex()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    proposals(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      originDomainID: number;
+      destinationDomainID: number;
+      destinationBridge: string;
+      depositNonce: BigNumber;
+      resourceID: string;
+      data: string;
+      proposalIndex: BigNumber;
+      0: number;
+      1: number;
+      2: string;
+      3: BigNumber;
+      4: string;
+      5: string;
+      6: BigNumber;
+    }>;
+
+    "proposals(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      originDomainID: number;
+      destinationDomainID: number;
+      destinationBridge: string;
+      depositNonce: BigNumber;
+      resourceID: string;
+      data: string;
+      proposalIndex: BigNumber;
+      0: number;
+      1: number;
+      2: string;
+      3: BigNumber;
+      4: string;
+      5: string;
+      6: BigNumber;
+    }>;
+
+    relayerVote(
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "relayerVote(bytes32,address)"(
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<{
       0: boolean;
     }>;
 
@@ -588,12 +774,14 @@ export class Signatures extends Contract {
   adminSetDestChainId(
     destinationDomainID: BigNumberish,
     chainId: BigNumberish,
+    destinationBridge: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "adminSetDestChainId(uint8,uint256)"(
+  "adminSetDestChainId(uint8,uint256,address)"(
     destinationDomainID: BigNumberish,
     chainId: BigNumberish,
+    destinationBridge: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -628,6 +816,56 @@ export class Signatures extends Contract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  destinationBridgeAddress(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "destinationBridgeAddress(uint8)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  getProposal(
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    originDomainID: number;
+    destinationDomainID: number;
+    destinationBridge: string;
+    depositNonce: BigNumber;
+    resourceID: string;
+    data: string;
+    proposalIndex: BigNumber;
+    0: number;
+    1: number;
+    2: string;
+    3: BigNumber;
+    4: string;
+    5: string;
+    6: BigNumber;
+  }>;
+
+  "getProposal(uint256)"(
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    originDomainID: number;
+    destinationDomainID: number;
+    destinationBridge: string;
+    depositNonce: BigNumber;
+    resourceID: string;
+    data: string;
+    proposalIndex: BigNumber;
+    0: number;
+    1: number;
+    2: string;
+    3: BigNumber;
+    4: string;
+    5: string;
+    6: BigNumber;
+  }>;
 
   getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
@@ -670,7 +908,7 @@ export class Signatures extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getSignatures(
+  "getSignatures(uint8,uint64,bytes32,bytes)"(
     domainID: BigNumberish,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
@@ -678,11 +916,8 @@ export class Signatures extends Contract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
-  "getSignatures(uint8,uint64,bytes32,bytes)"(
-    domainID: BigNumberish,
-    depositNonce: BigNumberish,
-    resourceID: BytesLike,
-    data: BytesLike,
+  "getSignatures(uint256)"(
+    index: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
@@ -717,9 +952,75 @@ export class Signatures extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  indexToProposal(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "indexToProposal(uint256)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   paused(overrides?: CallOverrides): Promise<boolean>;
 
   "paused()"(overrides?: CallOverrides): Promise<boolean>;
+
+  proposalIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "proposalIndex()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  proposals(
+    arg0: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<{
+    originDomainID: number;
+    destinationDomainID: number;
+    destinationBridge: string;
+    depositNonce: BigNumber;
+    resourceID: string;
+    data: string;
+    proposalIndex: BigNumber;
+    0: number;
+    1: number;
+    2: string;
+    3: BigNumber;
+    4: string;
+    5: string;
+    6: BigNumber;
+  }>;
+
+  "proposals(bytes32)"(
+    arg0: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<{
+    originDomainID: number;
+    destinationDomainID: number;
+    destinationBridge: string;
+    depositNonce: BigNumber;
+    resourceID: string;
+    data: string;
+    proposalIndex: BigNumber;
+    0: number;
+    1: number;
+    2: string;
+    3: BigNumber;
+    4: string;
+    5: string;
+    6: BigNumber;
+  }>;
+
+  relayerVote(
+    arg0: BytesLike,
+    arg1: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "relayerVote(bytes32,address)"(
+    arg0: BytesLike,
+    arg1: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   renounceRole(
     role: BytesLike,
@@ -821,12 +1122,14 @@ export class Signatures extends Contract {
     adminSetDestChainId(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
+      destinationBridge: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "adminSetDestChainId(uint8,uint256)"(
+    "adminSetDestChainId(uint8,uint256,address)"(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
+      destinationBridge: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -861,6 +1164,56 @@ export class Signatures extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    destinationBridgeAddress(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "destinationBridgeAddress(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getProposal(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      originDomainID: number;
+      destinationDomainID: number;
+      destinationBridge: string;
+      depositNonce: BigNumber;
+      resourceID: string;
+      data: string;
+      proposalIndex: BigNumber;
+      0: number;
+      1: number;
+      2: string;
+      3: BigNumber;
+      4: string;
+      5: string;
+      6: BigNumber;
+    }>;
+
+    "getProposal(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      originDomainID: number;
+      destinationDomainID: number;
+      destinationBridge: string;
+      depositNonce: BigNumber;
+      resourceID: string;
+      data: string;
+      proposalIndex: BigNumber;
+      0: number;
+      1: number;
+      2: string;
+      3: BigNumber;
+      4: string;
+      5: string;
+      6: BigNumber;
+    }>;
 
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
@@ -903,7 +1256,7 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSignatures(
+    "getSignatures(uint8,uint64,bytes32,bytes)"(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
@@ -911,11 +1264,8 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
-    "getSignatures(uint8,uint64,bytes32,bytes)"(
-      domainID: BigNumberish,
-      depositNonce: BigNumberish,
-      resourceID: BytesLike,
-      data: BytesLike,
+    "getSignatures(uint256)"(
+      index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
@@ -950,9 +1300,75 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    indexToProposal(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "indexToProposal(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     paused(overrides?: CallOverrides): Promise<boolean>;
 
     "paused()"(overrides?: CallOverrides): Promise<boolean>;
+
+    proposalIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "proposalIndex()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    proposals(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      originDomainID: number;
+      destinationDomainID: number;
+      destinationBridge: string;
+      depositNonce: BigNumber;
+      resourceID: string;
+      data: string;
+      proposalIndex: BigNumber;
+      0: number;
+      1: number;
+      2: string;
+      3: BigNumber;
+      4: string;
+      5: string;
+      6: BigNumber;
+    }>;
+
+    "proposals(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      originDomainID: number;
+      destinationDomainID: number;
+      destinationBridge: string;
+      depositNonce: BigNumber;
+      resourceID: string;
+      data: string;
+      proposalIndex: BigNumber;
+      0: number;
+      1: number;
+      2: string;
+      3: BigNumber;
+      4: string;
+      5: string;
+      6: BigNumber;
+    }>;
+
+    relayerVote(
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "relayerVote(bytes32,address)"(
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     renounceRole(
       role: BytesLike,
@@ -1091,12 +1507,14 @@ export class Signatures extends Contract {
     adminSetDestChainId(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
+      destinationBridge: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "adminSetDestChainId(uint8,uint256)"(
+    "adminSetDestChainId(uint8,uint256,address)"(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
+      destinationBridge: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1129,6 +1547,26 @@ export class Signatures extends Contract {
 
     "destChainId(uint8)"(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    destinationBridgeAddress(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "destinationBridgeAddress(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getProposal(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getProposal(uint256)"(
+      index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1176,7 +1614,7 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSignatures(
+    "getSignatures(uint8,uint64,bytes32,bytes)"(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
@@ -1184,11 +1622,8 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getSignatures(uint8,uint64,bytes32,bytes)"(
-      domainID: BigNumberish,
-      depositNonce: BigNumberish,
-      resourceID: BytesLike,
-      data: BytesLike,
+    "getSignatures(uint256)"(
+      index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1223,9 +1658,42 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    indexToProposal(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "indexToProposal(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
     "paused()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    proposalIndex(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "proposalIndex()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    proposals(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "proposals(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    relayerVote(
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "relayerVote(bytes32,address)"(
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     renounceRole(
       role: BytesLike,
@@ -1334,12 +1802,14 @@ export class Signatures extends Contract {
     adminSetDestChainId(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
+      destinationBridge: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "adminSetDestChainId(uint8,uint256)"(
+    "adminSetDestChainId(uint8,uint256,address)"(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
+      destinationBridge: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1372,6 +1842,26 @@ export class Signatures extends Contract {
 
     "destChainId(uint8)"(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    destinationBridgeAddress(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "destinationBridgeAddress(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getProposal(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getProposal(uint256)"(
+      index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1419,7 +1909,7 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getSignatures(
+    "getSignatures(uint8,uint64,bytes32,bytes)"(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
@@ -1427,11 +1917,8 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getSignatures(uint8,uint64,bytes32,bytes)"(
-      domainID: BigNumberish,
-      depositNonce: BigNumberish,
-      resourceID: BytesLike,
-      data: BytesLike,
+    "getSignatures(uint256)"(
+      index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1469,9 +1956,45 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    indexToProposal(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "indexToProposal(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "paused()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    proposalIndex(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "proposalIndex()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    proposals(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "proposals(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    relayerVote(
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "relayerVote(bytes32,address)"(
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     renounceRole(
       role: BytesLike,

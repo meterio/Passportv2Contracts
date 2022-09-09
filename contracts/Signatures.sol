@@ -109,6 +109,8 @@ contract Signatures is Pausable, AccessControl {
     mapping(bytes32 => bytes[]) public signatures;
     /// @notice signature => bool
     mapping(bytes => bool) public hasVote;
+    mapping(bytes32 => mapping(address => bool)) public relayerVote;
+    mapping(uint8 => address) public destinationBridgeAddress;
 
     event SubmitSignature(
         uint8 indexed originDomainID,
@@ -135,12 +137,28 @@ contract Signatures is Pausable, AccessControl {
         _relayerThreshold[destinationDomainID] = newThreshold.toUint8();
     }
 
-    function adminSetDestChainId(uint8 destinationDomainID, uint256 chainId)
-        external
-        onlyAdmin
-    {
+    function adminSetDestChainId(
+        uint8 destinationDomainID,
+        uint256 chainId,
+        address destinationBridge
+    ) external onlyAdmin {
         destChainId[destinationDomainID] = chainId;
+        destinationBridgeAddress[destinationDomainID] = destinationBridge;
     }
+
+    struct Proposal {
+        uint8 originDomainID;
+        uint8 destinationDomainID;
+        address destinationBridge;
+        uint64 depositNonce;
+        bytes32 resourceID;
+        bytes data;
+        uint256 proposalIndex;
+    }
+
+    uint256 public proposalIndex;
+    mapping(bytes32 => Proposal) public proposals;
+    mapping(uint256 => bytes32) public indexToProposal;
 
     function submitSignature(
         uint8 originDomainID,
@@ -150,38 +168,52 @@ contract Signatures is Pausable, AccessControl {
         bytes32 resourceID,
         bytes calldata data,
         bytes calldata signature
-    ) external whenNotPaused{
-        require(
-            hasRole(
-                RELAYER_ROLE,
-                checkSignature(
-                    originDomainID,
-                    destinationDomainID,
-                    destinationBridge,
-                    depositNonce,
-                    resourceID,
-                    data,
-                    signature
-                )
-            ),
-            "invalid signature"
+    ) external whenNotPaused {
+        address relayer = checkSignature(
+            originDomainID,
+            destinationDomainID,
+            destinationBridge,
+            depositNonce,
+            resourceID,
+            data,
+            signature
         );
-        require(!hasVote[signature], "signature aleardy submit");
+        require(hasRole(RELAYER_ROLE, relayer), "invalid signature");
         bytes32 depositHash = keccak256(
             abi.encode(
                 originDomainID,
+                destinationDomainID,
                 depositNonce,
                 resourceID,
                 keccak256(data)
             )
         );
+        require(!relayerVote[depositHash][relayer], "signature aleardy submit");
+        relayerVote[depositHash][relayer] = true;
         require(
             signatures[depositHash].length <
                 _relayerThreshold[destinationDomainID],
             "Signture aleardy pass"
         );
+        require(
+            destinationBridgeAddress[destinationDomainID] == destinationBridge,
+            "invalid destinationBridge"
+        );
+        if (signatures[depositHash].length == 0) {
+            proposalIndex++;
+            proposals[depositHash] = Proposal({
+                originDomainID: originDomainID,
+                destinationDomainID: destinationDomainID,
+                destinationBridge: destinationBridge,
+                depositNonce: depositNonce,
+                resourceID: resourceID,
+                data: data,
+                proposalIndex: proposalIndex
+            });
+            indexToProposal[proposalIndex] = depositHash;
+        }
         signatures[depositHash].push(signature);
-        hasVote[signature] = true;
+        
         emit SubmitSignature(
             originDomainID,
             destinationDomainID,
@@ -222,5 +254,19 @@ contract Signatures is Pausable, AccessControl {
                     )
                 )
             ];
+    }
+
+    function getProposal(uint256 index) public view returns (Proposal memory) {
+        require(index <= proposalIndex, "Proposal not exist");
+        return proposals[indexToProposal[index]];
+    }
+
+    function getSignatures(uint256 index)
+        external
+        view
+        returns (bytes[] memory)
+    {
+        require(index <= proposalIndex, "Proposal not exist");
+        return signatures[indexToProposal[index]];
     }
 }

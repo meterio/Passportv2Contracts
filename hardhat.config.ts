@@ -831,10 +831,10 @@ task("deploy-native", "regist native")
         }
 
         const erc20Handler = await ethers.getContractAt("ERC20Handler", config.erc20Handler, deployer) as ERC20Handler;
-        const isWtoken = await erc20Handler.isWtoken(nativeAddress);
+        const isWtoken = await erc20Handler.isNative(nativeAddress);
 
         if (!isWtoken) {
-          let receipt = await bridgeInstant.adminSetWtoken(resid, nativeAddress, true);
+          let receipt = await bridgeInstant.adminSetNative(resid, nativeAddress, true);
           console.log(await receipt.wait())
         }
         let token: Token = {
@@ -977,14 +977,14 @@ task("grantRole", "Grant Role")
         ethers.constants.HashZero,
         address
       );
-      console.log(await receipt.wait())
+      console.log("grantRole tx: ",receipt.hash)
 
       const feeHandler = await ethers.getContractAt("BasicFeeHandler", config.feeHandler, deployer) as BasicFeeHandler;
       receipt = await feeHandler.grantRole(
         ethers.constants.HashZero,
         address
       );
-      console.log(await receipt.wait())
+      console.log("grantRole tx: ",receipt.hash)
     }
   );
 

@@ -831,9 +831,9 @@ task("deploy-native", "regist native")
         }
 
         const erc20Handler = await ethers.getContractAt("ERC20Handler", config.erc20Handler, deployer) as ERC20Handler;
-        const isWtoken = await erc20Handler.isNative(nativeAddress);
+        const isNative = await erc20Handler.isNative(nativeAddress);
 
-        if (!isWtoken) {
+        if (!isNative) {
           let receipt = await bridgeInstant.adminSetNative(resid, nativeAddress, true);
           console.log(await receipt.wait())
         }
@@ -926,9 +926,9 @@ task("reg-native", "regist native")
         console.log("handlerAddress:", handlerAddress)
       }
       const erc20Handler = await ethers.getContractAt("ERC20Handler", config.erc20Handler, deployer) as ERC20Handler;
-      const isWtoken = await erc20Handler.isWtoken(nativeAddress);
+      const isNative = await erc20Handler.isNative(nativeAddress);
 
-      if (!isWtoken) {
+      if (!isNative) {
         let receipt = await bridgeInstant.adminSetWtoken(resid, nativeAddress, true);
         console.log(await receipt.wait())
       }

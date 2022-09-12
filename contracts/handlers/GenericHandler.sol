@@ -81,7 +81,7 @@ contract GenericHandler is IGenericHandler {
     }
 
     /**
-        @notice A deposit is initiatied by making a deposit in the Bridge contract.
+        @notice A deposit is initiated by making a deposit in the Bridge contract.
         @param resourceID ResourceID used to find address of contract to be used for deposit.
         @param depositor Address of the account making deposit in the Bridge contract.
         @param data Consists of: {resourceID}, {lenMetaData}, and {metaData} all padded to 32 bytes.
@@ -185,8 +185,17 @@ contract GenericHandler is IGenericHandler {
         uint256 depositFunctionDepositorOffset,
         bytes4 executeFunctionSig
     ) internal {
+        require(
+            _resourceIDToContractAddress[resourceID] == address(0),
+            "_resourceIDToContractAddress[resourceID] != address(0)"
+        );
         _resourceIDToContractAddress[resourceID] = contractAddress;
+        require(
+            _contractAddressToResourceID[contractAddress] == bytes32(0),
+            "_contractAddressToResourceID[contractAddress] != bytes32(0)"
+        );
         _contractAddressToResourceID[contractAddress] = resourceID;
+
         _contractAddressToDepositFunctionSignature[
             contractAddress
         ] = depositFunctionSig;

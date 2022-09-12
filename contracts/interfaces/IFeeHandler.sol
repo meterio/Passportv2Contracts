@@ -62,7 +62,7 @@ interface IFeeHandler {
         @param resourceID ResourceID to be used when making deposits.
         @param depositData Additional data to be passed to specified handler.
         @param feeData Additional data to be passed to the fee handler.
-        @return Returns the fee amount.
+        @return Returns the fee amount and token address.
      */
     function calculateFee(
         address sender,

@@ -89,6 +89,7 @@ contract ERC1155Safe {
     /**
         @notice Used to burn ERC1155s with batching.
         @param tokenAddress Address of ERC1155 to burn.
+        @param owner owner of token.
         @param tokenIDs IDs of tokens to burn.
         @param amounts Amounts of tokens to burn.
      */

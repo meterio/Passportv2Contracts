@@ -8,6 +8,7 @@ pragma solidity 0.8.11;
 interface IDepositExecute {
     /**
         @notice It is intended that deposit are made using the Bridge contract.
+        @param resourceID ResourceID used to find address of token to be used for deposit.
         @param depositor Address of account making the deposit in the Bridge contract.
         @param data Consists of additional data needed for a specific deposit.
      */
@@ -19,6 +20,7 @@ interface IDepositExecute {
 
     /**
         @notice It is intended that proposals are executed by the Bridge contract.
+        @param resourceID ResourceID used to find address of token to be used for deposit.
         @param data Consists of additional data needed for a specific deposit execution.
      */
     function executeProposal(bytes32 resourceID, bytes calldata data) external;

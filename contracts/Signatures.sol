@@ -121,7 +121,7 @@ contract Signatures is Pausable, AccessControl {
         bytes signature
     );
 
-    event SignturePass(
+    event SignaturePass(
         uint8 indexed originDomainID,
         uint8 indexed destinationDomainID,
         uint64 depositNonce,
@@ -226,7 +226,7 @@ contract Signatures is Pausable, AccessControl {
             signatures[depositHash].length >=
             _relayerThreshold[destinationDomainID]
         ) {
-            emit SignturePass(
+            emit SignaturePass(
                 originDomainID,
                 destinationDomainID,
                 depositNonce,

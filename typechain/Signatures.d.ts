@@ -268,7 +268,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
     "Paused(address)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
-    "SignturePass(uint8,uint8,uint64,bytes32,bytes,bytes)": EventFragment;
+    "SignaturePass(uint8,uint8,uint64,bytes32,bytes,bytes)": EventFragment;
     "SubmitSignature(uint8,uint8,uint64,bytes32,bytes,bytes)": EventFragment;
     "Unpaused(address)": EventFragment;
   };
@@ -276,7 +276,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SignturePass"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SignaturePass"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SubmitSignature"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
@@ -1444,7 +1444,7 @@ export class Signatures extends Contract {
       sender: string | null
     ): EventFilter;
 
-    SignturePass(
+    SignaturePass(
       originDomainID: BigNumberish | null,
       destinationDomainID: BigNumberish | null,
       depositNonce: null,

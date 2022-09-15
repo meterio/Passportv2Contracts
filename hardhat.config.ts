@@ -592,7 +592,7 @@ task("update-proxy", "deploy contract with proxy")
       await run("compile");
       const signers = await ethers.getSigners();
       const deployer = signers[0];
-      const proxyAdmin = signers[1];
+      const proxyAdmin = signers[0];
       let config = loadConfig(network.name, true);
 
       if (contract == 'bridge') {

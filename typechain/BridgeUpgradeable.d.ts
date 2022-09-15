@@ -33,6 +33,8 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "_expiry()": FunctionFragment;
     "_fee()": FunctionFragment;
     "_feeHandler()": FunctionFragment;
+    "_feeReserve()": FunctionFragment;
+    "_fee_()": FunctionFragment;
     "_hasVotedOnProposal(uint72,bytes32,address)": FunctionFragment;
     "_relayerThreshold()": FunctionFragment;
     "_resourceIDToHandlerAddress(bytes32)": FunctionFragment;
@@ -46,11 +48,13 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "adminSetBurnable(address,address)": FunctionFragment;
     "adminSetDepositNonce(uint8,uint64)": FunctionFragment;
     "adminSetDomainId(uint8)": FunctionFragment;
+    "adminSetFee(uint256)": FunctionFragment;
     "adminSetForwarder(address,bool)": FunctionFragment;
     "adminSetGenericResource(address,bytes32,address,bytes4,uint256,bytes4)": FunctionFragment;
     "adminSetNative(bytes32,address,bool)": FunctionFragment;
     "adminSetNativeResource(address)": FunctionFragment;
     "adminSetResource(address,bytes32,address)": FunctionFragment;
+    "adminSetSpecialFee(uint8,uint256)": FunctionFragment;
     "adminUnpauseTransfers()": FunctionFragment;
     "adminWithdraw(address,bytes)": FunctionFragment;
     "adminWithdrawETH(address,bytes)": FunctionFragment;
@@ -73,6 +77,9 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "renounceAdmin(address)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
+    "special(uint8)": FunctionFragment;
+    "specialFee(uint8)": FunctionFragment;
+    "transferFee(address,uint256)": FunctionFragment;
     "transferFunds(address[],uint256[])": FunctionFragment;
     "voteProposal(uint8,uint64,bytes32,bytes)": FunctionFragment;
     "voteProposals(uint8,uint64,bytes32,bytes,bytes[])": FunctionFragment;
@@ -106,6 +113,11 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     functionFragment: "_feeHandler",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "_feeReserve",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "_fee_", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "_hasVotedOnProposal",
     values: [BigNumberish, BytesLike, string]
@@ -159,6 +171,10 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "adminSetFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "adminSetForwarder",
     values: [string, boolean]
   ): string;
@@ -177,6 +193,10 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "adminSetResource",
     values: [string, BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminSetSpecialFee",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "adminUnpauseTransfers",
@@ -261,6 +281,18 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     values: [BytesLike, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "special",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "specialFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferFee",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferFunds",
     values: [string[], BigNumberish[]]
   ): string;
@@ -301,6 +333,11 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     functionFragment: "_feeHandler",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "_feeReserve",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "_fee_", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "_hasVotedOnProposal",
     data: BytesLike
@@ -354,6 +391,10 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "adminSetFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "adminSetForwarder",
     data: BytesLike
   ): Result;
@@ -371,6 +412,10 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "adminSetResource",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminSetSpecialFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -440,6 +485,12 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "special", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "specialFee", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferFee",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "transferFunds",
     data: BytesLike
@@ -456,6 +507,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   events: {
     "Deposit(uint8,bytes32,uint64,address,bytes,bytes)": EventFragment;
     "FailedHandlerExecution(bytes)": EventFragment;
+    "FeeChanged(uint256)": EventFragment;
     "FeeHandlerChanged(address)": EventFragment;
     "Paused(address)": EventFragment;
     "ProposalEvent(uint8,uint64,uint8,bytes32)": EventFragment;
@@ -470,6 +522,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "FailedHandlerExecution"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "FeeChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "FeeHandlerChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalEvent"): EventFragment;
@@ -580,6 +633,22 @@ export class BridgeUpgradeable extends Contract {
 
     "_feeHandler()"(overrides?: CallOverrides): Promise<{
       0: string;
+    }>;
+
+    _feeReserve(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "_feeReserve()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    _fee_(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "_fee_()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
     }>;
 
     _hasVotedOnProposal(
@@ -720,6 +789,16 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    adminSetFee(
+      newFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetFee(uint256)"(
+      newFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     adminSetForwarder(
       forwarder: string,
       valid: boolean,
@@ -787,6 +866,18 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    adminSetSpecialFee(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetSpecialFee(uint8,uint256)"(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1124,6 +1215,46 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    special(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "special(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    specialFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "specialFee(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    transferFee(
+      addr: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "transferFee(address,uint256)"(
+      addr: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     transferFunds(
       addrs: string[],
       amounts: BigNumberish[],
@@ -1216,6 +1347,14 @@ export class BridgeUpgradeable extends Contract {
   _feeHandler(overrides?: CallOverrides): Promise<string>;
 
   "_feeHandler()"(overrides?: CallOverrides): Promise<string>;
+
+  _feeReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "_feeReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  _fee_(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "_fee_()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   _hasVotedOnProposal(
     destNonce: BigNumberish,
@@ -1337,6 +1476,16 @@ export class BridgeUpgradeable extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  adminSetFee(
+    newFee: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetFee(uint256)"(
+    newFee: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   adminSetForwarder(
     forwarder: string,
     valid: boolean,
@@ -1404,6 +1553,18 @@ export class BridgeUpgradeable extends Contract {
     handlerAddress: string,
     resourceID: BytesLike,
     tokenAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  adminSetSpecialFee(
+    fromDomainID: BigNumberish,
+    _specialFee: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetSpecialFee(uint8,uint256)"(
+    fromDomainID: BigNumberish,
+    _specialFee: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1688,6 +1849,32 @@ export class BridgeUpgradeable extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  special(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
+  "special(uint8)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  specialFee(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+  "specialFee(uint8)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  transferFee(
+    addr: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "transferFee(address,uint256)"(
+    addr: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   transferFunds(
     addrs: string[],
     amounts: BigNumberish[],
@@ -1780,6 +1967,14 @@ export class BridgeUpgradeable extends Contract {
     _feeHandler(overrides?: CallOverrides): Promise<string>;
 
     "_feeHandler()"(overrides?: CallOverrides): Promise<string>;
+
+    _feeReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_feeReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    _fee_(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_fee_()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     _hasVotedOnProposal(
       destNonce: BigNumberish,
@@ -1901,6 +2096,13 @@ export class BridgeUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    adminSetFee(newFee: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    "adminSetFee(uint256)"(
+      newFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     adminSetForwarder(
       forwarder: string,
       valid: boolean,
@@ -1968,6 +2170,18 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    adminSetSpecialFee(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminSetSpecialFee(uint8,uint256)"(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2247,6 +2461,35 @@ export class BridgeUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    special(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
+    "special(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    specialFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "specialFee(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    transferFee(
+      addr: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "transferFee(address,uint256)"(
+      addr: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     transferFunds(
       addrs: string[],
       amounts: BigNumberish[],
@@ -2305,6 +2548,8 @@ export class BridgeUpgradeable extends Contract {
     ): EventFilter;
 
     FailedHandlerExecution(lowLevelData: null): EventFilter;
+
+    FeeChanged(newFee: null): EventFilter;
 
     FeeHandlerChanged(newFeeHandler: null): EventFilter;
 
@@ -2391,6 +2636,14 @@ export class BridgeUpgradeable extends Contract {
     _feeHandler(overrides?: CallOverrides): Promise<BigNumber>;
 
     "_feeHandler()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    _feeReserve(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_feeReserve()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    _fee_(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_fee_()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     _hasVotedOnProposal(
       destNonce: BigNumberish,
@@ -2512,6 +2765,16 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    adminSetFee(
+      newFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminSetFee(uint256)"(
+      newFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     adminSetForwarder(
       forwarder: string,
       valid: boolean,
@@ -2579,6 +2842,18 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    adminSetSpecialFee(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminSetSpecialFee(uint8,uint256)"(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2846,6 +3121,35 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    special(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "special(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    specialFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "specialFee(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    transferFee(
+      addr: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "transferFee(address,uint256)"(
+      addr: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     transferFunds(
       addrs: string[],
       amounts: BigNumberish[],
@@ -2945,6 +3249,14 @@ export class BridgeUpgradeable extends Contract {
     _feeHandler(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "_feeHandler()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    _feeReserve(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "_feeReserve()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    _fee_(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "_fee_()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     _hasVotedOnProposal(
       destNonce: BigNumberish,
@@ -3072,6 +3384,16 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    adminSetFee(
+      newFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminSetFee(uint256)"(
+      newFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     adminSetForwarder(
       forwarder: string,
       valid: boolean,
@@ -3139,6 +3461,18 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    adminSetSpecialFee(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminSetSpecialFee(uint8,uint256)"(
+      fromDomainID: BigNumberish,
+      _specialFee: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3411,6 +3745,38 @@ export class BridgeUpgradeable extends Contract {
     "revokeRole(bytes32,address)"(
       role: BytesLike,
       account: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    special(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "special(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    specialFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "specialFee(uint8)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    transferFee(
+      addr: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "transferFee(address,uint256)"(
+      addr: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

@@ -49,6 +49,12 @@ contract BridgeUpgradeable is
     // destinationDomainID + depositNonce => dataHash => Proposal
     mapping(uint72 => mapping(bytes32 => Proposal)) private _proposals;
 
+    // fees
+    uint256 public _fee_;
+    uint256 public _feeReserve;
+    mapping(uint8 => uint256) public specialFee;
+    mapping(uint8 => bool) public special;
+
     event RelayerThresholdChanged(uint256 newThreshold);
     event RelayerAdded(address relayer);
     event RelayerRemoved(address relayer);
@@ -93,11 +99,7 @@ contract BridgeUpgradeable is
     }
 
     function _fee() external view returns (uint256) {
-        if (address(_feeHandler) != address(0)) {
-            return _feeHandler._fee();
-        } else {
-            return 0;
-        }
+        return _fee_;
     }
 
     function calculateFee(
@@ -286,9 +288,21 @@ contract BridgeUpgradeable is
         @param relayerAddress Address of relayer to be removed.
         @notice Emits {RelayerRemoved} event.
      */
-    function adminRemoveRelayer(address relayerAddress) external onlyAdmin {
+    function adminRemoveRelayer(address relayerAddress)
+        external
+        onlyAdmin
+        whenPaused
+    {
         revokeRole(RELAYER_ROLE, relayerAddress);
         emit RelayerRemoved(relayerAddress);
+    }
+
+    function renounceRole(bytes32 role, address account)
+        public
+        override
+        whenPaused
+    {
+        super.renounceRole(role, account);
     }
 
     /**
@@ -409,6 +423,27 @@ contract BridgeUpgradeable is
         _domainID = domainID;
     }
 
+    function adminSetSpecialFee(uint8 fromDomainID, uint256 _specialFee)
+        public
+        onlyAdmin
+    {
+        special[fromDomainID] = true;
+        specialFee[fromDomainID] = _specialFee;
+    }
+
+    event FeeChanged(uint256 newFee);
+
+    /**
+        @notice Sets new value of the fee.
+        @notice Only callable by admin.
+        @param newFee Value {_fee} will be updated to.
+     */
+    function adminSetFee(uint256 newFee) external onlyAdmin {
+        require(_fee_ != newFee, "Current fee is equal to new fee");
+        _fee_ = newFee;
+        emit FeeChanged(newFee);
+    }
+
     /**
         @notice Returns a proposal.
         @param originDomainID Chain ID deposit originated from.
@@ -427,7 +462,9 @@ contract BridgeUpgradeable is
         bytes calldata data
     ) external view returns (Proposal memory) {
         address handler = _resourceIDToHandlerAddress[resourceID];
-        bytes32 dataHash = keccak256(abi.encodePacked(resourceID, handler, data));
+        bytes32 dataHash = keccak256(
+            abi.encodePacked(resourceID, handler, data)
+        );
         uint72 nonceAndID = (uint72(depositNonce) << 8) |
             uint72(originDomainID);
         return _proposals[nonceAndID][dataHash];
@@ -476,6 +513,11 @@ contract BridgeUpgradeable is
         handler.withdrawETH(data);
     }
 
+    function transferFee(address addr, uint256 amount) external onlyAdmin {
+        (bool success, ) = addr.call{value: amount}("");
+        require(success, "Fee ether transfer failed");
+    }
+
     error IncorrectFeeSupplied(uint256 msgValue, uint256 fee);
     error ResourceIDNotMappedToHandler();
 
@@ -509,28 +551,11 @@ contract BridgeUpgradeable is
         bytes calldata feeData
     ) private {
         uint256 value = msg.value;
-        if (address(_feeHandler) != address(0)) {
-            // Reverts on failure
-            (uint256 fee, ) = _feeHandler.calculateFee(
-                sender,
-                _domainID,
-                destinationDomainID,
-                resourceID,
-                depositData,
-                feeData
-            );
-            if (fee > 0) {
-                _feeHandler.collectFee{value: fee}(
-                    sender,
-                    _domainID,
-                    destinationDomainID,
-                    resourceID,
-                    depositData,
-                    feeData
-                );
-                value -= fee;
-            }
-        }
+        uint256 fee = special[destinationDomainID]
+            ? specialFee[destinationDomainID]
+            : _fee_;
+        value -= fee;
+        _feeReserve += fee;
 
         address handler = _resourceIDToHandlerAddress[resourceID];
         if (handler == address(0)) {
@@ -539,8 +564,7 @@ contract BridgeUpgradeable is
 
         uint64 depositNonce = ++_depositCounts[destinationDomainID];
 
-        IDepositExecute depositHandler = IDepositExecute(handler);
-        bytes memory handlerResponse = depositHandler.deposit{value: value}(
+        bytes memory handlerResponse = IDepositExecute(handler).deposit{value: value}(
             resourceID,
             sender,
             depositData
@@ -588,7 +612,9 @@ contract BridgeUpgradeable is
     ) external whenNotPaused {
         address handler = _resourceIDToHandlerAddress[resourceID];
         require(handler != address(0), "no handler for resourceID");
-        bytes32 dataHash = keccak256(abi.encodePacked(resourceID, handler, data));
+        bytes32 dataHash = keccak256(
+            abi.encodePacked(resourceID, handler, data)
+        );
         uint256 length = signatures.length;
         require(
             length >= _relayerThreshold,
@@ -668,7 +694,9 @@ contract BridgeUpgradeable is
     ) external onlyRelayers whenNotPaused {
         address handler = _resourceIDToHandlerAddress[resourceID];
         uint72 nonceAndID = (uint72(depositNonce) << 8) | uint72(domainID);
-        bytes32 dataHash = keccak256(abi.encodePacked(resourceID, handler, data));
+        bytes32 dataHash = keccak256(
+            abi.encodePacked(resourceID, handler, data)
+        );
         Proposal memory proposal = _proposals[nonceAndID][dataHash];
 
         require(
@@ -812,7 +840,9 @@ contract BridgeUpgradeable is
     ) public onlyRelayers whenNotPaused {
         address handler = _resourceIDToHandlerAddress[resourceID];
         uint72 nonceAndID = (uint72(depositNonce) << 8) | uint72(domainID);
-        bytes32 dataHash = keccak256(abi.encodePacked(resourceID, handler, data));
+        bytes32 dataHash = keccak256(
+            abi.encodePacked(resourceID, handler, data)
+        );
         Proposal storage proposal = _proposals[nonceAndID][dataHash];
 
         require(

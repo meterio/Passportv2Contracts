@@ -2,29 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Signer } from "ethers";
-import { Provider, TransactionRequest } from "@ethersproject/providers";
-import { Contract, ContractFactory, Overrides } from "@ethersproject/contracts";
+import { Contract, Signer } from "ethers";
+import { Provider } from "@ethersproject/providers";
 
 import type { PausableUpgradeable } from "../PausableUpgradeable";
 
-export class PausableUpgradeable__factory extends ContractFactory {
-  constructor(signer?: Signer) {
-    super(_abi, _bytecode, signer);
-  }
-
-  deploy(overrides?: Overrides): Promise<PausableUpgradeable> {
-    return super.deploy(overrides || {}) as Promise<PausableUpgradeable>;
-  }
-  getDeployTransaction(overrides?: Overrides): TransactionRequest {
-    return super.getDeployTransaction(overrides || {});
-  }
-  attach(address: string): PausableUpgradeable {
-    return super.attach(address) as PausableUpgradeable;
-  }
-  connect(signer: Signer): PausableUpgradeable__factory {
-    return super.connect(signer) as PausableUpgradeable__factory;
-  }
+export class PausableUpgradeable__factory {
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
@@ -74,6 +57,3 @@ const _abi = [
     type: "function",
   },
 ];
-
-const _bytecode =
-  "0x6080604052348015600f57600080fd5b50608380601d6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80635c975abb14602d575b600080fd5b60005462010000900460ff16604051901515815260200160405180910390f3fea264697066735822122035c83fb82fc045c3a9762ad0e2a8c12b46baf3862bb9a2c67ba3a809fa5b7bd264736f6c634300080b0033";

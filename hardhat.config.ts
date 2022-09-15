@@ -30,10 +30,12 @@ import {
   ERC721HandlerUpgradeable,
   ERC1155HandlerUpgradeable,
   GenericHandlerUpgradeable,
-  TransparentUpgradeableProxy
+  TransparentUpgradeableProxy,
+  ERC20MintablePauseableUpgradeable
 } from "./typechain"
 import { deployContract } from "./script/deployTool";
 import { getSign } from "./script/permitSign";
+import { parseUnits } from "ethers/lib/utils";
 
 type Config = {
   name: string;
@@ -340,17 +342,6 @@ task("deploy-proxy-all", "deploy all contract with proxy")
       ).deployed();
       console.log("genericHandler Proxy:", genericHandlerProxy.address);
 
-      // feeHandler contract
-      const feeHandler = await (
-        await (
-          await ethers.getContractFactory("BasicFeeHandler", proxyWallet)
-        ).deploy(bridgeProxy.address)
-      ).deployed();
-      console.log("feeHandler Contract:", feeHandler.address);
-
-      const bridgeInstant = await ethers.getContractAt("Bridge", bridgeProxy.address, adminWallet) as Bridge;
-      let receipt = await bridgeInstant.adminChangeFeeHandler(feeHandler.address);
-      console.log("adminChangeFeeHandler tx:", receipt.hash)
     }
   );
 
@@ -732,6 +723,56 @@ task("deploy-token", "deploy contract")
     }
   );
 
+/**
+npx hardhat deploy-proxy-token \
+--name "token name" \
+--symbol "SYMBOL" \
+--amount 100000000 \
+--decimals 18 \
+--owneraddress 0x1E4039Fb9761dA395788b6325D2790537e591937 \
+--rpc https://rpctest.meter.io \
+--proxyadmin 0xb21344c50d419f83d3066c470b6f7e953db56d9dcbcf4663bb1f192cd7438105
+ */
+task("deploy-proxy-token", "deploy contract")
+  .addParam("name", "token name", "")
+  .addParam("symbol", "token symbol", "")
+  .addParam("amount", "token amount", "")
+  .addParam("decimals", "token decimals", "18")
+  .addParam("owneraddress", "token owner address")
+  .addParam("rpc", "rpc connect")
+  .addParam("proxyadmin", "proxy admin private key")
+  .setAction(
+    async ({ name, symbol, amount, decimals, rpc, proxyadmin, owneraddress }, { ethers, run, network }) => {
+      await run("compile");
+
+      let provider = new ethers.providers.JsonRpcProvider(rpc);
+      const proxyWallet = new ethers.Wallet(proxyadmin, provider);
+
+      const proxy_factory = await ethers.getContractFactory("TransparentUpgradeableProxy", proxyWallet);
+      // impl
+      const impl = await (
+        await (
+          await ethers.getContractFactory("ERC20MintablePauseableUpgradeable", proxyWallet)
+        ).deploy()
+      ).deployed() as ERC20MintablePauseableUpgradeable;
+      console.log("impl:", impl.address);
+
+      const proxy = await (await proxy_factory.deploy(
+        impl.address,
+        proxyWallet.address,
+        impl.interface.encodeFunctionData("initialize", [
+          name,
+          symbol,
+          decimals,
+          parseUnits(amount),
+          owneraddress
+        ])
+      )).deployed();
+      console.log("Proxy:", proxy.address);
+
+    }
+  );
+
 task("regresid", "get resource ID")
   .setAction(
     async ({ }, { ethers, run, network }) => {
@@ -940,7 +981,7 @@ task("grantRole", "Grant Role")
         ethers.constants.HashZero,
         address
       );
-      console.log("grantRole tx: ",receipt.hash)
+      console.log("grantRole tx: ", receipt.hash)
     }
   );
 
@@ -990,7 +1031,7 @@ task("set-fee", "set fee")
       await run("compile");
       const signers = await ethers.getSigners();
       const deployer = signers[0];
-      let config = loadConfig(network.name,true);
+      let config = loadConfig(network.name, true);
 
       let bridge = await ethers.getContractAt("Bridge", config.feeHandler, deployer) as Bridge;
 

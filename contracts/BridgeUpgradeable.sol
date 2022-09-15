@@ -38,7 +38,7 @@ contract BridgeUpgradeable is
     uint8 public _relayerThreshold;
     uint40 public _expiry;
 
-    IFeeHandler public _feeHandler;
+    IFeeHandler public _feeHandler; // scrap
 
     // destinationDomainID => number of deposits
     mapping(uint8 => uint64) public _depositCounts;
@@ -100,29 +100,6 @@ contract BridgeUpgradeable is
 
     function _fee() external view returns (uint256) {
         return _fee_;
-    }
-
-    function calculateFee(
-        uint8 destinationDomainID,
-        bytes32 resourceID,
-        bytes calldata depositData,
-        bytes calldata feeData
-    ) external view returns (uint256) {
-        address sender = _msgSender();
-        if (address(_feeHandler) != address(0)) {
-            // Reverts on failure
-            (uint256 fee, ) = _feeHandler.calculateFee(
-                sender,
-                _domainID,
-                destinationDomainID,
-                resourceID,
-                depositData,
-                feeData
-            );
-            return fee;
-        } else {
-            return 0;
-        }
     }
 
     function _chainId() external view returns (uint256) {
@@ -478,16 +455,6 @@ contract BridgeUpgradeable is
         return AccessControl.getRoleMemberCount(RELAYER_ROLE);
     }
 
-    /**
-        @notice Changes deposit fee handler contract address.
-        @notice Only callable by admin.
-        @param newFeeHandler Address {_feeHandler} will be updated to.
-     */
-    function adminChangeFeeHandler(address newFeeHandler) external onlyAdmin {
-        _feeHandler = IFeeHandler(newFeeHandler);
-        emit FeeHandlerChanged(newFeeHandler);
-    }
-
     function adminChangeExpiry(uint256 expiry) external onlyAdmin {
         _expiry = expiry.toUint40();
     }
@@ -563,12 +530,9 @@ contract BridgeUpgradeable is
         }
 
         uint64 depositNonce = ++_depositCounts[destinationDomainID];
-
-        bytes memory handlerResponse = IDepositExecute(handler).deposit{value: value}(
-            resourceID,
-            sender,
-            depositData
-        );
+        bytes memory handlerResponse = IDepositExecute(handler).deposit{
+            value: value
+        }(resourceID, sender, depositData);
 
         emit Deposit(
             destinationDomainID,

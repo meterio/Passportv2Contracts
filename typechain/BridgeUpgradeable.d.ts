@@ -41,7 +41,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "_totalRelayers()": FunctionFragment;
     "adminAddRelayer(address)": FunctionFragment;
     "adminChangeExpiry(uint256)": FunctionFragment;
-    "adminChangeFeeHandler(address)": FunctionFragment;
     "adminChangeRelayerThreshold(uint256)": FunctionFragment;
     "adminPauseTransfers()": FunctionFragment;
     "adminRemoveRelayer(address)": FunctionFragment;
@@ -58,7 +57,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "adminUnpauseTransfers()": FunctionFragment;
     "adminWithdraw(address,bytes)": FunctionFragment;
     "adminWithdrawETH(address,bytes)": FunctionFragment;
-    "calculateFee(uint8,bytes32,bytes,bytes)": FunctionFragment;
     "cancelProposal(uint8,uint64,bytes32)": FunctionFragment;
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "deposit(uint8,bytes32,bytes,bytes)": FunctionFragment;
@@ -143,10 +141,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "adminChangeFeeHandler",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "adminChangeRelayerThreshold",
     values: [BigNumberish]
   ): string;
@@ -209,10 +203,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "adminWithdrawETH",
     values: [string, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "calculateFee",
-    values: [BigNumberish, BytesLike, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelProposal",
@@ -363,10 +353,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "adminChangeFeeHandler",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "adminChangeRelayerThreshold",
     data: BytesLike
   ): Result;
@@ -428,10 +414,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "adminWithdrawETH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "calculateFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -719,16 +701,6 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    adminChangeFeeHandler(
-      newFeeHandler: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "adminChangeFeeHandler(address)"(
-      newFeeHandler: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     adminChangeRelayerThreshold(
       newThreshold: BigNumberish,
       overrides?: Overrides
@@ -910,26 +882,6 @@ export class BridgeUpgradeable extends Contract {
       data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    calculateFee(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "calculateFee(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
 
     cancelProposal(
       domainID: BigNumberish,
@@ -1408,16 +1360,6 @@ export class BridgeUpgradeable extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  adminChangeFeeHandler(
-    newFeeHandler: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "adminChangeFeeHandler(address)"(
-    newFeeHandler: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   adminChangeRelayerThreshold(
     newThreshold: BigNumberish,
     overrides?: Overrides
@@ -1597,22 +1539,6 @@ export class BridgeUpgradeable extends Contract {
     data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  calculateFee(
-    destinationDomainID: BigNumberish,
-    resourceID: BytesLike,
-    depositData: BytesLike,
-    feeData: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "calculateFee(uint8,bytes32,bytes,bytes)"(
-    destinationDomainID: BigNumberish,
-    resourceID: BytesLike,
-    depositData: BytesLike,
-    feeData: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   cancelProposal(
     domainID: BigNumberish,
@@ -2028,16 +1954,6 @@ export class BridgeUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    adminChangeFeeHandler(
-      newFeeHandler: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "adminChangeFeeHandler(address)"(
-      newFeeHandler: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     adminChangeRelayerThreshold(
       newThreshold: BigNumberish,
       overrides?: CallOverrides
@@ -2212,22 +2128,6 @@ export class BridgeUpgradeable extends Contract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    calculateFee(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "calculateFee(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     cancelProposal(
       domainID: BigNumberish,
@@ -2697,16 +2597,6 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    adminChangeFeeHandler(
-      newFeeHandler: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "adminChangeFeeHandler(address)"(
-      newFeeHandler: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     adminChangeRelayerThreshold(
       newThreshold: BigNumberish,
       overrides?: Overrides
@@ -2883,22 +2773,6 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       data: BytesLike,
       overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    calculateFee(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "calculateFee(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     cancelProposal(
@@ -3314,16 +3188,6 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    adminChangeFeeHandler(
-      newFeeHandler: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "adminChangeFeeHandler(address)"(
-      newFeeHandler: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     adminChangeRelayerThreshold(
       newThreshold: BigNumberish,
       overrides?: Overrides
@@ -3504,22 +3368,6 @@ export class BridgeUpgradeable extends Contract {
       handlerAddress: string,
       data: BytesLike,
       overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    calculateFee(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "calculateFee(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: BytesLike,
-      depositData: BytesLike,
-      feeData: BytesLike,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     cancelProposal(

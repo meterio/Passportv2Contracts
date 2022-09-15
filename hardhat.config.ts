@@ -23,7 +23,6 @@ import {
   ERC1155Handler,
   GenericHandler,
   TokenERC20,
-  BasicFeeHandler,
   Signatures,
   SignaturesUpgradeable,
   BridgeUpgradeable,
@@ -209,21 +208,6 @@ task("deploy", "deploy contract")
             [bridgeAddress]
           ) as GenericHandler;
           config.genericHandler = instant.address;
-        }
-      } else if (contract == "feeHandler") {
-        const bridgeAddress = config.bridge;
-        if (bridgeAddress != "") {
-          const instant = await deployContract(
-            "BasicFeeHandler",
-            network.name,
-            ethers.getContractFactory,
-            deployer,
-            [bridgeAddress]
-          ) as BasicFeeHandler;
-          config.feeHandler = instant.address;
-          const bridgeInstant = await ethers.getContractAt("Bridge", config.bridge, deployer) as Bridge;
-          let receipt = await bridgeInstant.adminChangeFeeHandler(config.feeHandler);
-          console.log(await receipt.wait())
         }
       }
       saveConfig(network.name, config);
@@ -557,27 +541,6 @@ task("deploy-proxy", "deploy contract with proxy")
             });
           }
           config.genericHandler = proxy.address;
-        }
-      } else if (contract == "feeHandler") {
-        const bridgeAddress = config.bridge;
-        if (bridgeAddress != "") {
-          const instant = await deployContract(
-            "BasicFeeHandler",
-            network.name,
-            ethers.getContractFactory,
-            deployer,
-            [bridgeAddress]
-          ) as BasicFeeHandler;
-          if (allowVerifyChain.indexOf(network.name) > -1) {
-            await run("verify:verify", {
-              address: instant.address,
-              constructorArguments: [bridgeAddress]
-            });
-          }
-          config.feeHandler = instant.address;
-          const bridgeInstant = await ethers.getContractAt("Bridge", bridgeAddress, admin) as Bridge;
-          let receipt = await bridgeInstant.adminChangeFeeHandler(instant.address);
-          console.log(await receipt.wait())
         }
       }
       saveConfig(network.name, config, true);
@@ -978,13 +941,6 @@ task("grantRole", "Grant Role")
         address
       );
       console.log("grantRole tx: ",receipt.hash)
-
-      const feeHandler = await ethers.getContractAt("BasicFeeHandler", config.feeHandler, deployer) as BasicFeeHandler;
-      receipt = await feeHandler.grantRole(
-        ethers.constants.HashZero,
-        address
-      );
-      console.log("grantRole tx: ",receipt.hash)
     }
   );
 
@@ -1034,13 +990,13 @@ task("set-fee", "set fee")
       await run("compile");
       const signers = await ethers.getSigners();
       const deployer = signers[0];
-      let config = loadConfig(network.name);
+      let config = loadConfig(network.name,true);
 
-      let feeInstant = await ethers.getContractAt("BasicFeeHandler", config.feeHandler, deployer) as BasicFeeHandler;
+      let bridge = await ethers.getContractAt("Bridge", config.feeHandler, deployer) as Bridge;
 
-      let receipt = await feeInstant.changeFee(fee);
+      let receipt = await bridge.adminSetFee(fee);
       console.log(await receipt.wait())
-      receipt = await feeInstant.setSpecialFee(config.id, special);
+      receipt = await bridge.adminSetSpecialFee(config.id, special);
       console.log(await receipt.wait())
     }
   );

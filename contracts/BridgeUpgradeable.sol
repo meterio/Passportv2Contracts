@@ -480,9 +480,25 @@ contract BridgeUpgradeable is
         handler.withdrawETH(data);
     }
 
-    function transferFee(address addr, uint256 amount) external onlyAdmin {
-        (bool success, ) = addr.call{value: amount}("");
-        require(success, "Fee ether transfer failed");
+    event FeeDistributed(
+        address tokenAddress,
+        address recipient,
+        uint256 amount
+    );
+
+    function transferFee(
+        address payable[] calldata addrs,
+        uint256[] calldata amounts
+    ) external onlyAdmin {
+        require(
+            addrs.length == amounts.length,
+            "addrs[], amounts[]: diff length"
+        );
+        for (uint256 i = 0; i < addrs.length; i++) {
+            (bool success, ) = addrs[i].call{value: amounts[i]}("");
+            require(success, "Fee ether transfer failed");
+            emit FeeDistributed(address(0), addrs[i], amounts[i]);
+        }
     }
 
     error IncorrectFeeSupplied(uint256 msgValue, uint256 fee);

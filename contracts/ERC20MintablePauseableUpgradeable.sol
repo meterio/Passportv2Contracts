@@ -24,15 +24,13 @@ contract ERC20MintablePauseableUpgradeable is
         string memory name,
         string memory symbol,
         uint8 decimals_,
-        uint256 initialSupply,
-        address owner
+        address admin
     ) public initializer {
         _decimals = decimals_;
         __ERC20_init(name, symbol);
         __EIP712_init("PermitToken", "1.0");
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _setupRole(MINTER_ROLE, _msgSender());
-        _mint(owner, initialSupply);
+        _setupRole(DEFAULT_ADMIN_ROLE, admin);
+        _setupRole(MINTER_ROLE, admin);
     }
 
     modifier onlyAdmin() {

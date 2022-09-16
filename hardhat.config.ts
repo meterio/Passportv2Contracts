@@ -727,22 +727,20 @@ task("deploy-token", "deploy contract")
 npx hardhat deploy-proxy-token \
 --name "token name" \
 --symbol "SYMBOL" \
---amount 100000000 \
 --decimals 18 \
---owneraddress 0x1E4039Fb9761dA395788b6325D2790537e591937 \
+--admin 0x1E4039Fb9761dA395788b6325D2790537e591937 \
 --rpc https://rpctest.meter.io \
---proxyadmin 0xb21344c50d419f83d3066c470b6f7e953db56d9dcbcf4663bb1f192cd7438105
+--proxyadmin 0xabc...def
  */
 task("deploy-proxy-token", "deploy contract")
   .addParam("name", "token name", "")
   .addParam("symbol", "token symbol", "")
-  .addParam("amount", "token amount", "")
   .addParam("decimals", "token decimals", "18")
-  .addParam("owneraddress", "token owner address")
+  .addParam("admin", "token owner address")
   .addParam("rpc", "rpc connect")
   .addParam("proxyadmin", "proxy admin private key")
   .setAction(
-    async ({ name, symbol, amount, decimals, rpc, proxyadmin, owneraddress }, { ethers, run, network }) => {
+    async ({ name, symbol, decimals, rpc, proxyadmin, admin }, { ethers, run, network }) => {
       await run("compile");
 
       let provider = new ethers.providers.JsonRpcProvider(rpc);
@@ -764,8 +762,7 @@ task("deploy-proxy-token", "deploy contract")
           name,
           symbol,
           decimals,
-          parseUnits(amount),
-          owneraddress
+          admin
         ])
       )).deployed();
       console.log("Proxy:", proxy.address);

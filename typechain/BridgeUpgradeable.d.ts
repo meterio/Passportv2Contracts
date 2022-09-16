@@ -77,7 +77,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "revokeRole(bytes32,address)": FunctionFragment;
     "special(uint8)": FunctionFragment;
     "specialFee(uint8)": FunctionFragment;
-    "transferFee(address,uint256)": FunctionFragment;
+    "transferFee(address[],uint256[])": FunctionFragment;
     "transferFunds(address[],uint256[])": FunctionFragment;
     "voteProposal(uint8,uint64,bytes32,bytes)": FunctionFragment;
     "voteProposals(uint8,uint64,bytes32,bytes,bytes[])": FunctionFragment;
@@ -280,7 +280,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "transferFee",
-    values: [string, BigNumberish]
+    values: [string[], BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "transferFunds",
@@ -490,6 +490,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "Deposit(uint8,bytes32,uint64,address,bytes,bytes)": EventFragment;
     "FailedHandlerExecution(bytes)": EventFragment;
     "FeeChanged(uint256)": EventFragment;
+    "FeeDistributed(address,address,uint256)": EventFragment;
     "FeeHandlerChanged(address)": EventFragment;
     "Paused(address)": EventFragment;
     "ProposalEvent(uint8,uint64,uint8,bytes32)": EventFragment;
@@ -505,6 +506,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "FailedHandlerExecution"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "FeeChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "FeeDistributed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "FeeHandlerChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalEvent"): EventFragment;
@@ -1196,14 +1198,14 @@ export class BridgeUpgradeable extends Contract {
     }>;
 
     transferFee(
-      addr: string,
-      amount: BigNumberish,
+      addrs: string[],
+      amounts: BigNumberish[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "transferFee(address,uint256)"(
-      addr: string,
-      amount: BigNumberish,
+    "transferFee(address[],uint256[])"(
+      addrs: string[],
+      amounts: BigNumberish[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1790,14 +1792,14 @@ export class BridgeUpgradeable extends Contract {
   ): Promise<BigNumber>;
 
   transferFee(
-    addr: string,
-    amount: BigNumberish,
+    addrs: string[],
+    amounts: BigNumberish[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "transferFee(address,uint256)"(
-    addr: string,
-    amount: BigNumberish,
+  "transferFee(address[],uint256[])"(
+    addrs: string[],
+    amounts: BigNumberish[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2379,14 +2381,14 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<BigNumber>;
 
     transferFee(
-      addr: string,
-      amount: BigNumberish,
+      addrs: string[],
+      amounts: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "transferFee(address,uint256)"(
-      addr: string,
-      amount: BigNumberish,
+    "transferFee(address[],uint256[])"(
+      addrs: string[],
+      amounts: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2450,6 +2452,12 @@ export class BridgeUpgradeable extends Contract {
     FailedHandlerExecution(lowLevelData: null): EventFilter;
 
     FeeChanged(newFee: null): EventFilter;
+
+    FeeDistributed(
+      tokenAddress: null,
+      recipient: null,
+      amount: null
+    ): EventFilter;
 
     FeeHandlerChanged(newFeeHandler: null): EventFilter;
 
@@ -3013,14 +3021,14 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<BigNumber>;
 
     transferFee(
-      addr: string,
-      amount: BigNumberish,
+      addrs: string[],
+      amounts: BigNumberish[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "transferFee(address,uint256)"(
-      addr: string,
-      amount: BigNumberish,
+    "transferFee(address[],uint256[])"(
+      addrs: string[],
+      amounts: BigNumberish[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3617,14 +3625,14 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<PopulatedTransaction>;
 
     transferFee(
-      addr: string,
-      amount: BigNumberish,
+      addrs: string[],
+      amounts: BigNumberish[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "transferFee(address,uint256)"(
-      addr: string,
-      amount: BigNumberish,
+    "transferFee(address[],uint256[])"(
+      addrs: string[],
+      amounts: BigNumberish[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

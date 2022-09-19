@@ -108,7 +108,7 @@ contract SignaturesUpgradeable is PausableUpgradeable, AccessControl {
     /// @notice depositHash => signature[]
     mapping(bytes32 => bytes[]) public signatures;
     /// @notice signature => bool
-    mapping(bytes => bool) public hasVote;
+    mapping(bytes => bool) public hasVote; // scrap
     mapping(bytes32 => mapping(address => bool)) public relayerVote;
     mapping(uint8 => address) public destinationBridgeAddress;
 

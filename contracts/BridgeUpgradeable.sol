@@ -83,6 +83,10 @@ contract BridgeUpgradeable is
 
     bytes32 public constant RELAYER_ROLE = keccak256("RELAYER_ROLE");
 
+    uint256 private constant _NOT_ENTERED = 1;
+    uint256 private constant _ENTERED = 2;
+    uint256 private _status;
+
     modifier onlyAdmin() {
         _onlyAdmin();
         _;
@@ -96,6 +100,17 @@ contract BridgeUpgradeable is
     modifier onlyRelayers() {
         _onlyRelayers();
         _;
+    }
+
+    modifier nonReentrant() {
+        // On the first call to nonReentrant, _notEntered will be true
+        require(_status != _ENTERED, "ReentrancyGuard: reentrant call");
+        // Any calls to nonReentrant after this point will fail
+        _status = _ENTERED;
+        _;
+        // By storing the original value once again, a refund is triggered (see
+        // https://eips.ethereum.org/EIPS/eip-2200)
+        _status = _NOT_ENTERED;
     }
 
     function _fee() external view returns (uint256) {
@@ -178,6 +193,7 @@ contract BridgeUpgradeable is
         for (uint256 i; i < initialRelayers.length; i++) {
             grantRole(RELAYER_ROLE, initialRelayers[i]);
         }
+        _status = _NOT_ENTERED;
     }
 
     /**
@@ -671,7 +687,7 @@ contract BridgeUpgradeable is
         uint64 depositNonce,
         bytes32 resourceID,
         bytes calldata data
-    ) external onlyRelayers whenNotPaused {
+    ) external onlyRelayers whenNotPaused nonReentrant {
         address handler = _resourceIDToHandlerAddress[resourceID];
         uint72 nonceAndID = (uint72(depositNonce) << 8) | uint72(domainID);
         bytes32 dataHash = keccak256(
@@ -817,7 +833,7 @@ contract BridgeUpgradeable is
         bytes calldata data,
         bytes32 resourceID,
         bool revertOnFail
-    ) public onlyRelayers whenNotPaused {
+    ) public onlyRelayers whenNotPaused nonReentrant {
         address handler = _resourceIDToHandlerAddress[resourceID];
         uint72 nonceAndID = (uint72(depositNonce) << 8) | uint72(domainID);
         bytes32 dataHash = keccak256(
@@ -851,20 +867,5 @@ contract BridgeUpgradeable is
             ProposalStatus.Executed,
             dataHash
         );
-    }
-
-    /**
-        @notice Transfers eth in the contract to the specified addresses. The parameters addrs and amounts are mapped 1-1.
-        This means that the address at index 0 for addrs will receive the amount (in WEI) from amounts at index 0.
-        @param addrs Array of addresses to transfer {amounts} to.
-        @param amounts Array of amonuts to transfer to {addrs}.
-     */
-    function transferFunds(
-        address payable[] calldata addrs,
-        uint256[] calldata amounts
-    ) external onlyAdmin {
-        for (uint256 i = 0; i < addrs.length; i++) {
-            addrs[i].transfer(amounts[i]);
-        }
     }
 }

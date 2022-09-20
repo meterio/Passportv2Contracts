@@ -59,6 +59,14 @@ contract HandlerHelpersUpgradeable is IERCHandler, Initializable {
         _setResource(resourceID, contractAddress);
     }
 
+    function removeResource(bytes32 resourceID, address contractAddress)
+        external
+        override
+        onlyBridge
+    {
+        _removeResource(resourceID, contractAddress);
+    }
+
     /**
         @notice First verifies {contractAddress} is whitelisted, then sets {_burnList}[{contractAddress}]
         to true.
@@ -79,6 +87,14 @@ contract HandlerHelpersUpgradeable is IERCHandler, Initializable {
         _tokenContractAddressToResourceID[contractAddress] = resourceID;
 
         _contractWhitelist[contractAddress] = true;
+    }
+
+    function _removeResource(bytes32 resourceID, address contractAddress)
+        internal
+    {
+        delete _resourceIDToTokenContractAddress[resourceID];
+        delete _tokenContractAddressToResourceID[contractAddress];
+        delete _contractWhitelist[contractAddress];
     }
 
     function _setBurnable(address contractAddress) internal {

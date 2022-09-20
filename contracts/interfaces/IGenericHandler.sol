@@ -19,5 +19,9 @@ interface IGenericHandler {
         address contractAddress,
         bytes4 depositFunctionSig,
         uint depositFunctionDepositorOffset,
-        bytes4 executeFunctionSig) external;
+        bytes4 executeFunctionSig
+    ) external;
+
+    function removeResource(bytes32 resourceID, address contractAddress)
+        external;
 }

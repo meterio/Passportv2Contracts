@@ -317,7 +317,7 @@ contract BridgeUpgradeable is
     }
 
     function adminSetNativeResource(address handlerAddress) external onlyAdmin {
-        address tokenAddress = address(1);
+        address tokenAddress = address(uint160(_domainID));
         bytes32 resourceID = bytes32(
             uint256(uint160(tokenAddress)) * 256 + _domainID
         );
@@ -355,6 +355,40 @@ contract BridgeUpgradeable is
             depositFunctionDepositorOffset,
             executeFunctionSig
         );
+    }
+
+    function adminRemoveResourceId(
+        address handlerAddress,
+        bytes32 resourceID,
+        address tokenAddress
+    ) external onlyAdmin {
+        delete _resourceIDToHandlerAddress[resourceID];
+        IERCHandler handler = IERCHandler(handlerAddress);
+        handler.removeResource(resourceID, tokenAddress);
+    }
+
+    function adminRemoveNativeResourceId(address handlerAddress)
+        external
+        onlyAdmin
+    {
+        address tokenAddress = address(uint160(_domainID));
+        bytes32 resourceID = bytes32(
+            uint256(uint160(tokenAddress)) * 256 + _domainID
+        );
+        delete _resourceIDToHandlerAddress[resourceID];
+
+        IERCHandler handler = IERCHandler(handlerAddress);
+        handler.removeResource(resourceID, tokenAddress);
+    }
+
+    function adminRemoveGenericResource(
+        address handlerAddress,
+        bytes32 resourceID,
+        address contractAddress
+    ) external onlyAdmin {
+        delete _resourceIDToHandlerAddress[resourceID];
+        IGenericHandler handler = IGenericHandler(handlerAddress);
+        handler.removeResource(resourceID, contractAddress);
     }
 
     /**
@@ -422,6 +456,11 @@ contract BridgeUpgradeable is
     {
         special[fromDomainID] = true;
         specialFee[fromDomainID] = _specialFee;
+    }
+
+    function adminRemoveSpecialFee(uint8 fromDomainID) public onlyAdmin {
+        delete special[fromDomainID];
+        delete specialFee[fromDomainID];
     }
 
     event FeeChanged(uint256 newFee);

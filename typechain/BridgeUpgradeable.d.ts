@@ -43,7 +43,11 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "adminChangeExpiry(uint256)": FunctionFragment;
     "adminChangeRelayerThreshold(uint256)": FunctionFragment;
     "adminPauseTransfers()": FunctionFragment;
+    "adminRemoveGenericResource(address,bytes32,address)": FunctionFragment;
+    "adminRemoveNativeResourceId(address)": FunctionFragment;
     "adminRemoveRelayer(address)": FunctionFragment;
+    "adminRemoveResourceId(address,bytes32,address)": FunctionFragment;
+    "adminRemoveSpecialFee(uint8)": FunctionFragment;
     "adminSetBurnable(address,address)": FunctionFragment;
     "adminSetDepositNonce(uint8,uint64)": FunctionFragment;
     "adminSetDomainId(uint8)": FunctionFragment;
@@ -78,7 +82,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "special(uint8)": FunctionFragment;
     "specialFee(uint8)": FunctionFragment;
     "transferFee(address[],uint256[])": FunctionFragment;
-    "transferFunds(address[],uint256[])": FunctionFragment;
     "voteProposal(uint8,uint64,bytes32,bytes)": FunctionFragment;
     "voteProposals(uint8,uint64,bytes32,bytes,bytes[])": FunctionFragment;
   };
@@ -149,8 +152,24 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "adminRemoveGenericResource",
+    values: [string, BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminRemoveNativeResourceId",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "adminRemoveRelayer",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminRemoveResourceId",
+    values: [string, BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminRemoveSpecialFee",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "adminSetBurnable",
@@ -283,10 +302,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     values: [string[], BigNumberish[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "transferFunds",
-    values: [string[], BigNumberish[]]
-  ): string;
-  encodeFunctionData(
     functionFragment: "voteProposal",
     values: [BigNumberish, BigNumberish, BytesLike, BytesLike]
   ): string;
@@ -361,7 +376,23 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "adminRemoveGenericResource",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminRemoveNativeResourceId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "adminRemoveRelayer",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminRemoveResourceId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminRemoveSpecialFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -471,10 +502,6 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "specialFee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferFee",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferFunds",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -719,6 +746,30 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    adminRemoveGenericResource(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminRemoveGenericResource(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    adminRemoveNativeResourceId(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminRemoveNativeResourceId(address)"(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     adminRemoveRelayer(
       relayerAddress: string,
       overrides?: Overrides
@@ -726,6 +777,30 @@ export class BridgeUpgradeable extends Contract {
 
     "adminRemoveRelayer(address)"(
       relayerAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    adminRemoveResourceId(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminRemoveResourceId(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    adminRemoveSpecialFee(
+      fromDomainID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "adminRemoveSpecialFee(uint8)"(
+      fromDomainID: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1209,18 +1284,6 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    transferFunds(
-      addrs: string[],
-      amounts: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "transferFunds(address[],uint256[])"(
-      addrs: string[],
-      amounts: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     voteProposal(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
@@ -1376,6 +1439,30 @@ export class BridgeUpgradeable extends Contract {
 
   "adminPauseTransfers()"(overrides?: Overrides): Promise<ContractTransaction>;
 
+  adminRemoveGenericResource(
+    handlerAddress: string,
+    resourceID: BytesLike,
+    contractAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminRemoveGenericResource(address,bytes32,address)"(
+    handlerAddress: string,
+    resourceID: BytesLike,
+    contractAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  adminRemoveNativeResourceId(
+    handlerAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminRemoveNativeResourceId(address)"(
+    handlerAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   adminRemoveRelayer(
     relayerAddress: string,
     overrides?: Overrides
@@ -1383,6 +1470,30 @@ export class BridgeUpgradeable extends Contract {
 
   "adminRemoveRelayer(address)"(
     relayerAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  adminRemoveResourceId(
+    handlerAddress: string,
+    resourceID: BytesLike,
+    tokenAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminRemoveResourceId(address,bytes32,address)"(
+    handlerAddress: string,
+    resourceID: BytesLike,
+    tokenAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  adminRemoveSpecialFee(
+    fromDomainID: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "adminRemoveSpecialFee(uint8)"(
+    fromDomainID: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1803,18 +1914,6 @@ export class BridgeUpgradeable extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  transferFunds(
-    addrs: string[],
-    amounts: BigNumberish[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "transferFunds(address[],uint256[])"(
-    addrs: string[],
-    amounts: BigNumberish[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   voteProposal(
     domainID: BigNumberish,
     depositNonce: BigNumberish,
@@ -1970,6 +2069,30 @@ export class BridgeUpgradeable extends Contract {
 
     "adminPauseTransfers()"(overrides?: CallOverrides): Promise<void>;
 
+    adminRemoveGenericResource(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminRemoveGenericResource(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    adminRemoveNativeResourceId(
+      handlerAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminRemoveNativeResourceId(address)"(
+      handlerAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     adminRemoveRelayer(
       relayerAddress: string,
       overrides?: CallOverrides
@@ -1977,6 +2100,30 @@ export class BridgeUpgradeable extends Contract {
 
     "adminRemoveRelayer(address)"(
       relayerAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    adminRemoveResourceId(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminRemoveResourceId(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    adminRemoveSpecialFee(
+      fromDomainID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "adminRemoveSpecialFee(uint8)"(
+      fromDomainID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2392,18 +2539,6 @@ export class BridgeUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    transferFunds(
-      addrs: string[],
-      amounts: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "transferFunds(address[],uint256[])"(
-      addrs: string[],
-      amounts: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     voteProposal(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
@@ -2619,6 +2754,30 @@ export class BridgeUpgradeable extends Contract {
 
     "adminPauseTransfers()"(overrides?: Overrides): Promise<BigNumber>;
 
+    adminRemoveGenericResource(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminRemoveGenericResource(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    adminRemoveNativeResourceId(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminRemoveNativeResourceId(address)"(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     adminRemoveRelayer(
       relayerAddress: string,
       overrides?: Overrides
@@ -2626,6 +2785,30 @@ export class BridgeUpgradeable extends Contract {
 
     "adminRemoveRelayer(address)"(
       relayerAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    adminRemoveResourceId(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminRemoveResourceId(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    adminRemoveSpecialFee(
+      fromDomainID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "adminRemoveSpecialFee(uint8)"(
+      fromDomainID: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3032,18 +3215,6 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    transferFunds(
-      addrs: string[],
-      amounts: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "transferFunds(address[],uint256[])"(
-      addrs: string[],
-      amounts: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     voteProposal(
       domainID: BigNumberish,
       depositNonce: BigNumberish,
@@ -3212,6 +3383,30 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    adminRemoveGenericResource(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminRemoveGenericResource(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    adminRemoveNativeResourceId(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminRemoveNativeResourceId(address)"(
+      handlerAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     adminRemoveRelayer(
       relayerAddress: string,
       overrides?: Overrides
@@ -3219,6 +3414,30 @@ export class BridgeUpgradeable extends Contract {
 
     "adminRemoveRelayer(address)"(
       relayerAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    adminRemoveResourceId(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminRemoveResourceId(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: BytesLike,
+      tokenAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    adminRemoveSpecialFee(
+      fromDomainID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "adminRemoveSpecialFee(uint8)"(
+      fromDomainID: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3631,18 +3850,6 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "transferFee(address[],uint256[])"(
-      addrs: string[],
-      amounts: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    transferFunds(
-      addrs: string[],
-      amounts: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "transferFunds(address[],uint256[])"(
       addrs: string[],
       amounts: BigNumberish[],
       overrides?: Overrides

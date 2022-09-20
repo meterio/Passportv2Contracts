@@ -81,6 +81,14 @@ contract GenericHandlerUpgradeable is IGenericHandler, Initializable {
         );
     }
 
+    function removeResource(bytes32 resourceID, address contractAddress)
+        external
+        override
+        onlyBridge
+    {
+        _removeResource(resourceID, contractAddress);
+    }
+
     /**
         @notice A deposit is initiated by making a deposit in the Bridge contract.
         @param resourceID ResourceID used to find address of contract to be used for deposit.
@@ -208,5 +216,18 @@ contract GenericHandlerUpgradeable is IGenericHandler, Initializable {
         ] = executeFunctionSig;
 
         _contractWhitelist[contractAddress] = true;
+    }
+
+    function _removeResource(bytes32 resourceID, address contractAddress)
+        internal
+    {
+        delete _resourceIDToContractAddress[resourceID];
+        delete _contractAddressToResourceID[contractAddress];
+        delete _contractAddressToDepositFunctionSignature[contractAddress];
+        delete _contractAddressToDepositFunctionDepositorOffset[
+            contractAddress
+        ];
+        delete _contractAddressToExecuteFunctionSignature[contractAddress];
+        delete _contractWhitelist[contractAddress];
     }
 }

@@ -39,6 +39,24 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes32",
+        name: "resourceID",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "contractAddress",
+        type: "address",
+      },
+    ],
+    name: "removeResource",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "contractAddress",
         type: "address",

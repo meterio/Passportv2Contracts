@@ -28,6 +28,7 @@ interface HandlerHelpersUpgradeableInterface extends ethers.utils.Interface {
     "_resourceIDToTokenContractAddress(bytes32)": FunctionFragment;
     "_tokenContractAddressToResourceID(address)": FunctionFragment;
     "isNative(address)": FunctionFragment;
+    "removeResource(bytes32,address)": FunctionFragment;
     "setBurnable(address)": FunctionFragment;
     "setNative(address,bool)": FunctionFragment;
     "setResource(bytes32,address)": FunctionFragment;
@@ -53,6 +54,10 @@ interface HandlerHelpersUpgradeableInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "isNative", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "removeResource",
+    values: [BytesLike, string]
+  ): string;
   encodeFunctionData(functionFragment: "setBurnable", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setNative",
@@ -86,6 +91,10 @@ interface HandlerHelpersUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isNative", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeResource",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "setBurnable",
     data: BytesLike
@@ -196,6 +205,18 @@ export class HandlerHelpersUpgradeable extends Contract {
       0: boolean;
     }>;
 
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     setBurnable(
       contractAddress: string,
       overrides?: Overrides
@@ -295,6 +316,18 @@ export class HandlerHelpersUpgradeable extends Contract {
     arg0: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  removeResource(
+    resourceID: BytesLike,
+    contractAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "removeResource(bytes32,address)"(
+    resourceID: BytesLike,
+    contractAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   setBurnable(
     contractAddress: string,
@@ -399,6 +432,18 @@ export class HandlerHelpersUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setBurnable(
       contractAddress: string,
       overrides?: CallOverrides
@@ -497,6 +542,18 @@ export class HandlerHelpersUpgradeable extends Contract {
     "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     setBurnable(
@@ -603,6 +660,18 @@ export class HandlerHelpersUpgradeable extends Contract {
     "isNative(address)"(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     setBurnable(

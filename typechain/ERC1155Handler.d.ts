@@ -33,6 +33,7 @@ interface ERC1155HandlerInterface extends ethers.utils.Interface {
     "isNative(address)": FunctionFragment;
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
+    "removeResource(bytes32,address)": FunctionFragment;
     "setBurnable(address)": FunctionFragment;
     "setNative(address,bool)": FunctionFragment;
     "setResource(bytes32,address)": FunctionFragment;
@@ -74,6 +75,10 @@ interface ERC1155HandlerInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "onERC1155Received",
     values: [string, string, BigNumberish, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeResource",
+    values: [BytesLike, string]
   ): string;
   encodeFunctionData(functionFragment: "setBurnable", values: [string]): string;
   encodeFunctionData(
@@ -123,6 +128,10 @@ interface ERC1155HandlerInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "onERC1155Received",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeResource",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -298,6 +307,18 @@ export class ERC1155Handler extends Contract {
       arg2: BigNumberish,
       arg3: BigNumberish,
       arg4: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -477,6 +498,18 @@ export class ERC1155Handler extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  removeResource(
+    resourceID: BytesLike,
+    contractAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "removeResource(bytes32,address)"(
+    resourceID: BytesLike,
+    contractAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   setBurnable(
     contractAddress: string,
     overrides?: Overrides
@@ -652,6 +685,18 @@ export class ERC1155Handler extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setBurnable(
       contractAddress: string,
       overrides?: CallOverrides
@@ -821,6 +866,18 @@ export class ERC1155Handler extends Contract {
       arg2: BigNumberish,
       arg3: BigNumberish,
       arg4: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -999,6 +1056,18 @@ export class ERC1155Handler extends Contract {
       arg2: BigNumberish,
       arg3: BigNumberish,
       arg4: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

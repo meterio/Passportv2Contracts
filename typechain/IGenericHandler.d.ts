@@ -22,14 +22,23 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface IGenericHandlerInterface extends ethers.utils.Interface {
   functions: {
+    "removeResource(bytes32,address)": FunctionFragment;
     "setResource(bytes32,address,bytes4,uint256,bytes4)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "removeResource",
+    values: [BytesLike, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "setResource",
     values: [BytesLike, string, BytesLike, BigNumberish, BytesLike]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "removeResource",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "setResource",
     data: BytesLike
@@ -52,6 +61,18 @@ export class IGenericHandler extends Contract {
   interface: IGenericHandlerInterface;
 
   functions: {
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -70,6 +91,18 @@ export class IGenericHandler extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
   };
+
+  removeResource(
+    resourceID: BytesLike,
+    contractAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "removeResource(bytes32,address)"(
+    resourceID: BytesLike,
+    contractAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   setResource(
     resourceID: BytesLike,
@@ -90,6 +123,18 @@ export class IGenericHandler extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -112,6 +157,18 @@ export class IGenericHandler extends Contract {
   filters: {};
 
   estimateGas: {
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -132,6 +189,18 @@ export class IGenericHandler extends Contract {
   };
 
   populateTransaction: {
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,

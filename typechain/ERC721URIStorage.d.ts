@@ -221,7 +221,7 @@ export class ERC721URIStorage extends Contract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -351,7 +351,7 @@ export class ERC721URIStorage extends Contract {
     from: string,
     to: string,
     tokenId: BigNumberish,
-    _data: BytesLike,
+    data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -466,7 +466,7 @@ export class ERC721URIStorage extends Contract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -605,7 +605,7 @@ export class ERC721URIStorage extends Contract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -730,7 +730,7 @@ export class ERC721URIStorage extends Contract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

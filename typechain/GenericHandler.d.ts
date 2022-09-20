@@ -31,6 +31,7 @@ interface GenericHandlerInterface extends ethers.utils.Interface {
     "_resourceIDToContractAddress(bytes32)": FunctionFragment;
     "deposit(bytes32,address,bytes)": FunctionFragment;
     "executeProposal(bytes32,bytes)": FunctionFragment;
+    "removeResource(bytes32,address)": FunctionFragment;
     "setResource(bytes32,address,bytes4,uint256,bytes4)": FunctionFragment;
   };
 
@@ -71,6 +72,10 @@ interface GenericHandlerInterface extends ethers.utils.Interface {
     values: [BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "removeResource",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setResource",
     values: [BytesLike, string, BytesLike, BigNumberish, BytesLike]
   ): string;
@@ -106,6 +111,10 @@ interface GenericHandlerInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "executeProposal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeResource",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -248,6 +257,18 @@ export class GenericHandler extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -351,6 +372,18 @@ export class GenericHandler extends Contract {
   "executeProposal(bytes32,bytes)"(
     resourceID: BytesLike,
     data: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  removeResource(
+    resourceID: BytesLike,
+    contractAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "removeResource(bytes32,address)"(
+    resourceID: BytesLike,
+    contractAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -460,6 +493,18 @@ export class GenericHandler extends Contract {
     "executeProposal(bytes32,bytes)"(
       resourceID: BytesLike,
       data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -575,6 +620,18 @@ export class GenericHandler extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     setResource(
       resourceID: BytesLike,
       contractAddress: string,
@@ -684,6 +741,18 @@ export class GenericHandler extends Contract {
     "executeProposal(bytes32,bytes)"(
       resourceID: BytesLike,
       data: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    removeResource(
+      resourceID: BytesLike,
+      contractAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "removeResource(bytes32,address)"(
+      resourceID: BytesLike,
+      contractAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

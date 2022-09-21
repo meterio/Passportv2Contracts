@@ -146,6 +146,14 @@ contract Signatures is Pausable, AccessControl {
         destinationBridgeAddress[destinationDomainID] = destinationBridge;
     }
 
+    function adminPause() external onlyAdmin {
+        _pause(_msgSender());
+    }
+
+    function adminUnpause() external onlyAdmin {
+        _unpause(_msgSender());
+    }
+
     struct Proposal {
         uint8 originDomainID;
         uint8 destinationDomainID;

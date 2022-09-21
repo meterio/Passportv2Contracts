@@ -684,13 +684,6 @@ contract BridgeUpgradeable is
             proposal._yesVotes = (proposal._yesVotes | _relayerBit(signer))
                 .toUint200();
             proposal._yesVotesTotal++; // TODO: check if bit counting is cheaper.
-
-            emit ProposalVote(
-                domainID,
-                depositNonce,
-                proposal._status,
-                dataHash
-            );
         }
         proposal._status = ProposalStatus.Executed;
         IDepositExecute depositHandler = IDepositExecute(handler);

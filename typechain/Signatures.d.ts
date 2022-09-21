@@ -28,7 +28,9 @@ interface SignaturesInterface extends ethers.utils.Interface {
     "_TYPE_HASH()": FunctionFragment;
     "_relayerThreshold(uint8)": FunctionFragment;
     "adminChangeRelayerThreshold(uint8,uint256)": FunctionFragment;
+    "adminPause()": FunctionFragment;
     "adminSetDestChainId(uint8,uint256,address)": FunctionFragment;
+    "adminUnpause()": FunctionFragment;
     "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "destChainId(uint8)": FunctionFragment;
     "destinationBridgeAddress(uint8)": FunctionFragment;
@@ -77,8 +79,16 @@ interface SignaturesInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "adminPause",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "adminSetDestChainId",
     values: [BigNumberish, BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "adminUnpause",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "checkSignature",
@@ -196,8 +206,13 @@ interface SignaturesInterface extends ethers.utils.Interface {
     functionFragment: "adminChangeRelayerThreshold",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "adminPause", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "adminSetDestChainId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "adminUnpause",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -353,6 +368,10 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    adminPause(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "adminPause()"(overrides?: Overrides): Promise<ContractTransaction>;
+
     adminSetDestChainId(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
@@ -366,6 +385,10 @@ export class Signatures extends Contract {
       destinationBridge: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    adminUnpause(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "adminUnpause()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     checkSignature(
       domainID: BigNumberish,
@@ -771,6 +794,10 @@ export class Signatures extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  adminPause(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "adminPause()"(overrides?: Overrides): Promise<ContractTransaction>;
+
   adminSetDestChainId(
     destinationDomainID: BigNumberish,
     chainId: BigNumberish,
@@ -784,6 +811,10 @@ export class Signatures extends Contract {
     destinationBridge: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  adminUnpause(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "adminUnpause()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   checkSignature(
     domainID: BigNumberish,
@@ -1119,6 +1150,10 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    adminPause(overrides?: CallOverrides): Promise<void>;
+
+    "adminPause()"(overrides?: CallOverrides): Promise<void>;
+
     adminSetDestChainId(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
@@ -1132,6 +1167,10 @@ export class Signatures extends Contract {
       destinationBridge: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    adminUnpause(overrides?: CallOverrides): Promise<void>;
+
+    "adminUnpause()"(overrides?: CallOverrides): Promise<void>;
 
     checkSignature(
       domainID: BigNumberish,
@@ -1504,6 +1543,10 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    adminPause(overrides?: Overrides): Promise<BigNumber>;
+
+    "adminPause()"(overrides?: Overrides): Promise<BigNumber>;
+
     adminSetDestChainId(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
@@ -1517,6 +1560,10 @@ export class Signatures extends Contract {
       destinationBridge: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    adminUnpause(overrides?: Overrides): Promise<BigNumber>;
+
+    "adminUnpause()"(overrides?: Overrides): Promise<BigNumber>;
 
     checkSignature(
       domainID: BigNumberish,
@@ -1799,6 +1846,10 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    adminPause(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "adminPause()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
     adminSetDestChainId(
       destinationDomainID: BigNumberish,
       chainId: BigNumberish,
@@ -1812,6 +1863,10 @@ export class Signatures extends Contract {
       destinationBridge: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    adminUnpause(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "adminUnpause()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     checkSignature(
       domainID: BigNumberish,

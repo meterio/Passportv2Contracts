@@ -675,13 +675,6 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
             proposal._yesVotes = (proposal._yesVotes | _relayerBit(signer))
                 .toUint200();
             proposal._yesVotesTotal++; // TODO: check if bit counting is cheaper.
-
-            emit ProposalVote(
-                domainID,
-                depositNonce,
-                proposal._status,
-                dataHash
-            );
         }
         proposal._status = ProposalStatus.Executed;
         IDepositExecute depositHandler = IDepositExecute(handler);

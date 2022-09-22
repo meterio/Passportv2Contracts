@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// OpenZeppelin Contracts (last updated v4.5.0) (proxy/ERC1967/ERC1967Upgrade.sol)
 
 pragma solidity ^0.8.2;
 
@@ -124,4 +125,5 @@ abstract contract ERC1967Upgrade {
     function _getBeacon() internal view returns (address) {
         return StorageSlot.getAddressSlot(_BEACON_SLOT).value;
     }
+
 }

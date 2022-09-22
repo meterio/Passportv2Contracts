@@ -441,17 +441,17 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         _domainID = domainID;
     }
 
-    function adminSetSpecialFee(uint8 fromDomainID, uint256 _specialFee)
+    function adminSetSpecialFee(uint8 destinationDomainID, uint256 _specialFee)
         public
         onlyAdmin
     {
-        special[fromDomainID] = true;
-        specialFee[fromDomainID] = _specialFee;
+        special[destinationDomainID] = true;
+        specialFee[destinationDomainID] = _specialFee;
     }
 
-    function adminRemoveSpecialFee(uint8 fromDomainID) public onlyAdmin {
-        delete special[fromDomainID];
-        delete specialFee[fromDomainID];
+    function adminRemoveSpecialFee(uint8 destinationDomainID) public onlyAdmin {
+        delete special[destinationDomainID];
+        delete specialFee[destinationDomainID];
     }
 
     event FeeChanged(uint256 newFee);
@@ -465,6 +465,18 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         require(_fee_ != newFee, "Current fee is equal to new fee");
         _fee_ = newFee;
         emit FeeChanged(newFee);
+    }
+
+    function _getFee(uint8 destinationDomainID) internal view returns (uint256) {
+        if (special[destinationDomainID]) {
+            return specialFee[destinationDomainID];
+        } else {
+            return _fee_;
+        }
+    }
+
+    function getFee(uint8 destinationDomainID) external view returns (uint256) {
+        return _getFee(destinationDomainID);
     }
 
     /**
@@ -580,9 +592,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         bytes calldata feeData
     ) private {
         uint256 value = msg.value;
-        uint256 fee = special[destinationDomainID]
-            ? specialFee[destinationDomainID]
-            : _fee_;
+        uint256 fee = _getFee(destinationDomainID);
         value -= fee;
         _feeReserve += fee;
 

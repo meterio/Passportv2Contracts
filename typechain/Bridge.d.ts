@@ -65,6 +65,7 @@ interface BridgeInterface extends ethers.utils.Interface {
     "checkSignature(uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "deposit(uint8,bytes32,bytes,bytes)": FunctionFragment;
     "executeProposal(uint8,uint64,bytes,bytes32,bool)": FunctionFragment;
+    "getFee(uint8)": FunctionFragment;
     "getProposal(uint8,uint64,bytes32,bytes)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getRoleMember(bytes32,uint256)": FunctionFragment;
@@ -237,6 +238,10 @@ interface BridgeInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "executeProposal",
     values: [BigNumberish, BigNumberish, BytesLike, BytesLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getFee",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getProposal",
@@ -455,6 +460,7 @@ interface BridgeInterface extends ethers.utils.Interface {
     functionFragment: "executeProposal",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getFee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getProposal",
     data: BytesLike
@@ -789,12 +795,12 @@ export class Bridge extends Contract {
     ): Promise<ContractTransaction>;
 
     adminRemoveSpecialFee(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "adminRemoveSpecialFee(uint8)"(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -913,13 +919,13 @@ export class Bridge extends Contract {
     ): Promise<ContractTransaction>;
 
     adminSetSpecialFee(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       _specialFee: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "adminSetSpecialFee(uint8,uint256)"(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       _specialFee: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -1023,6 +1029,20 @@ export class Bridge extends Contract {
       revertOnFail: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    getFee(
+      destinationDomainID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getFee(uint8)"(
+      destinationDomainID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     getProposal(
       originDomainID: BigNumberish,
@@ -1464,12 +1484,12 @@ export class Bridge extends Contract {
   ): Promise<ContractTransaction>;
 
   adminRemoveSpecialFee(
-    fromDomainID: BigNumberish,
+    destinationDomainID: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "adminRemoveSpecialFee(uint8)"(
-    fromDomainID: BigNumberish,
+    destinationDomainID: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1588,13 +1608,13 @@ export class Bridge extends Contract {
   ): Promise<ContractTransaction>;
 
   adminSetSpecialFee(
-    fromDomainID: BigNumberish,
+    destinationDomainID: BigNumberish,
     _specialFee: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "adminSetSpecialFee(uint8,uint256)"(
-    fromDomainID: BigNumberish,
+    destinationDomainID: BigNumberish,
     _specialFee: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1694,6 +1714,16 @@ export class Bridge extends Contract {
     revertOnFail: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  getFee(
+    destinationDomainID: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getFee(uint8)"(
+    destinationDomainID: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getProposal(
     originDomainID: BigNumberish,
@@ -2076,12 +2106,12 @@ export class Bridge extends Contract {
     ): Promise<void>;
 
     adminRemoveSpecialFee(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "adminRemoveSpecialFee(uint8)"(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2197,13 +2227,13 @@ export class Bridge extends Contract {
     ): Promise<void>;
 
     adminSetSpecialFee(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       _specialFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "adminSetSpecialFee(uint8,uint256)"(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       _specialFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -2301,6 +2331,16 @@ export class Bridge extends Contract {
       revertOnFail: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    getFee(
+      destinationDomainID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getFee(uint8)"(
+      destinationDomainID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getProposal(
       originDomainID: BigNumberish,
@@ -2743,12 +2783,12 @@ export class Bridge extends Contract {
     ): Promise<BigNumber>;
 
     adminRemoveSpecialFee(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "adminRemoveSpecialFee(uint8)"(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2867,13 +2907,13 @@ export class Bridge extends Contract {
     ): Promise<BigNumber>;
 
     adminSetSpecialFee(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       _specialFee: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "adminSetSpecialFee(uint8,uint256)"(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       _specialFee: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -2970,6 +3010,16 @@ export class Bridge extends Contract {
       resourceID: BytesLike,
       revertOnFail: boolean,
       overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    getFee(
+      destinationDomainID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getFee(uint8)"(
+      destinationDomainID: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getProposal(
@@ -3354,12 +3404,12 @@ export class Bridge extends Contract {
     ): Promise<PopulatedTransaction>;
 
     adminRemoveSpecialFee(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "adminRemoveSpecialFee(uint8)"(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3478,13 +3528,13 @@ export class Bridge extends Contract {
     ): Promise<PopulatedTransaction>;
 
     adminSetSpecialFee(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       _specialFee: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "adminSetSpecialFee(uint8,uint256)"(
-      fromDomainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       _specialFee: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -3583,6 +3633,16 @@ export class Bridge extends Contract {
       resourceID: BytesLike,
       revertOnFail: boolean,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    getFee(
+      destinationDomainID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getFee(uint8)"(
+      destinationDomainID: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getProposal(

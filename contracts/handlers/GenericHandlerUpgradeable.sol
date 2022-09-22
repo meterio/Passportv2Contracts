@@ -3,14 +3,15 @@ pragma solidity 0.8.11;
 pragma experimental ABIEncoderV2;
 
 import "../interfaces/IGenericHandler.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /**
     @title Handles generic deposits and deposit executions.
     @author ChainSafe Systems.
     @notice This contract is intended to be used with the Bridge contract.
  */
-contract GenericHandler is IGenericHandler {
-    address public immutable _bridgeAddress;
+contract GenericHandlerUpgradeable is IGenericHandler, Initializable {
+    address public _bridgeAddress;
 
     // resourceID => contract address
     mapping(bytes32 => address) public _resourceIDToContractAddress;
@@ -45,7 +46,7 @@ contract GenericHandler is IGenericHandler {
     /**
         @param bridgeAddress Contract address of previously deployed Bridge.
      */
-    constructor(address bridgeAddress) {
+    function initialize(address bridgeAddress) public initializer {
         _bridgeAddress = bridgeAddress;
     }
 

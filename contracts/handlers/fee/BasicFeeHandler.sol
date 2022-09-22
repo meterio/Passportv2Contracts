@@ -14,6 +14,8 @@ contract BasicFeeHandler is IFeeHandler, AccessControl {
     address public immutable _bridgeAddress;
 
     uint256 public override _fee;
+    mapping(uint8 => uint256) public specialFee;
+    mapping(uint8 => bool) public special;
 
     event FeeChanged(uint256 newFee);
 
@@ -35,6 +37,26 @@ contract BasicFeeHandler is IFeeHandler, AccessControl {
     }
 
     /**
+        @notice Removes admin role from {_msgSender()} and grants it to {newAdmin}.
+        @notice Only callable by an address that currently has the admin role.
+        @param newAdmin Address that admin role will be granted to.
+     */
+    function renounceAdmin(address newAdmin) external onlyAdmin {
+        address sender = _msgSender();
+        require(sender != newAdmin, "Cannot renounce oneself");
+        grantRole(DEFAULT_ADMIN_ROLE, newAdmin);
+        renounceRole(DEFAULT_ADMIN_ROLE, sender);
+    }
+
+    function setSpecialFee(uint8 fromDomainID, uint256 _specialFee)
+        public
+        onlyAdmin
+    {
+        special[fromDomainID] = true;
+        specialFee[fromDomainID] = _specialFee;
+    }
+
+    /**
         @notice Collects fee for deposit.
         @param sender Sender of the deposit.
         @param destinationDomainID ID of chain deposit will be bridged to.
@@ -50,13 +72,16 @@ contract BasicFeeHandler is IFeeHandler, AccessControl {
         bytes calldata depositData,
         bytes calldata feeData
     ) external payable onlyBridge {
-        require(msg.value == _fee, "Incorrect fee supplied");
+        uint256 fee = special[destinationDomainID]
+            ? specialFee[destinationDomainID]
+            : _fee;
+        require(msg.value == fee, "Incorrect fee supplied");
         emit FeeCollected(
             sender,
             fromDomainID,
             destinationDomainID,
             resourceID,
-            _fee,
+            fee,
             address(0)
         );
     }
@@ -78,7 +103,12 @@ contract BasicFeeHandler is IFeeHandler, AccessControl {
         bytes calldata depositData,
         bytes calldata feeData
     ) external view returns (uint256, address) {
-        return (_fee, address(0));
+        return (
+            special[destinationDomainID]
+                ? specialFee[destinationDomainID]
+                : _fee,
+            address(0)
+        );
     }
 
     /**

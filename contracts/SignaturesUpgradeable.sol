@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity 0.8.11;
 import "./interfaces/IBridge.sol";
-import "./utils/AccessControl.sol";
+import "./utils/PausableUpgradeable.sol";
+import {AccessControlUpgradeable as AccessControl} from "./utils/AccessControlUpgradeable.sol";
 import "./utils/SafeCast.sol";
-import "./utils/Pausable.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
 
-contract Signatures is Pausable, AccessControl {
+contract SignaturesUpgradeable is PausableUpgradeable, AccessControl {
     using SafeCast for *;
     // 0xc4cb5d35714699d6e85b9562b644e60393b418d974a5c1dd8efaadac37a142c5
     bytes32 public constant PERMIT_TYPEHASH =
@@ -27,8 +27,8 @@ contract Signatures is Pausable, AccessControl {
     mapping(uint8 => uint8) public _relayerThreshold;
     mapping(uint8 => uint256) public destChainId;
 
-    constructor() {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+    function initialize(address admin) public initializer {
+        _setupRole(DEFAULT_ADMIN_ROLE, admin);
     }
 
     modifier onlyAdmin() {
@@ -64,7 +64,7 @@ contract Signatures is Pausable, AccessControl {
         address signatureContract
     ) internal view virtual returns (bytes32) {
         return
-            ECDSA.toTypedDataHash(
+            ECDSAUpgradeable.toTypedDataHash(
                 _buildDomainSeparator(
                     _TYPE_HASH,
                     _HASHED_NAME,
@@ -101,7 +101,7 @@ contract Signatures is Pausable, AccessControl {
                 : destChainId[destinationDomainID],
             destinationBridge
         );
-        return ECDSA.recover(hash, signature);
+        return ECDSAUpgradeable.recover(hash, signature);
     }
 
     /// @notice depositHash = keccak256(abi.encode(originDomainID,depositNonce,resourceID,keccak256(data)));
@@ -221,7 +221,7 @@ contract Signatures is Pausable, AccessControl {
             indexToProposal[proposalIndex] = depositHash;
         }
         signatures[depositHash].push(signature);
-        
+
         emit SubmitSignature(
             originDomainID,
             destinationDomainID,

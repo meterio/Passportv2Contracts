@@ -3,12 +3,12 @@ pragma solidity 0.8.11;
 pragma experimental ABIEncoderV2;
 
 import "../interfaces/IDepositExecute.sol";
-import "./HandlerHelpers.sol";
+import {HandlerHelpersUpgradeable as HandlerHelpers} from "./HandlerHelpersUpgradeable.sol";
 import "../ERC1155Safe.sol";
-import "@openzeppelin/contracts/utils/introspection/ERC165Checker.sol";
-import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
+import {ERC165CheckerUpgradeable as ERC165Checker} from "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165CheckerUpgradeable.sol";
+import {ERC1155HolderUpgradeable as ERC1155Holder} from "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
 
-contract ERC1155Handler is
+contract ERC1155HandlerUpgradeable is
     IDepositExecute,
     HandlerHelpers,
     ERC1155Safe,
@@ -22,7 +22,9 @@ contract ERC1155Handler is
     /**
         @param bridgeAddress Contract address of previously deployed Bridge.
      */
-    constructor(address bridgeAddress) HandlerHelpers(bridgeAddress) {}
+    function initialize(address bridgeAddress) public initializer {
+        __HandlerHelpers_init(bridgeAddress);
+    }
 
     /**
         @notice A deposit is initiated by making a deposit in the Bridge contract.

@@ -2,6 +2,7 @@
 
 pragma solidity 0.8.11;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /**
  * @dev Contract module which allows children to implement an emergency stop
@@ -11,7 +12,7 @@ pragma solidity 0.8.11;
  * https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/EnumerableSet.sol
  *
  */
-contract Pausable {
+contract PausableUpgradeable is Initializable{
     /**
      * @dev Emitted when the pause is triggered by `account`.
      */
@@ -27,7 +28,11 @@ contract Pausable {
     /**
      * @dev Initializes the contract in unpaused state.
      */
-    constructor () {
+    function __Pausable_init() internal initializer {
+        __Pausable_init_unchained();
+    }
+
+    function __Pausable_init_unchained() internal initializer {
         _paused = false;
     }
 
@@ -39,11 +44,11 @@ contract Pausable {
     }
 
     /**
-     * @dev Modifier to make a function callable only when the contract is not paused.
+     * @dev Modifier to make a function callable only when the contract is paused.
      *
      * Requirements:
      *
-     * - The contract must not be paused.
+     * - The contract must be paused.
      */
     modifier whenNotPaused() {
         _whenNotPaused();
@@ -55,11 +60,11 @@ contract Pausable {
     }
 
     /**
-     * @dev Modifier to make a function callable only when the contract is paused.
+     * @dev Modifier to make a function callable only when the contract is not paused.
      *
      * Requirements:
      *
-     * - The contract must be paused.
+     * - The contract must not be paused.
      */
     modifier whenPaused() {
         _whenPaused();
@@ -95,4 +100,5 @@ contract Pausable {
         _paused = false;
         emit Unpaused(sender);
     }
+    uint256[49] private __gap;
 }

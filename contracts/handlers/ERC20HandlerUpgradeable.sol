@@ -3,7 +3,7 @@ pragma solidity 0.8.11;
 pragma experimental ABIEncoderV2;
 
 import "../interfaces/IDepositExecute.sol";
-import "./HandlerHelpers.sol";
+import {HandlerHelpersUpgradeable as HandlerHelpers} from "./HandlerHelpersUpgradeable.sol";
 import "../ERC20Safe.sol";
 
 /**
@@ -11,11 +11,13 @@ import "../ERC20Safe.sol";
     @author ChainSafe Systems.
     @notice This contract is intended to be used with the Bridge contract.
  */
-contract ERC20Handler is IDepositExecute, HandlerHelpers, ERC20Safe {
+contract ERC20HandlerUpgradeable is IDepositExecute, HandlerHelpers, ERC20Safe {
     /**
         @param bridgeAddress Contract address of previously deployed Bridge.
      */
-    constructor(address bridgeAddress) HandlerHelpers(bridgeAddress) {}
+    function initialize(address bridgeAddress) public initializer {
+        __HandlerHelpers_init(bridgeAddress);
+    }
 
     error ProvidedTokenAddressIsNotWhitelisted();
 

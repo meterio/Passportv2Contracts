@@ -45,5 +45,8 @@
   },
   "peerDependencies": {
     "ethers": ">= 5.0.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts-upgradeable": "^4.7.3"
   }
 }

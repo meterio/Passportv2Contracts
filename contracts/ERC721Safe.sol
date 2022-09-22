@@ -4,6 +4,7 @@ pragma solidity 0.8.11;
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./interfaces/IERCMintBurn.sol";
+import "./ERC721MinterBurnerPauser.sol";
 
 /**
     @title Manages deposited ERC721s.
@@ -14,16 +15,20 @@ contract ERC721Safe {
     using SafeMath for uint256;
 
     /**
-        @notice Used to gain custoday of deposited token.
+        @notice Used to gain custody of deposited token.
         @param tokenAddress Address of ERC721 to transfer.
         @param owner Address of current token owner.
         @param recipient Address to transfer token to.
         @param tokenID ID of token to transfer.
      */
-    function lockERC721(address tokenAddress, address owner, address recipient, uint tokenID) internal {
+    function lockERC721(
+        address tokenAddress,
+        address owner,
+        address recipient,
+        uint tokenID
+    ) internal {
         IERC721 erc721 = IERC721(tokenAddress);
         erc721.transferFrom(owner, recipient, tokenID);
-
     }
 
     /**
@@ -33,7 +38,12 @@ contract ERC721Safe {
         @param recipient Address to transfer token to.
         @param tokenID ID of token to transfer.
      */
-    function releaseERC721(address tokenAddress, address owner, address recipient, uint256 tokenID) internal {
+    function releaseERC721(
+        address tokenAddress,
+        address owner,
+        address recipient,
+        uint256 tokenID
+    ) internal {
         IERC721 erc721 = IERC721(tokenAddress);
         erc721.transferFrom(owner, recipient, tokenID);
     }
@@ -45,7 +55,12 @@ contract ERC721Safe {
         @param tokenID ID of token to mint.
         @param data Optional data to send along with mint call.
      */
-    function mintERC721(address tokenAddress, address recipient, uint256 tokenID, bytes memory data) internal {
+    function mintERC721(
+        address tokenAddress,
+        address recipient,
+        uint256 tokenID,
+        bytes memory data
+    ) internal {
         IERCMintBurn erc721 = IERCMintBurn(tokenAddress);
         erc721.mint(recipient, tokenID, string(data));
     }
@@ -55,9 +70,15 @@ contract ERC721Safe {
         @param tokenAddress Address of ERC721 to burn.
         @param tokenID ID of token to burn.
      */
-    function burnERC721(address tokenAddress, uint256 tokenID) internal {
-        IERCMintBurn erc721 = IERCMintBurn(tokenAddress);
+    function burnERC721(
+        address tokenAddress,
+        address owner,
+        uint256 tokenID
+    ) internal {
+        ERC721MinterBurnerPauser erc721 = ERC721MinterBurnerPauser(
+            tokenAddress
+        );
+        require(erc721.ownerOf(tokenID) == owner, "Burn not from owner");
         erc721.burn(tokenID);
     }
-
 }

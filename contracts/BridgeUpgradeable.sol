@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity 0.8.11;
 
-import "./utils/AccessControl.sol";
-import "./utils/Pausable.sol";
+import {AccessControlUpgradeable as AccessControl} from "./utils/AccessControlUpgradeable.sol";
+import "./utils/PausableUpgradeable.sol";
 import "./utils/SafeMath.sol";
 import "./utils/SafeCast.sol";
 import "./interfaces/IDepositExecute.sol";
@@ -11,13 +11,19 @@ import "./interfaces/IGenericHandler.sol";
 import "./interfaces/IWETH.sol";
 import "./interfaces/IBridge.sol";
 import "./interfaces/IFeeHandler.sol";
-import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol";
 
 /**
     @title Facilitates deposits, creation and voting of deposit proposals, and deposit executions.
     @author ChainSafe Systems.
  */
-contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
+contract BridgeUpgradeable is
+    EIP712Upgradeable,
+    PausableUpgradeable,
+    AccessControl,
+    SafeMath,
+    IBridge
+{
     using SafeCast for *;
 
     bytes32 public constant PERMIT_TYPEHASH =
@@ -169,17 +175,20 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         @param initialRelayers Addresses that should be initially granted the relayer role.
         @param initialRelayerThreshold Number of votes needed for a deposit proposal to be considered passed.
      */
-    constructor(
+    function initialize(
         uint8 domainID,
         address[] memory initialRelayers,
         uint256 initialRelayerThreshold,
-        uint256 expiry
-    ) EIP712("PermitBridge", "1.0") {
+        uint256 expiry,
+        address admin
+    ) public initializer {
+        __Pausable_init();
+        __EIP712_init("PermitBridge", "1.0");
         _domainID = domainID;
         _relayerThreshold = initialRelayerThreshold.toUint8();
         _expiry = expiry.toUint40();
 
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _setupRole(DEFAULT_ADMIN_ROLE, admin);
 
         for (uint256 i; i < initialRelayers.length; i++) {
             grantRole(RELAYER_ROLE, initialRelayers[i]);
@@ -635,7 +644,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
             )
         );
         bytes32 hash = _hashTypedDataV4(structHash);
-        address sender = ECDSA.recover(hash, signature);
+        address sender = ECDSAUpgradeable.recover(hash, signature);
         return hasRole(RELAYER_ROLE, sender);
     }
 
@@ -676,7 +685,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         );
 
         for (uint256 i; i < length; ++i) {
-            address signer = ECDSA.recover(hash, signatures[i]);
+            address signer = ECDSAUpgradeable.recover(hash, signatures[i]);
             if (!hasRole(RELAYER_ROLE, signer)) {
                 revert InvalidSignature(signer, i);
             }

@@ -31,6 +31,10 @@ interface BridgeInterface extends Interface {
 
     _feeHandler: TypedFunctionDescription<{ encode([]: []): string }>;
 
+    _feeReserve: TypedFunctionDescription<{ encode([]: []): string }>;
+
+    _fee_: TypedFunctionDescription<{ encode([]: []): string }>;
+
     _relayerThreshold: TypedFunctionDescription<{ encode([]: []): string }>;
 
     _resourceIDToHandlerAddress: TypedFunctionDescription<{
@@ -67,24 +71,17 @@ interface BridgeInterface extends Interface {
 
     paused: TypedFunctionDescription<{ encode([]: []): string }>;
 
-    renounceRole: TypedFunctionDescription<{
-      encode([role, account]: [Arrayish, string]): string;
-    }>;
-
     revokeRole: TypedFunctionDescription<{
       encode([role, account]: [Arrayish, string]): string;
     }>;
 
-    _fee: TypedFunctionDescription<{ encode([]: []): string }>;
+    special: TypedFunctionDescription<{ encode([]: [BigNumberish]): string }>;
 
-    calculateFee: TypedFunctionDescription<{
-      encode([destinationDomainID, resourceID, depositData, feeData]: [
-        BigNumberish,
-        Arrayish,
-        Arrayish,
-        Arrayish
-      ]): string;
+    specialFee: TypedFunctionDescription<{
+      encode([]: [BigNumberish]): string;
     }>;
+
+    _fee: TypedFunctionDescription<{ encode([]: []): string }>;
 
     _chainId: TypedFunctionDescription<{ encode([]: []): string }>;
 
@@ -120,6 +117,10 @@ interface BridgeInterface extends Interface {
       encode([relayerAddress]: [string]): string;
     }>;
 
+    renounceRole: TypedFunctionDescription<{
+      encode([role, account]: [Arrayish, string]): string;
+    }>;
+
     adminSetResource: TypedFunctionDescription<{
       encode([handlerAddress, resourceID, tokenAddress]: [
         string,
@@ -128,15 +129,39 @@ interface BridgeInterface extends Interface {
       ]): string;
     }>;
 
+    adminSetNativeResource: TypedFunctionDescription<{
+      encode([handlerAddress]: [string]): string;
+    }>;
+
     adminSetGenericResource: TypedFunctionDescription<{
       encode([
         handlerAddress,
         resourceID,
         contractAddress,
         depositFunctionSig,
-        depositFunctionDepositerOffset,
+        depositFunctionDepositorOffset,
         executeFunctionSig,
       ]: [string, Arrayish, string, Arrayish, BigNumberish, Arrayish]): string;
+    }>;
+
+    adminRemoveResourceId: TypedFunctionDescription<{
+      encode([handlerAddress, resourceID, tokenAddress]: [
+        string,
+        Arrayish,
+        string
+      ]): string;
+    }>;
+
+    adminRemoveNativeResourceId: TypedFunctionDescription<{
+      encode([handlerAddress]: [string]): string;
+    }>;
+
+    adminRemoveGenericResource: TypedFunctionDescription<{
+      encode([handlerAddress, resourceID, contractAddress]: [
+        string,
+        Arrayish,
+        string
+      ]): string;
     }>;
 
     adminSetBurnable: TypedFunctionDescription<{
@@ -151,27 +176,47 @@ interface BridgeInterface extends Interface {
       encode([forwarder, valid]: [string, boolean]): string;
     }>;
 
-    adminSetWtoken: TypedFunctionDescription<{
-      encode([resourceID, wtokenAddress, isWtoken]: [
+    adminSetNative: TypedFunctionDescription<{
+      encode([resourceID, nativeAddress, isNative]: [
         Arrayish,
         string,
         boolean
       ]): string;
     }>;
 
+    adminSetDomainId: TypedFunctionDescription<{
+      encode([domainID]: [BigNumberish]): string;
+    }>;
+
+    adminSetSpecialFee: TypedFunctionDescription<{
+      encode([destinationDomainID, _specialFee]: [
+        BigNumberish,
+        BigNumberish
+      ]): string;
+    }>;
+
+    adminRemoveSpecialFee: TypedFunctionDescription<{
+      encode([destinationDomainID]: [BigNumberish]): string;
+    }>;
+
+    adminSetFee: TypedFunctionDescription<{
+      encode([newFee]: [BigNumberish]): string;
+    }>;
+
+    getFee: TypedFunctionDescription<{
+      encode([destinationDomainID]: [BigNumberish]): string;
+    }>;
+
     getProposal: TypedFunctionDescription<{
-      encode([originDomainID, depositNonce, dataHash]: [
+      encode([originDomainID, depositNonce, resourceID, data]: [
         BigNumberish,
         BigNumberish,
+        Arrayish,
         Arrayish
       ]): string;
     }>;
 
     _totalRelayers: TypedFunctionDescription<{ encode([]: []): string }>;
-
-    adminChangeFeeHandler: TypedFunctionDescription<{
-      encode([newFeeHandler]: [string]): string;
-    }>;
 
     adminChangeExpiry: TypedFunctionDescription<{
       encode([expiry]: [BigNumberish]): string;
@@ -183,6 +228,10 @@ interface BridgeInterface extends Interface {
 
     adminWithdrawETH: TypedFunctionDescription<{
       encode([handlerAddress, data]: [string, Arrayish]): string;
+    }>;
+
+    transferFee: TypedFunctionDescription<{
+      encode([addrs, amounts]: [string[], BigNumberish[]]): string;
     }>;
 
     deposit: TypedFunctionDescription<{
@@ -240,10 +289,6 @@ interface BridgeInterface extends Interface {
         boolean
       ]): string;
     }>;
-
-    transferFunds: TypedFunctionDescription<{
-      encode([addrs, amounts]: [string[], BigNumberish[]]): string;
-    }>;
   };
 
   events: {
@@ -260,6 +305,18 @@ interface BridgeInterface extends Interface {
 
     FailedHandlerExecution: TypedEventDescription<{
       encodeTopics([lowLevelData]: [null]): string[];
+    }>;
+
+    FeeChanged: TypedEventDescription<{
+      encodeTopics([newFee]: [null]): string[];
+    }>;
+
+    FeeDistributed: TypedEventDescription<{
+      encodeTopics([tokenAddress, recipient, amount]: [
+        null,
+        null,
+        null
+      ]): string[];
     }>;
 
     FeeHandlerChanged: TypedEventDescription<{
@@ -379,6 +436,14 @@ export class Bridge extends Contract {
     _feeHandler(overrides?: TransactionOverrides): Promise<string>;
 
     "_feeHandler()"(overrides?: TransactionOverrides): Promise<string>;
+
+    _feeReserve(overrides?: TransactionOverrides): Promise<BigNumber>;
+
+    "_feeReserve()"(overrides?: TransactionOverrides): Promise<BigNumber>;
+
+    _fee_(overrides?: TransactionOverrides): Promise<BigNumber>;
+
+    "_fee_()"(overrides?: TransactionOverrides): Promise<BigNumber>;
 
     _relayerThreshold(overrides?: TransactionOverrides): Promise<number>;
 
@@ -519,24 +584,6 @@ export class Bridge extends Contract {
     "paused()"(overrides?: TransactionOverrides): Promise<boolean>;
 
     /**
-     * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
-     */
-    renounceRole(
-      role: Arrayish,
-      account: string,
-      overrides?: TransactionOverrides
-    ): Promise<ContractTransaction>;
-
-    /**
-     * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
-     */
-    "renounceRole(bytes32,address)"(
-      role: Arrayish,
-      account: string,
-      overrides?: TransactionOverrides
-    ): Promise<ContractTransaction>;
-
-    /**
      * Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role.
      */
     revokeRole(
@@ -554,25 +601,29 @@ export class Bridge extends Contract {
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
 
+    special(
+      arg0: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<boolean>;
+
+    "special(uint8)"(
+      arg0: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<boolean>;
+
+    specialFee(
+      arg0: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "specialFee(uint8)"(
+      arg0: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
     _fee(overrides?: TransactionOverrides): Promise<BigNumber>;
 
     "_fee()"(overrides?: TransactionOverrides): Promise<BigNumber>;
-
-    calculateFee(
-      destinationDomainID: BigNumberish,
-      resourceID: Arrayish,
-      depositData: Arrayish,
-      feeData: Arrayish,
-      overrides?: TransactionOverrides
-    ): Promise<BigNumber>;
-
-    "calculateFee(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: Arrayish,
-      depositData: Arrayish,
-      feeData: Arrayish,
-      overrides?: TransactionOverrides
-    ): Promise<BigNumber>;
 
     _chainId(overrides?: TransactionOverrides): Promise<BigNumber>;
 
@@ -723,6 +774,24 @@ export class Bridge extends Contract {
     ): Promise<ContractTransaction>;
 
     /**
+     * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
+     */
+    renounceRole(
+      role: Arrayish,
+      account: string,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
+     */
+    "renounceRole(bytes32,address)"(
+      role: Arrayish,
+      account: string,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    /**
      * Sets a new resource for handler contracts that use the IERCHandler interface, and maps the {handlerAddress} to {resourceID} in {_resourceIDToHandlerAddress}.Only callable by an address that currently has the admin role.
      * @param handlerAddress Address of handler resource will be set for.
      * @param resourceID ResourceID to be used when making deposits.
@@ -748,9 +817,22 @@ export class Bridge extends Contract {
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
 
+    adminSetNativeResource(
+      handlerAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetNativeResource(address)"(
+      handlerAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
     /**
      * Sets a new resource for handler contracts that use the IGenericHandler interface, and maps the {handlerAddress} to {resourceID} in {_resourceIDToHandlerAddress}.Only callable by an address that currently has the admin role.
      * @param contractAddress Address of contract to be called when a deposit is made and a deposited is executed.
+     * @param depositFunctionDepositorOffset Depositor address position offset in the metadata, in bytes.
+     * @param depositFunctionSig Function signature of method to be called in {contractAddress} when a deposit is made.
+     * @param executeFunctionSig Function signature of method to be called in {contractAddress} when a deposit is executed.
      * @param handlerAddress Address of handler resource will be set for.
      * @param resourceID ResourceID to be used when making deposits.
      */
@@ -759,7 +841,7 @@ export class Bridge extends Contract {
       resourceID: Arrayish,
       contractAddress: string,
       depositFunctionSig: Arrayish,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: Arrayish,
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
@@ -767,6 +849,9 @@ export class Bridge extends Contract {
     /**
      * Sets a new resource for handler contracts that use the IGenericHandler interface, and maps the {handlerAddress} to {resourceID} in {_resourceIDToHandlerAddress}.Only callable by an address that currently has the admin role.
      * @param contractAddress Address of contract to be called when a deposit is made and a deposited is executed.
+     * @param depositFunctionDepositorOffset Depositor address position offset in the metadata, in bytes.
+     * @param depositFunctionSig Function signature of method to be called in {contractAddress} when a deposit is made.
+     * @param executeFunctionSig Function signature of method to be called in {contractAddress} when a deposit is executed.
      * @param handlerAddress Address of handler resource will be set for.
      * @param resourceID ResourceID to be used when making deposits.
      */
@@ -775,8 +860,46 @@ export class Bridge extends Contract {
       resourceID: Arrayish,
       contractAddress: string,
       depositFunctionSig: Arrayish,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: Arrayish,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    adminRemoveResourceId(
+      handlerAddress: string,
+      resourceID: Arrayish,
+      tokenAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    "adminRemoveResourceId(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: Arrayish,
+      tokenAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    adminRemoveNativeResourceId(
+      handlerAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    "adminRemoveNativeResourceId(address)"(
+      handlerAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    adminRemoveGenericResource(
+      handlerAddress: string,
+      resourceID: Arrayish,
+      contractAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    "adminRemoveGenericResource(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: Arrayish,
+      contractAddress: string,
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
 
@@ -846,30 +969,91 @@ export class Bridge extends Contract {
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
 
-    adminSetWtoken(
+    adminSetNative(
       resourceID: Arrayish,
-      wtokenAddress: string,
-      isWtoken: boolean,
+      nativeAddress: string,
+      isNative: boolean,
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
 
-    "adminSetWtoken(bytes32,address,bool)"(
+    "adminSetNative(bytes32,address,bool)"(
       resourceID: Arrayish,
-      wtokenAddress: string,
-      isWtoken: boolean,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    adminSetDomainId(
+      domainID: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetDomainId(uint8)"(
+      domainID: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    adminSetSpecialFee(
+      destinationDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    "adminSetSpecialFee(uint8,uint256)"(
+      destinationDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    adminRemoveSpecialFee(
+      destinationDomainID: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    "adminRemoveSpecialFee(uint8)"(
+      destinationDomainID: BigNumberish,
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
 
     /**
+     * Sets new value of the fee.Only callable by admin.
+     * @param newFee Value {_fee} will be updated to.
+     */
+    adminSetFee(
+      newFee: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Sets new value of the fee.Only callable by admin.
+     * @param newFee Value {_fee} will be updated to.
+     */
+    "adminSetFee(uint256)"(
+      newFee: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    getFee(
+      destinationDomainID: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "getFee(uint8)"(
+      destinationDomainID: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * Returns a proposal.
-     * @param dataHash Hash of data to be provided when deposit proposal is executed.
      * @param depositNonce ID of proposal generated by proposal's origin Bridge contract.
      * @param originDomainID Chain ID deposit originated from.
+     * @param resourceID ResourceID used to find address of handler to be used for deposit.
      */
     getProposal(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: Arrayish,
+      resourceID: Arrayish,
+      data: Arrayish,
       overrides?: TransactionOverrides
     ): Promise<{
       _status: number;
@@ -884,14 +1068,15 @@ export class Bridge extends Contract {
 
     /**
      * Returns a proposal.
-     * @param dataHash Hash of data to be provided when deposit proposal is executed.
      * @param depositNonce ID of proposal generated by proposal's origin Bridge contract.
      * @param originDomainID Chain ID deposit originated from.
+     * @param resourceID ResourceID used to find address of handler to be used for deposit.
      */
-    "getProposal(uint8,uint64,bytes32)"(
+    "getProposal(uint8,uint64,bytes32,bytes)"(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: Arrayish,
+      resourceID: Arrayish,
+      data: Arrayish,
       overrides?: TransactionOverrides
     ): Promise<{
       _status: number;
@@ -913,24 +1098,6 @@ export class Bridge extends Contract {
      * Returns total relayers number.Added for backwards compatibility.
      */
     "_totalRelayers()"(overrides?: TransactionOverrides): Promise<BigNumber>;
-
-    /**
-     * Changes deposit fee handler contract address.Only callable by admin.
-     * @param newFeeHandler Address {_feeHandler} will be updated to.
-     */
-    adminChangeFeeHandler(
-      newFeeHandler: string,
-      overrides?: TransactionOverrides
-    ): Promise<ContractTransaction>;
-
-    /**
-     * Changes deposit fee handler contract address.Only callable by admin.
-     * @param newFeeHandler Address {_feeHandler} will be updated to.
-     */
-    "adminChangeFeeHandler(address)"(
-      newFeeHandler: string,
-      overrides?: TransactionOverrides
-    ): Promise<ContractTransaction>;
 
     adminChangeExpiry(
       expiry: BigNumberish,
@@ -973,6 +1140,18 @@ export class Bridge extends Contract {
     "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: Arrayish,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    transferFee(
+      addrs: string[],
+      amounts: BigNumberish[],
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    "transferFee(address[],uint256[])"(
+      addrs: string[],
+      amounts: BigNumberish[],
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
 
@@ -1097,7 +1276,7 @@ export class Bridge extends Contract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.
+     * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.Behaviour of this function is different for {GenericHandler} and other specific ERC handlers. In the case of ERC handler, when execution fails, the handler will terminate the function with revert. In the case of {GenericHandler}, when execution fails, the handler will emit a failure event and terminate the function normally.
      * @param data Data originally provided when deposit was made.
      * @param depositNonce ID of deposited generated by origin Bridge contract.
      * @param domainID ID of chain deposit originated from.
@@ -1114,7 +1293,7 @@ export class Bridge extends Contract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.
+     * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.Behaviour of this function is different for {GenericHandler} and other specific ERC handlers. In the case of ERC handler, when execution fails, the handler will terminate the function with revert. In the case of {GenericHandler}, when execution fails, the handler will emit a failure event and terminate the function normally.
      * @param data Data originally provided when deposit was made.
      * @param depositNonce ID of deposited generated by origin Bridge contract.
      * @param domainID ID of chain deposit originated from.
@@ -1127,28 +1306,6 @@ export class Bridge extends Contract {
       data: Arrayish,
       resourceID: Arrayish,
       revertOnFail: boolean,
-      overrides?: TransactionOverrides
-    ): Promise<ContractTransaction>;
-
-    /**
-     * Transfers eth in the contract to the specified addresses. The parameters addrs and amounts are mapped 1-1. This means that the address at index 0 for addrs will receive the amount (in WEI) from amounts at index 0.
-     * @param addrs Array of addresses to transfer {amounts} to.
-     * @param amounts Array of amonuts to transfer to {addrs}.
-     */
-    transferFunds(
-      addrs: string[],
-      amounts: BigNumberish[],
-      overrides?: TransactionOverrides
-    ): Promise<ContractTransaction>;
-
-    /**
-     * Transfers eth in the contract to the specified addresses. The parameters addrs and amounts are mapped 1-1. This means that the address at index 0 for addrs will receive the amount (in WEI) from amounts at index 0.
-     * @param addrs Array of addresses to transfer {amounts} to.
-     * @param amounts Array of amonuts to transfer to {addrs}.
-     */
-    "transferFunds(address[],uint256[])"(
-      addrs: string[],
-      amounts: BigNumberish[],
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
   };
@@ -1196,6 +1353,14 @@ export class Bridge extends Contract {
   _feeHandler(overrides?: TransactionOverrides): Promise<string>;
 
   "_feeHandler()"(overrides?: TransactionOverrides): Promise<string>;
+
+  _feeReserve(overrides?: TransactionOverrides): Promise<BigNumber>;
+
+  "_feeReserve()"(overrides?: TransactionOverrides): Promise<BigNumber>;
+
+  _fee_(overrides?: TransactionOverrides): Promise<BigNumber>;
+
+  "_fee_()"(overrides?: TransactionOverrides): Promise<BigNumber>;
 
   _relayerThreshold(overrides?: TransactionOverrides): Promise<number>;
 
@@ -1336,24 +1501,6 @@ export class Bridge extends Contract {
   "paused()"(overrides?: TransactionOverrides): Promise<boolean>;
 
   /**
-   * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
-   */
-  renounceRole(
-    role: Arrayish,
-    account: string,
-    overrides?: TransactionOverrides
-  ): Promise<ContractTransaction>;
-
-  /**
-   * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
-   */
-  "renounceRole(bytes32,address)"(
-    role: Arrayish,
-    account: string,
-    overrides?: TransactionOverrides
-  ): Promise<ContractTransaction>;
-
-  /**
    * Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role.
    */
   revokeRole(
@@ -1371,25 +1518,29 @@ export class Bridge extends Contract {
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
 
+  special(
+    arg0: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<boolean>;
+
+  "special(uint8)"(
+    arg0: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<boolean>;
+
+  specialFee(
+    arg0: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<BigNumber>;
+
+  "specialFee(uint8)"(
+    arg0: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<BigNumber>;
+
   _fee(overrides?: TransactionOverrides): Promise<BigNumber>;
 
   "_fee()"(overrides?: TransactionOverrides): Promise<BigNumber>;
-
-  calculateFee(
-    destinationDomainID: BigNumberish,
-    resourceID: Arrayish,
-    depositData: Arrayish,
-    feeData: Arrayish,
-    overrides?: TransactionOverrides
-  ): Promise<BigNumber>;
-
-  "calculateFee(uint8,bytes32,bytes,bytes)"(
-    destinationDomainID: BigNumberish,
-    resourceID: Arrayish,
-    depositData: Arrayish,
-    feeData: Arrayish,
-    overrides?: TransactionOverrides
-  ): Promise<BigNumber>;
 
   _chainId(overrides?: TransactionOverrides): Promise<BigNumber>;
 
@@ -1540,6 +1691,24 @@ export class Bridge extends Contract {
   ): Promise<ContractTransaction>;
 
   /**
+   * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
+   */
+  renounceRole(
+    role: Arrayish,
+    account: string,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
+   */
+  "renounceRole(bytes32,address)"(
+    role: Arrayish,
+    account: string,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  /**
    * Sets a new resource for handler contracts that use the IERCHandler interface, and maps the {handlerAddress} to {resourceID} in {_resourceIDToHandlerAddress}.Only callable by an address that currently has the admin role.
    * @param handlerAddress Address of handler resource will be set for.
    * @param resourceID ResourceID to be used when making deposits.
@@ -1565,9 +1734,22 @@ export class Bridge extends Contract {
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
 
+  adminSetNativeResource(
+    handlerAddress: string,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetNativeResource(address)"(
+    handlerAddress: string,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
   /**
    * Sets a new resource for handler contracts that use the IGenericHandler interface, and maps the {handlerAddress} to {resourceID} in {_resourceIDToHandlerAddress}.Only callable by an address that currently has the admin role.
    * @param contractAddress Address of contract to be called when a deposit is made and a deposited is executed.
+   * @param depositFunctionDepositorOffset Depositor address position offset in the metadata, in bytes.
+   * @param depositFunctionSig Function signature of method to be called in {contractAddress} when a deposit is made.
+   * @param executeFunctionSig Function signature of method to be called in {contractAddress} when a deposit is executed.
    * @param handlerAddress Address of handler resource will be set for.
    * @param resourceID ResourceID to be used when making deposits.
    */
@@ -1576,7 +1758,7 @@ export class Bridge extends Contract {
     resourceID: Arrayish,
     contractAddress: string,
     depositFunctionSig: Arrayish,
-    depositFunctionDepositerOffset: BigNumberish,
+    depositFunctionDepositorOffset: BigNumberish,
     executeFunctionSig: Arrayish,
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
@@ -1584,6 +1766,9 @@ export class Bridge extends Contract {
   /**
    * Sets a new resource for handler contracts that use the IGenericHandler interface, and maps the {handlerAddress} to {resourceID} in {_resourceIDToHandlerAddress}.Only callable by an address that currently has the admin role.
    * @param contractAddress Address of contract to be called when a deposit is made and a deposited is executed.
+   * @param depositFunctionDepositorOffset Depositor address position offset in the metadata, in bytes.
+   * @param depositFunctionSig Function signature of method to be called in {contractAddress} when a deposit is made.
+   * @param executeFunctionSig Function signature of method to be called in {contractAddress} when a deposit is executed.
    * @param handlerAddress Address of handler resource will be set for.
    * @param resourceID ResourceID to be used when making deposits.
    */
@@ -1592,8 +1777,46 @@ export class Bridge extends Contract {
     resourceID: Arrayish,
     contractAddress: string,
     depositFunctionSig: Arrayish,
-    depositFunctionDepositerOffset: BigNumberish,
+    depositFunctionDepositorOffset: BigNumberish,
     executeFunctionSig: Arrayish,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  adminRemoveResourceId(
+    handlerAddress: string,
+    resourceID: Arrayish,
+    tokenAddress: string,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  "adminRemoveResourceId(address,bytes32,address)"(
+    handlerAddress: string,
+    resourceID: Arrayish,
+    tokenAddress: string,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  adminRemoveNativeResourceId(
+    handlerAddress: string,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  "adminRemoveNativeResourceId(address)"(
+    handlerAddress: string,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  adminRemoveGenericResource(
+    handlerAddress: string,
+    resourceID: Arrayish,
+    contractAddress: string,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  "adminRemoveGenericResource(address,bytes32,address)"(
+    handlerAddress: string,
+    resourceID: Arrayish,
+    contractAddress: string,
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
 
@@ -1663,30 +1886,91 @@ export class Bridge extends Contract {
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
 
-  adminSetWtoken(
+  adminSetNative(
     resourceID: Arrayish,
-    wtokenAddress: string,
-    isWtoken: boolean,
+    nativeAddress: string,
+    isNative: boolean,
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
 
-  "adminSetWtoken(bytes32,address,bool)"(
+  "adminSetNative(bytes32,address,bool)"(
     resourceID: Arrayish,
-    wtokenAddress: string,
-    isWtoken: boolean,
+    nativeAddress: string,
+    isNative: boolean,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  adminSetDomainId(
+    domainID: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetDomainId(uint8)"(
+    domainID: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  adminSetSpecialFee(
+    destinationDomainID: BigNumberish,
+    _specialFee: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  "adminSetSpecialFee(uint8,uint256)"(
+    destinationDomainID: BigNumberish,
+    _specialFee: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  adminRemoveSpecialFee(
+    destinationDomainID: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  "adminRemoveSpecialFee(uint8)"(
+    destinationDomainID: BigNumberish,
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
 
   /**
+   * Sets new value of the fee.Only callable by admin.
+   * @param newFee Value {_fee} will be updated to.
+   */
+  adminSetFee(
+    newFee: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Sets new value of the fee.Only callable by admin.
+   * @param newFee Value {_fee} will be updated to.
+   */
+  "adminSetFee(uint256)"(
+    newFee: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  getFee(
+    destinationDomainID: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<BigNumber>;
+
+  "getFee(uint8)"(
+    destinationDomainID: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<BigNumber>;
+
+  /**
    * Returns a proposal.
-   * @param dataHash Hash of data to be provided when deposit proposal is executed.
    * @param depositNonce ID of proposal generated by proposal's origin Bridge contract.
    * @param originDomainID Chain ID deposit originated from.
+   * @param resourceID ResourceID used to find address of handler to be used for deposit.
    */
   getProposal(
     originDomainID: BigNumberish,
     depositNonce: BigNumberish,
-    dataHash: Arrayish,
+    resourceID: Arrayish,
+    data: Arrayish,
     overrides?: TransactionOverrides
   ): Promise<{
     _status: number;
@@ -1701,14 +1985,15 @@ export class Bridge extends Contract {
 
   /**
    * Returns a proposal.
-   * @param dataHash Hash of data to be provided when deposit proposal is executed.
    * @param depositNonce ID of proposal generated by proposal's origin Bridge contract.
    * @param originDomainID Chain ID deposit originated from.
+   * @param resourceID ResourceID used to find address of handler to be used for deposit.
    */
-  "getProposal(uint8,uint64,bytes32)"(
+  "getProposal(uint8,uint64,bytes32,bytes)"(
     originDomainID: BigNumberish,
     depositNonce: BigNumberish,
-    dataHash: Arrayish,
+    resourceID: Arrayish,
+    data: Arrayish,
     overrides?: TransactionOverrides
   ): Promise<{
     _status: number;
@@ -1730,24 +2015,6 @@ export class Bridge extends Contract {
    * Returns total relayers number.Added for backwards compatibility.
    */
   "_totalRelayers()"(overrides?: TransactionOverrides): Promise<BigNumber>;
-
-  /**
-   * Changes deposit fee handler contract address.Only callable by admin.
-   * @param newFeeHandler Address {_feeHandler} will be updated to.
-   */
-  adminChangeFeeHandler(
-    newFeeHandler: string,
-    overrides?: TransactionOverrides
-  ): Promise<ContractTransaction>;
-
-  /**
-   * Changes deposit fee handler contract address.Only callable by admin.
-   * @param newFeeHandler Address {_feeHandler} will be updated to.
-   */
-  "adminChangeFeeHandler(address)"(
-    newFeeHandler: string,
-    overrides?: TransactionOverrides
-  ): Promise<ContractTransaction>;
 
   adminChangeExpiry(
     expiry: BigNumberish,
@@ -1790,6 +2057,18 @@ export class Bridge extends Contract {
   "adminWithdrawETH(address,bytes)"(
     handlerAddress: string,
     data: Arrayish,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  transferFee(
+    addrs: string[],
+    amounts: BigNumberish[],
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  "transferFee(address[],uint256[])"(
+    addrs: string[],
+    amounts: BigNumberish[],
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
 
@@ -1914,7 +2193,7 @@ export class Bridge extends Contract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.
+   * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.Behaviour of this function is different for {GenericHandler} and other specific ERC handlers. In the case of ERC handler, when execution fails, the handler will terminate the function with revert. In the case of {GenericHandler}, when execution fails, the handler will emit a failure event and terminate the function normally.
    * @param data Data originally provided when deposit was made.
    * @param depositNonce ID of deposited generated by origin Bridge contract.
    * @param domainID ID of chain deposit originated from.
@@ -1931,7 +2210,7 @@ export class Bridge extends Contract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.
+   * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.Behaviour of this function is different for {GenericHandler} and other specific ERC handlers. In the case of ERC handler, when execution fails, the handler will terminate the function with revert. In the case of {GenericHandler}, when execution fails, the handler will emit a failure event and terminate the function normally.
    * @param data Data originally provided when deposit was made.
    * @param depositNonce ID of deposited generated by origin Bridge contract.
    * @param domainID ID of chain deposit originated from.
@@ -1947,28 +2226,6 @@ export class Bridge extends Contract {
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
 
-  /**
-   * Transfers eth in the contract to the specified addresses. The parameters addrs and amounts are mapped 1-1. This means that the address at index 0 for addrs will receive the amount (in WEI) from amounts at index 0.
-   * @param addrs Array of addresses to transfer {amounts} to.
-   * @param amounts Array of amonuts to transfer to {addrs}.
-   */
-  transferFunds(
-    addrs: string[],
-    amounts: BigNumberish[],
-    overrides?: TransactionOverrides
-  ): Promise<ContractTransaction>;
-
-  /**
-   * Transfers eth in the contract to the specified addresses. The parameters addrs and amounts are mapped 1-1. This means that the address at index 0 for addrs will receive the amount (in WEI) from amounts at index 0.
-   * @param addrs Array of addresses to transfer {amounts} to.
-   * @param amounts Array of amonuts to transfer to {addrs}.
-   */
-  "transferFunds(address[],uint256[])"(
-    addrs: string[],
-    amounts: BigNumberish[],
-    overrides?: TransactionOverrides
-  ): Promise<ContractTransaction>;
-
   filters: {
     Deposit(
       destinationDomainID: null,
@@ -1980,6 +2237,14 @@ export class Bridge extends Contract {
     ): EventFilter;
 
     FailedHandlerExecution(lowLevelData: null): EventFilter;
+
+    FeeChanged(newFee: null): EventFilter;
+
+    FeeDistributed(
+      tokenAddress: null,
+      recipient: null,
+      amount: null
+    ): EventFilter;
 
     FeeHandlerChanged(newFeeHandler: null): EventFilter;
 
@@ -2066,6 +2331,14 @@ export class Bridge extends Contract {
     _feeHandler(overrides?: TransactionOverrides): Promise<BigNumber>;
 
     "_feeHandler()"(overrides?: TransactionOverrides): Promise<BigNumber>;
+
+    _feeReserve(overrides?: TransactionOverrides): Promise<BigNumber>;
+
+    "_feeReserve()"(overrides?: TransactionOverrides): Promise<BigNumber>;
+
+    _fee_(overrides?: TransactionOverrides): Promise<BigNumber>;
+
+    "_fee_()"(overrides?: TransactionOverrides): Promise<BigNumber>;
 
     _relayerThreshold(overrides?: TransactionOverrides): Promise<BigNumber>;
 
@@ -2206,24 +2479,6 @@ export class Bridge extends Contract {
     "paused()"(overrides?: TransactionOverrides): Promise<BigNumber>;
 
     /**
-     * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
-     */
-    renounceRole(
-      role: Arrayish,
-      account: string,
-      overrides?: TransactionOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
-     */
-    "renounceRole(bytes32,address)"(
-      role: Arrayish,
-      account: string,
-      overrides?: TransactionOverrides
-    ): Promise<BigNumber>;
-
-    /**
      * Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role.
      */
     revokeRole(
@@ -2241,25 +2496,29 @@ export class Bridge extends Contract {
       overrides?: TransactionOverrides
     ): Promise<BigNumber>;
 
+    special(
+      arg0: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "special(uint8)"(
+      arg0: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    specialFee(
+      arg0: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "specialFee(uint8)"(
+      arg0: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
     _fee(overrides?: TransactionOverrides): Promise<BigNumber>;
 
     "_fee()"(overrides?: TransactionOverrides): Promise<BigNumber>;
-
-    calculateFee(
-      destinationDomainID: BigNumberish,
-      resourceID: Arrayish,
-      depositData: Arrayish,
-      feeData: Arrayish,
-      overrides?: TransactionOverrides
-    ): Promise<BigNumber>;
-
-    "calculateFee(uint8,bytes32,bytes,bytes)"(
-      destinationDomainID: BigNumberish,
-      resourceID: Arrayish,
-      depositData: Arrayish,
-      feeData: Arrayish,
-      overrides?: TransactionOverrides
-    ): Promise<BigNumber>;
 
     _chainId(overrides?: TransactionOverrides): Promise<BigNumber>;
 
@@ -2406,6 +2665,24 @@ export class Bridge extends Contract {
     ): Promise<BigNumber>;
 
     /**
+     * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
+     */
+    renounceRole(
+      role: Arrayish,
+      account: string,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.
+     */
+    "renounceRole(bytes32,address)"(
+      role: Arrayish,
+      account: string,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * Sets a new resource for handler contracts that use the IERCHandler interface, and maps the {handlerAddress} to {resourceID} in {_resourceIDToHandlerAddress}.Only callable by an address that currently has the admin role.
      * @param handlerAddress Address of handler resource will be set for.
      * @param resourceID ResourceID to be used when making deposits.
@@ -2431,9 +2708,22 @@ export class Bridge extends Contract {
       overrides?: TransactionOverrides
     ): Promise<BigNumber>;
 
+    adminSetNativeResource(
+      handlerAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "adminSetNativeResource(address)"(
+      handlerAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
     /**
      * Sets a new resource for handler contracts that use the IGenericHandler interface, and maps the {handlerAddress} to {resourceID} in {_resourceIDToHandlerAddress}.Only callable by an address that currently has the admin role.
      * @param contractAddress Address of contract to be called when a deposit is made and a deposited is executed.
+     * @param depositFunctionDepositorOffset Depositor address position offset in the metadata, in bytes.
+     * @param depositFunctionSig Function signature of method to be called in {contractAddress} when a deposit is made.
+     * @param executeFunctionSig Function signature of method to be called in {contractAddress} when a deposit is executed.
      * @param handlerAddress Address of handler resource will be set for.
      * @param resourceID ResourceID to be used when making deposits.
      */
@@ -2442,7 +2732,7 @@ export class Bridge extends Contract {
       resourceID: Arrayish,
       contractAddress: string,
       depositFunctionSig: Arrayish,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: Arrayish,
       overrides?: TransactionOverrides
     ): Promise<BigNumber>;
@@ -2450,6 +2740,9 @@ export class Bridge extends Contract {
     /**
      * Sets a new resource for handler contracts that use the IGenericHandler interface, and maps the {handlerAddress} to {resourceID} in {_resourceIDToHandlerAddress}.Only callable by an address that currently has the admin role.
      * @param contractAddress Address of contract to be called when a deposit is made and a deposited is executed.
+     * @param depositFunctionDepositorOffset Depositor address position offset in the metadata, in bytes.
+     * @param depositFunctionSig Function signature of method to be called in {contractAddress} when a deposit is made.
+     * @param executeFunctionSig Function signature of method to be called in {contractAddress} when a deposit is executed.
      * @param handlerAddress Address of handler resource will be set for.
      * @param resourceID ResourceID to be used when making deposits.
      */
@@ -2458,8 +2751,46 @@ export class Bridge extends Contract {
       resourceID: Arrayish,
       contractAddress: string,
       depositFunctionSig: Arrayish,
-      depositFunctionDepositerOffset: BigNumberish,
+      depositFunctionDepositorOffset: BigNumberish,
       executeFunctionSig: Arrayish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    adminRemoveResourceId(
+      handlerAddress: string,
+      resourceID: Arrayish,
+      tokenAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "adminRemoveResourceId(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: Arrayish,
+      tokenAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    adminRemoveNativeResourceId(
+      handlerAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "adminRemoveNativeResourceId(address)"(
+      handlerAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    adminRemoveGenericResource(
+      handlerAddress: string,
+      resourceID: Arrayish,
+      contractAddress: string,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "adminRemoveGenericResource(address,bytes32,address)"(
+      handlerAddress: string,
+      resourceID: Arrayish,
+      contractAddress: string,
       overrides?: TransactionOverrides
     ): Promise<BigNumber>;
 
@@ -2529,43 +2860,105 @@ export class Bridge extends Contract {
       overrides?: TransactionOverrides
     ): Promise<BigNumber>;
 
-    adminSetWtoken(
+    adminSetNative(
       resourceID: Arrayish,
-      wtokenAddress: string,
-      isWtoken: boolean,
+      nativeAddress: string,
+      isNative: boolean,
       overrides?: TransactionOverrides
     ): Promise<BigNumber>;
 
-    "adminSetWtoken(bytes32,address,bool)"(
+    "adminSetNative(bytes32,address,bool)"(
       resourceID: Arrayish,
-      wtokenAddress: string,
-      isWtoken: boolean,
+      nativeAddress: string,
+      isNative: boolean,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    adminSetDomainId(
+      domainID: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "adminSetDomainId(uint8)"(
+      domainID: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    adminSetSpecialFee(
+      destinationDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "adminSetSpecialFee(uint8,uint256)"(
+      destinationDomainID: BigNumberish,
+      _specialFee: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    adminRemoveSpecialFee(
+      destinationDomainID: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "adminRemoveSpecialFee(uint8)"(
+      destinationDomainID: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Sets new value of the fee.Only callable by admin.
+     * @param newFee Value {_fee} will be updated to.
+     */
+    adminSetFee(
+      newFee: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Sets new value of the fee.Only callable by admin.
+     * @param newFee Value {_fee} will be updated to.
+     */
+    "adminSetFee(uint256)"(
+      newFee: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    getFee(
+      destinationDomainID: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "getFee(uint8)"(
+      destinationDomainID: BigNumberish,
       overrides?: TransactionOverrides
     ): Promise<BigNumber>;
 
     /**
      * Returns a proposal.
-     * @param dataHash Hash of data to be provided when deposit proposal is executed.
      * @param depositNonce ID of proposal generated by proposal's origin Bridge contract.
      * @param originDomainID Chain ID deposit originated from.
+     * @param resourceID ResourceID used to find address of handler to be used for deposit.
      */
     getProposal(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: Arrayish,
+      resourceID: Arrayish,
+      data: Arrayish,
       overrides?: TransactionOverrides
     ): Promise<BigNumber>;
 
     /**
      * Returns a proposal.
-     * @param dataHash Hash of data to be provided when deposit proposal is executed.
      * @param depositNonce ID of proposal generated by proposal's origin Bridge contract.
      * @param originDomainID Chain ID deposit originated from.
+     * @param resourceID ResourceID used to find address of handler to be used for deposit.
      */
-    "getProposal(uint8,uint64,bytes32)"(
+    "getProposal(uint8,uint64,bytes32,bytes)"(
       originDomainID: BigNumberish,
       depositNonce: BigNumberish,
-      dataHash: Arrayish,
+      resourceID: Arrayish,
+      data: Arrayish,
       overrides?: TransactionOverrides
     ): Promise<BigNumber>;
 
@@ -2578,24 +2971,6 @@ export class Bridge extends Contract {
      * Returns total relayers number.Added for backwards compatibility.
      */
     "_totalRelayers()"(overrides?: TransactionOverrides): Promise<BigNumber>;
-
-    /**
-     * Changes deposit fee handler contract address.Only callable by admin.
-     * @param newFeeHandler Address {_feeHandler} will be updated to.
-     */
-    adminChangeFeeHandler(
-      newFeeHandler: string,
-      overrides?: TransactionOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Changes deposit fee handler contract address.Only callable by admin.
-     * @param newFeeHandler Address {_feeHandler} will be updated to.
-     */
-    "adminChangeFeeHandler(address)"(
-      newFeeHandler: string,
-      overrides?: TransactionOverrides
-    ): Promise<BigNumber>;
 
     adminChangeExpiry(
       expiry: BigNumberish,
@@ -2638,6 +3013,18 @@ export class Bridge extends Contract {
     "adminWithdrawETH(address,bytes)"(
       handlerAddress: string,
       data: Arrayish,
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    transferFee(
+      addrs: string[],
+      amounts: BigNumberish[],
+      overrides?: TransactionOverrides
+    ): Promise<BigNumber>;
+
+    "transferFee(address[],uint256[])"(
+      addrs: string[],
+      amounts: BigNumberish[],
       overrides?: TransactionOverrides
     ): Promise<BigNumber>;
 
@@ -2762,7 +3149,7 @@ export class Bridge extends Contract {
     ): Promise<BigNumber>;
 
     /**
-     * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.
+     * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.Behaviour of this function is different for {GenericHandler} and other specific ERC handlers. In the case of ERC handler, when execution fails, the handler will terminate the function with revert. In the case of {GenericHandler}, when execution fails, the handler will emit a failure event and terminate the function normally.
      * @param data Data originally provided when deposit was made.
      * @param depositNonce ID of deposited generated by origin Bridge contract.
      * @param domainID ID of chain deposit originated from.
@@ -2779,7 +3166,7 @@ export class Bridge extends Contract {
     ): Promise<BigNumber>;
 
     /**
-     * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.
+     * Executes a deposit proposal that is considered passed using a specified handler contract.Only callable by relayers when Bridge is not paused.Proposal must have Passed status.Hash of {data} must equal proposal's {dataHash}.Emits {ProposalEvent} event with status {Executed}.Emits {FailedExecution} event with the failed reason.Behaviour of this function is different for {GenericHandler} and other specific ERC handlers. In the case of ERC handler, when execution fails, the handler will terminate the function with revert. In the case of {GenericHandler}, when execution fails, the handler will emit a failure event and terminate the function normally.
      * @param data Data originally provided when deposit was made.
      * @param depositNonce ID of deposited generated by origin Bridge contract.
      * @param domainID ID of chain deposit originated from.
@@ -2792,28 +3179,6 @@ export class Bridge extends Contract {
       data: Arrayish,
       resourceID: Arrayish,
       revertOnFail: boolean,
-      overrides?: TransactionOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Transfers eth in the contract to the specified addresses. The parameters addrs and amounts are mapped 1-1. This means that the address at index 0 for addrs will receive the amount (in WEI) from amounts at index 0.
-     * @param addrs Array of addresses to transfer {amounts} to.
-     * @param amounts Array of amonuts to transfer to {addrs}.
-     */
-    transferFunds(
-      addrs: string[],
-      amounts: BigNumberish[],
-      overrides?: TransactionOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Transfers eth in the contract to the specified addresses. The parameters addrs and amounts are mapped 1-1. This means that the address at index 0 for addrs will receive the amount (in WEI) from amounts at index 0.
-     * @param addrs Array of addresses to transfer {amounts} to.
-     * @param amounts Array of amonuts to transfer to {addrs}.
-     */
-    "transferFunds(address[],uint256[])"(
-      addrs: string[],
-      amounts: BigNumberish[],
       overrides?: TransactionOverrides
     ): Promise<BigNumber>;
   };

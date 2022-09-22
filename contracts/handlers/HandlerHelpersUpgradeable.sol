@@ -2,14 +2,15 @@
 pragma solidity 0.8.11;
 
 import "../interfaces/IERCHandler.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /**
     @title Function used across handler contracts.
     @author ChainSafe Systems.
     @notice This contract is intended to be used with the Bridge contract.
  */
-contract HandlerHelpers is IERCHandler {
-    address public immutable _bridgeAddress;
+contract HandlerHelpersUpgradeable is IERCHandler, Initializable {
+    address public _bridgeAddress;
 
     // resourceID => token contract address
     mapping(bytes32 => address) public _resourceIDToTokenContractAddress;
@@ -33,7 +34,7 @@ contract HandlerHelpers is IERCHandler {
     /**
         @param bridgeAddress Contract address of previously deployed Bridge.
      */
-    constructor(address bridgeAddress) {
+    function __HandlerHelpers_init(address bridgeAddress) internal initializer {
         _bridgeAddress = bridgeAddress;
     }
 

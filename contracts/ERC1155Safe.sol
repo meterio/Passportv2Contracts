@@ -14,7 +14,7 @@ contract ERC1155Safe {
     using SafeMath for uint256;
 
     /**
-        @notice Used to gain custoday of deposited token with batching.
+        @notice Used to gain custody of deposited token with batching.
         @param tokenAddress Address of ERC1155 to transfer.
         @param owner Address of current token owner.
         @param recipient Address to transfer token to.
@@ -89,6 +89,7 @@ contract ERC1155Safe {
     /**
         @notice Used to burn ERC1155s with batching.
         @param tokenAddress Address of ERC1155 to burn.
+        @param owner owner of token.
         @param tokenIDs IDs of tokens to burn.
         @param amounts Amounts of tokens to burn.
      */

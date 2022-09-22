@@ -525,6 +525,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "FeeChanged(uint256)": EventFragment;
     "FeeDistributed(address,address,uint256)": EventFragment;
     "FeeHandlerChanged(address)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "Paused(address)": EventFragment;
     "ProposalEvent(uint8,uint64,uint8,bytes32)": EventFragment;
     "ProposalVote(uint8,uint64,uint8,bytes32)": EventFragment;
@@ -541,6 +542,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "FeeChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "FeeDistributed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "FeeHandlerChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalEvent"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalVote"): EventFragment;
@@ -2635,6 +2637,8 @@ export class BridgeUpgradeable extends Contract {
     ): EventFilter;
 
     FeeHandlerChanged(newFeeHandler: null): EventFilter;
+
+    Initialized(version: null): EventFilter;
 
     Paused(account: null): EventFilter;
 

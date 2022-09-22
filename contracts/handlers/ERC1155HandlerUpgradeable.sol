@@ -7,7 +7,6 @@ import {HandlerHelpersUpgradeable as HandlerHelpers} from "./HandlerHelpersUpgra
 import "../ERC1155Safe.sol";
 import {ERC165CheckerUpgradeable as ERC165Checker} from "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165CheckerUpgradeable.sol";
 import {ERC1155HolderUpgradeable as ERC1155Holder} from "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
-import {IERC1155MetadataURIUpgradeable as IERC1155MetadataURI} from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/IERC1155MetadataURIUpgradeable.sol";
 
 contract ERC1155HandlerUpgradeable is
     IDepositExecute,

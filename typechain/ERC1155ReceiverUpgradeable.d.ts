@@ -53,7 +53,11 @@ interface ERC1155ReceiverUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "Initialized(uint8)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
 }
 
 export class ERC1155ReceiverUpgradeable extends Contract {
@@ -215,7 +219,9 @@ export class ERC1155ReceiverUpgradeable extends Contract {
     ): Promise<boolean>;
   };
 
-  filters: {};
+  filters: {
+    Initialized(version: null): EventFilter;
+  };
 
   estimateGas: {
     onERC1155BatchReceived(

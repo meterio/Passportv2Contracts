@@ -22,6 +22,19 @@ export class ERC1155ReceiverUpgradeable__factory {
 
 const _abi = [
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "version",
+        type: "uint8",
+      },
+    ],
+    name: "Initialized",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "address",

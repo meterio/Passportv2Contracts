@@ -129,7 +129,11 @@ interface ERC721HandlerUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "Initialized(uint8)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
 }
 
 export class ERC721HandlerUpgradeable extends Contract {
@@ -617,7 +621,9 @@ export class ERC721HandlerUpgradeable extends Contract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    Initialized(version: null): EventFilter;
+  };
 
   estimateGas: {
     _bridgeAddress(overrides?: CallOverrides): Promise<BigNumber>;

@@ -97,12 +97,14 @@ interface ERC20PausableUpgradeableInterface extends ethers.utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "Paused(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
@@ -465,6 +467,8 @@ export class ERC20PausableUpgradeable extends Contract {
       spender: string | null,
       value: null
     ): EventFilter;
+
+    Initialized(version: null): EventFilter;
 
     Paused(account: null): EventFilter;
 

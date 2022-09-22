@@ -125,7 +125,11 @@ interface GenericHandlerUpgradeableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "Initialized(uint8)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
 }
 
 export class GenericHandlerUpgradeable extends Contract {
@@ -557,7 +561,9 @@ export class GenericHandlerUpgradeable extends Contract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    Initialized(version: null): EventFilter;
+  };
 
   estimateGas: {
     _bridgeAddress(overrides?: CallOverrides): Promise<BigNumber>;

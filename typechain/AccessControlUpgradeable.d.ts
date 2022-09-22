@@ -99,10 +99,12 @@ interface AccessControlUpgradeableInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
 
   events: {
+    "Initialized(uint8)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
 }
@@ -431,6 +433,8 @@ export class AccessControlUpgradeable extends Contract {
   };
 
   filters: {
+    Initialized(version: null): EventFilter;
+
     RoleGranted(
       role: BytesLike | null,
       account: string | null,

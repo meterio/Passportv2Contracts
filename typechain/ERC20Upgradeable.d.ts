@@ -94,10 +94,12 @@ interface ERC20UpgradeableInterface extends ethers.utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -442,6 +444,8 @@ export class ERC20Upgradeable extends Contract {
       spender: string | null,
       value: null
     ): EventFilter;
+
+    Initialized(version: null): EventFilter;
 
     Transfer(from: string | null, to: string | null, value: null): EventFilter;
   };

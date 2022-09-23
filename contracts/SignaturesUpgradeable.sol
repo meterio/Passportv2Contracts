@@ -206,10 +206,6 @@ contract SignaturesUpgradeable is PausableUpgradeable, AccessControl {
                 _relayerThreshold[destinationDomainID],
             "Signture aleardy pass"
         );
-        require(
-            destinationBridgeAddress[destinationDomainID] == destinationBridge,
-            "invalid destinationBridge"
-        );
         if (signatures[depositHash].length == 0) {
             proposalIndex++;
             proposals[depositHash] = Proposal({

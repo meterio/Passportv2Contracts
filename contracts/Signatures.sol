@@ -79,7 +79,6 @@ contract Signatures is Pausable, AccessControl {
     function checkSignature(
         uint8 domainID,
         uint8 destinationDomainID,
-        address destinationBridge,
         uint64 depositNonce,
         bytes32 resourceID,
         bytes calldata data,
@@ -94,6 +93,9 @@ contract Signatures is Pausable, AccessControl {
                 keccak256(data)
             )
         );
+        address destinationBridge = destinationBridgeAddress[
+            destinationDomainID
+        ];
         bytes32 hash = _hashTypedDataV4(
             structHash,
             destChainId[destinationDomainID] == 0
@@ -171,16 +173,17 @@ contract Signatures is Pausable, AccessControl {
     function submitSignature(
         uint8 originDomainID,
         uint8 destinationDomainID,
-        address destinationBridge,
         uint64 depositNonce,
         bytes32 resourceID,
         bytes calldata data,
         bytes calldata signature
     ) external whenNotPaused {
+        address destinationBridge = destinationBridgeAddress[
+            destinationDomainID
+        ];
         address relayer = checkSignature(
             originDomainID,
             destinationDomainID,
-            destinationBridge,
             depositNonce,
             resourceID,
             data,
@@ -203,10 +206,6 @@ contract Signatures is Pausable, AccessControl {
                 _relayerThreshold[destinationDomainID],
             "Signture aleardy pass"
         );
-        require(
-            destinationBridgeAddress[destinationDomainID] == destinationBridge,
-            "invalid destinationBridge"
-        );
         if (signatures[depositHash].length == 0) {
             proposalIndex++;
             proposals[depositHash] = Proposal({
@@ -221,7 +220,7 @@ contract Signatures is Pausable, AccessControl {
             indexToProposal[proposalIndex] = depositHash;
         }
         signatures[depositHash].push(signature);
-        
+
         emit SubmitSignature(
             originDomainID,
             destinationDomainID,

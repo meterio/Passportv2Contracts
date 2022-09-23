@@ -348,11 +348,11 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         );
     }
 
-    function adminRemoveResourceId(
-        address handlerAddress,
-        bytes32 resourceID,
-        address tokenAddress
-    ) external onlyAdmin {
+    function adminRemoveResourceId(bytes32 resourceID, address tokenAddress)
+        external
+        onlyAdmin
+    {
+        address handlerAddress = _resourceIDToHandlerAddress[resourceID];
         delete _resourceIDToHandlerAddress[resourceID];
         IERCHandler handler = IERCHandler(handlerAddress);
         handler.removeResource(resourceID, tokenAddress);
@@ -373,10 +373,10 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
     }
 
     function adminRemoveGenericResource(
-        address handlerAddress,
         bytes32 resourceID,
         address contractAddress
     ) external onlyAdmin {
+        address handlerAddress = _resourceIDToHandlerAddress[resourceID];
         delete _resourceIDToHandlerAddress[resourceID];
         IGenericHandler handler = IGenericHandler(handlerAddress);
         handler.removeResource(resourceID, contractAddress);

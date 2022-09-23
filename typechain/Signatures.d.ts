@@ -31,7 +31,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
     "adminPause()": FunctionFragment;
     "adminSetDestChainId(uint8,uint256,address)": FunctionFragment;
     "adminUnpause()": FunctionFragment;
-    "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)": FunctionFragment;
+    "checkSignature(uint8,uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
     "destChainId(uint8)": FunctionFragment;
     "destinationBridgeAddress(uint8)": FunctionFragment;
     "getProposal(uint256)": FunctionFragment;
@@ -51,7 +51,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "signatures(bytes32,uint256)": FunctionFragment;
-    "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)": FunctionFragment;
+    "submitSignature(uint8,uint8,uint64,bytes32,bytes,bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -95,7 +95,6 @@ interface SignaturesInterface extends ethers.utils.Interface {
     values: [
       BigNumberish,
       BigNumberish,
-      string,
       BigNumberish,
       BytesLike,
       BytesLike,
@@ -177,7 +176,6 @@ interface SignaturesInterface extends ethers.utils.Interface {
     values: [
       BigNumberish,
       BigNumberish,
-      string,
       BigNumberish,
       BytesLike,
       BytesLike,
@@ -393,7 +391,6 @@ export class Signatures extends Contract {
     checkSignature(
       domainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -403,10 +400,9 @@ export class Signatures extends Contract {
       0: string;
     }>;
 
-    "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+    "checkSignature(uint8,uint8,uint64,bytes32,bytes,bytes)"(
       domainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -736,7 +732,6 @@ export class Signatures extends Contract {
     submitSignature(
       originDomainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -744,10 +739,9 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+    "submitSignature(uint8,uint8,uint64,bytes32,bytes,bytes)"(
       originDomainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -819,7 +813,6 @@ export class Signatures extends Contract {
   checkSignature(
     domainID: BigNumberish,
     destinationDomainID: BigNumberish,
-    destinationBridge: string,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
     data: BytesLike,
@@ -827,10 +820,9 @@ export class Signatures extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+  "checkSignature(uint8,uint8,uint64,bytes32,bytes,bytes)"(
     domainID: BigNumberish,
     destinationDomainID: BigNumberish,
-    destinationBridge: string,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
     data: BytesLike,
@@ -1092,7 +1084,6 @@ export class Signatures extends Contract {
   submitSignature(
     originDomainID: BigNumberish,
     destinationDomainID: BigNumberish,
-    destinationBridge: string,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
     data: BytesLike,
@@ -1100,10 +1091,9 @@ export class Signatures extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+  "submitSignature(uint8,uint8,uint64,bytes32,bytes,bytes)"(
     originDomainID: BigNumberish,
     destinationDomainID: BigNumberish,
-    destinationBridge: string,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
     data: BytesLike,
@@ -1175,7 +1165,6 @@ export class Signatures extends Contract {
     checkSignature(
       domainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -1183,10 +1172,9 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+    "checkSignature(uint8,uint8,uint64,bytes32,bytes,bytes)"(
       domainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -1448,7 +1436,6 @@ export class Signatures extends Contract {
     submitSignature(
       originDomainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -1456,10 +1443,9 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+    "submitSignature(uint8,uint8,uint64,bytes32,bytes,bytes)"(
       originDomainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -1568,7 +1554,6 @@ export class Signatures extends Contract {
     checkSignature(
       domainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -1576,10 +1561,9 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+    "checkSignature(uint8,uint8,uint64,bytes32,bytes,bytes)"(
       domainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -1781,7 +1765,6 @@ export class Signatures extends Contract {
     submitSignature(
       originDomainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -1789,10 +1772,9 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+    "submitSignature(uint8,uint8,uint64,bytes32,bytes,bytes)"(
       originDomainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -1871,7 +1853,6 @@ export class Signatures extends Contract {
     checkSignature(
       domainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -1879,10 +1860,9 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "checkSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+    "checkSignature(uint8,uint8,uint64,bytes32,bytes,bytes)"(
       domainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -2090,7 +2070,6 @@ export class Signatures extends Contract {
     submitSignature(
       originDomainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -2098,10 +2077,9 @@ export class Signatures extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "submitSignature(uint8,uint8,address,uint64,bytes32,bytes,bytes)"(
+    "submitSignature(uint8,uint8,uint64,bytes32,bytes,bytes)"(
       originDomainID: BigNumberish,
       destinationDomainID: BigNumberish,
-      destinationBridge: string,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,

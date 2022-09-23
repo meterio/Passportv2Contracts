@@ -43,10 +43,10 @@ interface BridgeInterface extends ethers.utils.Interface {
     "adminChangeExpiry(uint256)": FunctionFragment;
     "adminChangeRelayerThreshold(uint256)": FunctionFragment;
     "adminPauseTransfers()": FunctionFragment;
-    "adminRemoveGenericResource(address,bytes32,address)": FunctionFragment;
+    "adminRemoveGenericResource(bytes32,address)": FunctionFragment;
     "adminRemoveNativeResourceId(address)": FunctionFragment;
     "adminRemoveRelayer(address)": FunctionFragment;
-    "adminRemoveResourceId(address,bytes32,address)": FunctionFragment;
+    "adminRemoveResourceId(bytes32,address)": FunctionFragment;
     "adminRemoveSpecialFee(uint8)": FunctionFragment;
     "adminSetBurnable(address,address)": FunctionFragment;
     "adminSetDepositNonce(uint8,uint64)": FunctionFragment;
@@ -153,7 +153,7 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "adminRemoveGenericResource",
-    values: [string, BytesLike, string]
+    values: [BytesLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "adminRemoveNativeResourceId",
@@ -165,7 +165,7 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "adminRemoveResourceId",
-    values: [string, BytesLike, string]
+    values: [BytesLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "adminRemoveSpecialFee",
@@ -747,14 +747,12 @@ export class Bridge extends Contract {
     ): Promise<ContractTransaction>;
 
     adminRemoveGenericResource(
-      handlerAddress: string,
       resourceID: BytesLike,
       contractAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "adminRemoveGenericResource(address,bytes32,address)"(
-      handlerAddress: string,
+    "adminRemoveGenericResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
       overrides?: Overrides
@@ -781,14 +779,12 @@ export class Bridge extends Contract {
     ): Promise<ContractTransaction>;
 
     adminRemoveResourceId(
-      handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "adminRemoveResourceId(address,bytes32,address)"(
-      handlerAddress: string,
+    "adminRemoveResourceId(bytes32,address)"(
       resourceID: BytesLike,
       tokenAddress: string,
       overrides?: Overrides
@@ -1436,14 +1432,12 @@ export class Bridge extends Contract {
   "adminPauseTransfers()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   adminRemoveGenericResource(
-    handlerAddress: string,
     resourceID: BytesLike,
     contractAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "adminRemoveGenericResource(address,bytes32,address)"(
-    handlerAddress: string,
+  "adminRemoveGenericResource(bytes32,address)"(
     resourceID: BytesLike,
     contractAddress: string,
     overrides?: Overrides
@@ -1470,14 +1464,12 @@ export class Bridge extends Contract {
   ): Promise<ContractTransaction>;
 
   adminRemoveResourceId(
-    handlerAddress: string,
     resourceID: BytesLike,
     tokenAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "adminRemoveResourceId(address,bytes32,address)"(
-    handlerAddress: string,
+  "adminRemoveResourceId(bytes32,address)"(
     resourceID: BytesLike,
     tokenAddress: string,
     overrides?: Overrides
@@ -2058,14 +2050,12 @@ export class Bridge extends Contract {
     "adminPauseTransfers()"(overrides?: CallOverrides): Promise<void>;
 
     adminRemoveGenericResource(
-      handlerAddress: string,
       resourceID: BytesLike,
       contractAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "adminRemoveGenericResource(address,bytes32,address)"(
-      handlerAddress: string,
+    "adminRemoveGenericResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
       overrides?: CallOverrides
@@ -2092,14 +2082,12 @@ export class Bridge extends Contract {
     ): Promise<void>;
 
     adminRemoveResourceId(
-      handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "adminRemoveResourceId(address,bytes32,address)"(
-      handlerAddress: string,
+    "adminRemoveResourceId(bytes32,address)"(
       resourceID: BytesLike,
       tokenAddress: string,
       overrides?: CallOverrides
@@ -2735,14 +2723,12 @@ export class Bridge extends Contract {
     "adminPauseTransfers()"(overrides?: Overrides): Promise<BigNumber>;
 
     adminRemoveGenericResource(
-      handlerAddress: string,
       resourceID: BytesLike,
       contractAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "adminRemoveGenericResource(address,bytes32,address)"(
-      handlerAddress: string,
+    "adminRemoveGenericResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
       overrides?: Overrides
@@ -2769,14 +2755,12 @@ export class Bridge extends Contract {
     ): Promise<BigNumber>;
 
     adminRemoveResourceId(
-      handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "adminRemoveResourceId(address,bytes32,address)"(
-      handlerAddress: string,
+    "adminRemoveResourceId(bytes32,address)"(
       resourceID: BytesLike,
       tokenAddress: string,
       overrides?: Overrides
@@ -3356,14 +3340,12 @@ export class Bridge extends Contract {
     ): Promise<PopulatedTransaction>;
 
     adminRemoveGenericResource(
-      handlerAddress: string,
       resourceID: BytesLike,
       contractAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "adminRemoveGenericResource(address,bytes32,address)"(
-      handlerAddress: string,
+    "adminRemoveGenericResource(bytes32,address)"(
       resourceID: BytesLike,
       contractAddress: string,
       overrides?: Overrides
@@ -3390,14 +3372,12 @@ export class Bridge extends Contract {
     ): Promise<PopulatedTransaction>;
 
     adminRemoveResourceId(
-      handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "adminRemoveResourceId(address,bytes32,address)"(
-      handlerAddress: string,
+    "adminRemoveResourceId(bytes32,address)"(
       resourceID: BytesLike,
       tokenAddress: string,
       overrides?: Overrides

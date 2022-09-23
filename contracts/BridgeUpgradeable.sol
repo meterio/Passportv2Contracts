@@ -476,7 +476,11 @@ contract BridgeUpgradeable is
         emit FeeChanged(newFee);
     }
 
-    function _getFee(uint8 destinationDomainID) internal view returns (uint256) {
+    function _getFee(uint8 destinationDomainID)
+        internal
+        view
+        returns (uint256)
+    {
         if (special[destinationDomainID]) {
             return specialFee[destinationDomainID];
         } else {
@@ -743,7 +747,7 @@ contract BridgeUpgradeable is
         );
 
         if (proposal._status == ProposalStatus.Passed) {
-            executeProposal(domainID, depositNonce, data, resourceID, true);
+            _executeProposal(domainID, depositNonce, data, resourceID, true);
             return;
         }
 
@@ -810,7 +814,7 @@ contract BridgeUpgradeable is
         _proposals[nonceAndID][dataHash] = proposal;
 
         if (proposal._status == ProposalStatus.Passed) {
-            executeProposal(domainID, depositNonce, data, resourceID, false);
+            _executeProposal(domainID, depositNonce, data, resourceID, false);
         }
     }
 
@@ -876,6 +880,22 @@ contract BridgeUpgradeable is
         bytes32 resourceID,
         bool revertOnFail
     ) public onlyRelayers whenNotPaused nonReentrant {
+        _executeProposal(
+            domainID,
+            depositNonce,
+            data,
+            resourceID,
+            revertOnFail
+        );
+    }
+
+    function _executeProposal(
+        uint8 domainID,
+        uint64 depositNonce,
+        bytes calldata data,
+        bytes32 resourceID,
+        bool revertOnFail
+    ) private {
         address handler = _resourceIDToHandlerAddress[resourceID];
         uint72 nonceAndID = (uint72(depositNonce) << 8) | uint72(domainID);
         bytes32 dataHash = keccak256(

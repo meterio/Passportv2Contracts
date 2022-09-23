@@ -13,7 +13,7 @@ contract ERC20MintablePauseableUpgradeable is
     AccessControlEnumerableUpgradeable
 {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    mapping(address => bool) private blackList;
+    mapping(address => bool) public blackList;
     // keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
     bytes32 public constant PERMIT_TYPEHASH =
         0x6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c9;
@@ -53,15 +53,6 @@ contract ERC20MintablePauseableUpgradeable is
 
     function setBlackList(address account) public onlyAdmin {
         blackList[account] = !blackList[account];
-    }
-
-    function getBlackList(address account)
-        public
-        view
-        onlyAdmin
-        returns (bool)
-    {
-        return blackList[account];
     }
 
     function mint(address to, uint256 amount) public virtual {

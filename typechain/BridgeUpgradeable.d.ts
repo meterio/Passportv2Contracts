@@ -44,7 +44,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
     "adminChangeRelayerThreshold(uint256)": FunctionFragment;
     "adminPauseTransfers()": FunctionFragment;
     "adminRemoveGenericResource(bytes32,address)": FunctionFragment;
-    "adminRemoveNativeResourceId(address)": FunctionFragment;
+    "adminRemoveNativeResourceId()": FunctionFragment;
     "adminRemoveRelayer(address)": FunctionFragment;
     "adminRemoveResourceId(bytes32,address)": FunctionFragment;
     "adminRemoveSpecialFee(uint8)": FunctionFragment;
@@ -158,7 +158,7 @@ interface BridgeUpgradeableInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "adminRemoveNativeResourceId",
-    values: [string]
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "adminRemoveRelayer",
@@ -767,12 +767,10 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<ContractTransaction>;
 
     adminRemoveNativeResourceId(
-      handlerAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "adminRemoveNativeResourceId(address)"(
-      handlerAddress: string,
+    "adminRemoveNativeResourceId()"(
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1470,12 +1468,10 @@ export class BridgeUpgradeable extends Contract {
   ): Promise<ContractTransaction>;
 
   adminRemoveNativeResourceId(
-    handlerAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "adminRemoveNativeResourceId(address)"(
-    handlerAddress: string,
+  "adminRemoveNativeResourceId()"(
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2105,15 +2101,9 @@ export class BridgeUpgradeable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    adminRemoveNativeResourceId(
-      handlerAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    adminRemoveNativeResourceId(overrides?: CallOverrides): Promise<void>;
 
-    "adminRemoveNativeResourceId(address)"(
-      handlerAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    "adminRemoveNativeResourceId()"(overrides?: CallOverrides): Promise<void>;
 
     adminRemoveRelayer(
       relayerAddress: string,
@@ -2798,15 +2788,9 @@ export class BridgeUpgradeable extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    adminRemoveNativeResourceId(
-      handlerAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    adminRemoveNativeResourceId(overrides?: Overrides): Promise<BigNumber>;
 
-    "adminRemoveNativeResourceId(address)"(
-      handlerAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    "adminRemoveNativeResourceId()"(overrides?: Overrides): Promise<BigNumber>;
 
     adminRemoveRelayer(
       relayerAddress: string,
@@ -3434,12 +3418,10 @@ export class BridgeUpgradeable extends Contract {
     ): Promise<PopulatedTransaction>;
 
     adminRemoveNativeResourceId(
-      handlerAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "adminRemoveNativeResourceId(address)"(
-      handlerAddress: string,
+    "adminRemoveNativeResourceId()"(
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

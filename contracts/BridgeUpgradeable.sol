@@ -367,17 +367,16 @@ contract BridgeUpgradeable is
         handler.removeResource(resourceID, tokenAddress);
     }
 
-    function adminRemoveNativeResourceId(address handlerAddress)
-        external
-        onlyAdmin
-    {
+    function adminRemoveNativeResourceId() external onlyAdmin {
         address tokenAddress = address(uint160(_domainID));
         bytes32 resourceID = bytes32(
             uint256(uint160(tokenAddress)) * 256 + _domainID
         );
+        address handlerAddress = _resourceIDToHandlerAddress[resourceID];
         delete _resourceIDToHandlerAddress[resourceID];
 
         IERCHandler handler = IERCHandler(handlerAddress);
+        handler.setNative(tokenAddress, false);
         handler.removeResource(resourceID, tokenAddress);
     }
 

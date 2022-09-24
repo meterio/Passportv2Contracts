@@ -657,7 +657,7 @@ contract BridgeUpgradeable is
         bytes32 resourceID,
         bytes calldata data,
         bytes[] memory signatures
-    ) external whenNotPaused {
+    ) external whenNotPaused nonReentrant{
         address handler = _resourceIDToHandlerAddress[resourceID];
         require(handler != address(0), "no handler for resourceID");
         bytes32 dataHash = keccak256(

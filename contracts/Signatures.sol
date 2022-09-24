@@ -246,6 +246,7 @@ contract Signatures is Pausable, AccessControl {
 
     function getSignatures(
         uint8 domainID,
+        uint8 destinationDomainID,
         uint64 depositNonce,
         bytes32 resourceID,
         bytes calldata data
@@ -255,6 +256,7 @@ contract Signatures is Pausable, AccessControl {
                 keccak256(
                     abi.encode(
                         domainID,
+                        destinationDomainID,
                         depositNonce,
                         resourceID,
                         keccak256(data)

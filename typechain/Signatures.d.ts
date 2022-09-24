@@ -39,7 +39,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
     "getRoleMember(bytes32,uint256)": FunctionFragment;
     "getRoleMemberCount(bytes32)": FunctionFragment;
     "getRoleMemberIndex(bytes32,address)": FunctionFragment;
-    "getSignatures(uint8,uint64,bytes32,bytes)": FunctionFragment;
+    "getSignatures(uint8,uint8,uint64,bytes32,bytes)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "hasVote(bytes)": FunctionFragment;
@@ -131,7 +131,7 @@ interface SignaturesInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getSignatures",
-    values: [BigNumberish, BigNumberish, BytesLike, BytesLike]
+    values: [BigNumberish, BigNumberish, BigNumberish, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "grantRole",
@@ -544,8 +544,9 @@ export class Signatures extends Contract {
       0: BigNumber;
     }>;
 
-    "getSignatures(uint8,uint64,bytes32,bytes)"(
+    "getSignatures(uint8,uint8,uint64,bytes32,bytes)"(
       domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -931,8 +932,9 @@ export class Signatures extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  "getSignatures(uint8,uint64,bytes32,bytes)"(
+  "getSignatures(uint8,uint8,uint64,bytes32,bytes)"(
     domainID: BigNumberish,
+    destinationDomainID: BigNumberish,
     depositNonce: BigNumberish,
     resourceID: BytesLike,
     data: BytesLike,
@@ -1283,8 +1285,9 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getSignatures(uint8,uint64,bytes32,bytes)"(
+    "getSignatures(uint8,uint8,uint64,bytes32,bytes)"(
       domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -1645,8 +1648,9 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getSignatures(uint8,uint64,bytes32,bytes)"(
+    "getSignatures(uint8,uint8,uint64,bytes32,bytes)"(
       domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,
@@ -1944,8 +1948,9 @@ export class Signatures extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getSignatures(uint8,uint64,bytes32,bytes)"(
+    "getSignatures(uint8,uint8,uint64,bytes32,bytes)"(
       domainID: BigNumberish,
+      destinationDomainID: BigNumberish,
       depositNonce: BigNumberish,
       resourceID: BytesLike,
       data: BytesLike,

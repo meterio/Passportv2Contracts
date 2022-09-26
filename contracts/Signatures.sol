@@ -106,7 +106,7 @@ contract Signatures is Pausable, AccessControl {
         return ECDSA.recover(hash, signature);
     }
 
-    /// @notice depositHash = keccak256(abi.encode(originDomainID,depositNonce,resourceID,keccak256(data)));
+    /// @notice depositHash = keccak256(abi.encode(originDomainID,destinationDomainID,depositNonce,resourceID,keccak256(data)));
     /// @notice depositHash => signature[]
     mapping(bytes32 => bytes[]) public signatures;
     /// @notice signature => bool

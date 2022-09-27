@@ -250,11 +250,12 @@ npx hardhat deploy-proxy-all \
  */
 task("deploy-proxy-all", "deploy all contract with proxy")
   .addParam("domain", "domain id", "0")
+  .addParam("expiry", "expiry")
   .addParam("rpc", "rpc connect")
   .addParam("proxyadmin", "proxy admin private key")
   .addParam("bridgeadmin", "bridge admin private key")
   .setAction(
-    async ({ domain, rpc, proxyadmin, bridgeadmin }, { ethers, run }) => {
+    async ({ domain, expiry, rpc, proxyadmin, bridgeadmin }, { ethers, run }) => {
       await run("compile");
       let provider = new ethers.providers.JsonRpcProvider(rpc);
       const proxyWallet = new ethers.Wallet(proxyadmin, provider);
@@ -273,7 +274,7 @@ task("deploy-proxy-all", "deploy all contract with proxy")
         await proxy_factory.deploy(
           bridgeImpl.address,
           proxyWallet.address,
-          bridgeImpl.interface.encodeFunctionData("initialize", [domain, [], 1, 999999, adminWallet.address])
+          bridgeImpl.interface.encodeFunctionData("initialize", [domain, [], 1, expiry, adminWallet.address])
         )
       ).deployed();
       console.log("bridge Proxy:", bridgeProxy.address);
@@ -1373,3 +1374,4 @@ export default {
     timeout: 200000,
   },
 };
+

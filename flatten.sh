@@ -11,4 +11,3 @@ npx hardhat flatten contracts/handlers/ERC1155Handler.sol > ./flattened/ERC1155H
 npx hardhat flatten contracts/handlers/ERC1155HandlerUpgradeable.sol > ./flattened/ERC1155HandlerUpgradeable.sol
 npx hardhat flatten contracts/handlers/GenericHandler.sol > ./flattened/GenericHandler.sol
 npx hardhat flatten contracts/handlers/GenericHandlerUpgradeable.sol > ./flattened/GenericHandlerUpgradeable.sol
-npx hardhat flatten contracts/handlers/fee/BasicFeeHandler.sol > ./flattened/BasicFeeHandler.sol

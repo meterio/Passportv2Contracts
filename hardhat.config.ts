@@ -1293,6 +1293,7 @@ task("datahash", "get datahash")
 
     }
   );
+
 task("encode", "get datahash")
   .addParam("amount", "deposit amount")
   .addParam("recipient", "recipient address")
@@ -1364,6 +1365,26 @@ task("sign-test", "get sign")
 
       const verify = utils.verifyTypedData(domain, types, values, signature);
       console.log("verify", verify);
+    }
+  );
+
+task("proposals", "get proposals from signature")
+  .addParam("address", "signature contract address")
+  .addParam("origin", "origin chain DomainID")
+  .addParam("dest", "destination chaib DomainID")
+  .addParam("nonce", "deposit Nonce")
+  .addParam("resid", "resourceID")
+  .addParam("data", "deposit data")
+  .setAction(
+    async ({ address, origin, dest, nonce, resid, data }, { ethers, run, network }) => {
+      const [signer] = await ethers.getSigners();
+      const contract = await ethers.getContractAt("Signatures", address, signer) as Signatures;
+      const dataHash = utils.solidityKeccak256(['bytes'], [data]);
+      const depositHash = utils.solidityKeccak256(
+        ['uint8', 'uint8', 'uint64', 'bytes32', 'bytes32'],
+        [origin, dest, nonce, resid, dataHash]
+      );
+      console.log(await contract.proposals(depositHash));
     }
   );
 export default {

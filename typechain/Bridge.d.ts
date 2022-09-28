@@ -44,9 +44,8 @@ interface BridgeInterface extends ethers.utils.Interface {
     "adminChangeRelayerThreshold(uint256)": FunctionFragment;
     "adminPauseTransfers()": FunctionFragment;
     "adminRemoveGenericResource(bytes32,address)": FunctionFragment;
-    "adminRemoveNativeResourceId()": FunctionFragment;
     "adminRemoveRelayer(address)": FunctionFragment;
-    "adminRemoveResourceId(bytes32,address)": FunctionFragment;
+    "adminRemoveResourceId(bytes32,address,bool)": FunctionFragment;
     "adminRemoveSpecialFee(uint8)": FunctionFragment;
     "adminSetBurnable(address,address)": FunctionFragment;
     "adminSetDepositNonce(uint8,uint64)": FunctionFragment;
@@ -54,9 +53,7 @@ interface BridgeInterface extends ethers.utils.Interface {
     "adminSetFee(uint256)": FunctionFragment;
     "adminSetForwarder(address,bool)": FunctionFragment;
     "adminSetGenericResource(address,bytes32,address,bytes4,uint256,bytes4)": FunctionFragment;
-    "adminSetNative(bytes32,address,bool)": FunctionFragment;
-    "adminSetNativeResource(address)": FunctionFragment;
-    "adminSetResource(address,bytes32,address)": FunctionFragment;
+    "adminSetResource(address,bytes32,address,bool)": FunctionFragment;
     "adminSetSpecialFee(uint8,uint256)": FunctionFragment;
     "adminUnpauseTransfers()": FunctionFragment;
     "adminWithdraw(address,bytes)": FunctionFragment;
@@ -156,16 +153,12 @@ interface BridgeInterface extends ethers.utils.Interface {
     values: [BytesLike, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "adminRemoveNativeResourceId",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "adminRemoveRelayer",
     values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "adminRemoveResourceId",
-    values: [BytesLike, string]
+    values: [BytesLike, string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "adminRemoveSpecialFee",
@@ -196,16 +189,8 @@ interface BridgeInterface extends ethers.utils.Interface {
     values: [string, BytesLike, string, BytesLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "adminSetNative",
-    values: [BytesLike, string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "adminSetNativeResource",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "adminSetResource",
-    values: [string, BytesLike, string]
+    values: [string, BytesLike, string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "adminSetSpecialFee",
@@ -380,10 +365,6 @@ interface BridgeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "adminRemoveNativeResourceId",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "adminRemoveRelayer",
     data: BytesLike
   ): Result;
@@ -417,14 +398,6 @@ interface BridgeInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "adminSetGenericResource",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "adminSetNative",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "adminSetNativeResource",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -758,14 +731,6 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    adminRemoveNativeResourceId(
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "adminRemoveNativeResourceId()"(
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     adminRemoveRelayer(
       relayerAddress: string,
       overrides?: Overrides
@@ -779,12 +744,14 @@ export class Bridge extends Contract {
     adminRemoveResourceId(
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "adminRemoveResourceId(bytes32,address)"(
+    "adminRemoveResourceId(bytes32,address,bool)"(
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -874,41 +841,19 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    adminSetNative(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "adminSetNative(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    adminSetNativeResource(
-      handlerAddress: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "adminSetNativeResource(address)"(
-      handlerAddress: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     adminSetResource(
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "adminSetResource(address,bytes32,address)"(
+    "adminSetResource(address,bytes32,address,bool)"(
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1441,14 +1386,6 @@ export class Bridge extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  adminRemoveNativeResourceId(
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "adminRemoveNativeResourceId()"(
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   adminRemoveRelayer(
     relayerAddress: string,
     overrides?: Overrides
@@ -1462,12 +1399,14 @@ export class Bridge extends Contract {
   adminRemoveResourceId(
     resourceID: BytesLike,
     tokenAddress: string,
+    isNative: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "adminRemoveResourceId(bytes32,address)"(
+  "adminRemoveResourceId(bytes32,address,bool)"(
     resourceID: BytesLike,
     tokenAddress: string,
+    isNative: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1557,41 +1496,19 @@ export class Bridge extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  adminSetNative(
-    resourceID: BytesLike,
-    nativeAddress: string,
-    isNative: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "adminSetNative(bytes32,address,bool)"(
-    resourceID: BytesLike,
-    nativeAddress: string,
-    isNative: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  adminSetNativeResource(
-    handlerAddress: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "adminSetNativeResource(address)"(
-    handlerAddress: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   adminSetResource(
     handlerAddress: string,
     resourceID: BytesLike,
     tokenAddress: string,
+    isNative: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "adminSetResource(address,bytes32,address)"(
+  "adminSetResource(address,bytes32,address,bool)"(
     handlerAddress: string,
     resourceID: BytesLike,
     tokenAddress: string,
+    isNative: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2057,10 +1974,6 @@ export class Bridge extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    adminRemoveNativeResourceId(overrides?: CallOverrides): Promise<void>;
-
-    "adminRemoveNativeResourceId()"(overrides?: CallOverrides): Promise<void>;
-
     adminRemoveRelayer(
       relayerAddress: string,
       overrides?: CallOverrides
@@ -2074,12 +1987,14 @@ export class Bridge extends Contract {
     adminRemoveResourceId(
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "adminRemoveResourceId(bytes32,address)"(
+    "adminRemoveResourceId(bytes32,address,bool)"(
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2166,41 +2081,19 @@ export class Bridge extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    adminSetNative(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "adminSetNative(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    adminSetNativeResource(
-      handlerAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "adminSetNativeResource(address)"(
-      handlerAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     adminSetResource(
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "adminSetResource(address,bytes32,address)"(
+    "adminSetResource(address,bytes32,address,bool)"(
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2724,10 +2617,6 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    adminRemoveNativeResourceId(overrides?: Overrides): Promise<BigNumber>;
-
-    "adminRemoveNativeResourceId()"(overrides?: Overrides): Promise<BigNumber>;
-
     adminRemoveRelayer(
       relayerAddress: string,
       overrides?: Overrides
@@ -2741,12 +2630,14 @@ export class Bridge extends Contract {
     adminRemoveResourceId(
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "adminRemoveResourceId(bytes32,address)"(
+    "adminRemoveResourceId(bytes32,address,bool)"(
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2836,41 +2727,19 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    adminSetNative(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "adminSetNative(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    adminSetNativeResource(
-      handlerAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "adminSetNativeResource(address)"(
-      handlerAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     adminSetResource(
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "adminSetResource(address,bytes32,address)"(
+    "adminSetResource(address,bytes32,address,bool)"(
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3335,14 +3204,6 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    adminRemoveNativeResourceId(
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "adminRemoveNativeResourceId()"(
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     adminRemoveRelayer(
       relayerAddress: string,
       overrides?: Overrides
@@ -3356,12 +3217,14 @@ export class Bridge extends Contract {
     adminRemoveResourceId(
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "adminRemoveResourceId(bytes32,address)"(
+    "adminRemoveResourceId(bytes32,address,bool)"(
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3451,41 +3314,19 @@ export class Bridge extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    adminSetNative(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "adminSetNative(bytes32,address,bool)"(
-      resourceID: BytesLike,
-      nativeAddress: string,
-      isNative: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    adminSetNativeResource(
-      handlerAddress: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "adminSetNativeResource(address)"(
-      handlerAddress: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     adminSetResource(
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "adminSetResource(address,bytes32,address)"(
+    "adminSetResource(address,bytes32,address,bool)"(
       handlerAddress: string,
       resourceID: BytesLike,
       tokenAddress: string,
+      isNative: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

@@ -872,7 +872,8 @@ task("regresid", "get resource ID")
           let receipt = await bridgeInstant.adminSetResource(
             config.erc20Handler,
             tokens[i].resourceId,
-            tokens[i].address
+            tokens[i].address,
+            false
           )
           console.log(await receipt.wait())
         } else {
@@ -908,7 +909,8 @@ task("deploy-native", "regist native")
           let receipt = await bridgeInstant.adminSetResource(
             config.erc20Handler,
             resid,
-            nativeAddress
+            nativeAddress,
+            true
           )
           handlerAddress = config.erc20Handler;
           console.log(await receipt.wait())
@@ -916,13 +918,6 @@ task("deploy-native", "regist native")
           console.log("handlerAddress:", handlerAddress)
         }
 
-        const erc20Handler = await ethers.getContractAt("ERC20Handler", config.erc20Handler, deployer) as ERC20Handler;
-        const isNative = await erc20Handler.isNative(nativeAddress);
-
-        if (!isNative) {
-          let receipt = await bridgeInstant.adminSetNative(resid, nativeAddress, true);
-          console.log(await receipt.wait())
-        }
         let token: Token = {
           address: nativeAddress,
           decimals: 18,
@@ -957,7 +952,8 @@ task("deploy-native", "regist native")
           let receipt = await bridgeInstant.adminSetResource(
             config.erc20Handler,
             resid,
-            nativeAddress
+            nativeAddress,
+            true
           )
           handlerAddress = config.erc20Handler;
           console.log(await receipt.wait())
@@ -1004,7 +1000,8 @@ task("reg-native", "regist native")
         let receipt = await bridgeInstant.adminSetResource(
           config.erc20Handler,
           resid,
-          nativeAddress
+          nativeAddress,
+          true
         )
         handlerAddress = config.erc20Handler;
         console.log(await receipt.wait())

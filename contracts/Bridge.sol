@@ -300,22 +300,15 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
     function adminSetResource(
         address handlerAddress,
         bytes32 resourceID,
-        address tokenAddress
+        address tokenAddress,
+        bool isNative
     ) external onlyAdmin {
         _resourceIDToHandlerAddress[resourceID] = handlerAddress;
         IERCHandler handler = IERCHandler(handlerAddress);
         handler.setResource(resourceID, tokenAddress);
-    }
-
-    function adminSetNativeResource(address handlerAddress) external onlyAdmin {
-        address tokenAddress = address(uint160(_domainID));
-        bytes32 resourceID = bytes32(
-            uint256(uint160(tokenAddress)) * 256 + _domainID
-        );
-        _resourceIDToHandlerAddress[resourceID] = handlerAddress;
-        IERCHandler handler = IERCHandler(handlerAddress);
-        handler.setResource(resourceID, tokenAddress);
-        handler.setNative(tokenAddress, true);
+        if (isNative) {
+            handler.setNative(tokenAddress, true);
+        }
     }
 
     /**
@@ -348,27 +341,18 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         );
     }
 
-    function adminRemoveResourceId(bytes32 resourceID, address tokenAddress)
-        external
-        onlyAdmin
-    {
+    function adminRemoveResourceId(
+        bytes32 resourceID,
+        address tokenAddress,
+        bool isNative
+    ) external onlyAdmin {
         address handlerAddress = _resourceIDToHandlerAddress[resourceID];
         delete _resourceIDToHandlerAddress[resourceID];
         IERCHandler handler = IERCHandler(handlerAddress);
         handler.removeResource(resourceID, tokenAddress);
-    }
-
-    function adminRemoveNativeResourceId() external onlyAdmin {
-        address tokenAddress = address(uint160(_domainID));
-        bytes32 resourceID = bytes32(
-            uint256(uint160(tokenAddress)) * 256 + _domainID
-        );
-        address handlerAddress = _resourceIDToHandlerAddress[resourceID];
-        delete _resourceIDToHandlerAddress[resourceID];
-
-        IERCHandler handler = IERCHandler(handlerAddress);
-        handler.setNative(tokenAddress, false);
-        handler.removeResource(resourceID, tokenAddress);
+        if (isNative) {
+            handler.setNative(tokenAddress, false);
+        }
     }
 
     function adminRemoveGenericResource(
@@ -423,17 +407,6 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         onlyAdmin
     {
         isValidForwarder[forwarder] = valid;
-    }
-
-    function adminSetNative(
-        bytes32 resourceID,
-        address nativeAddress,
-        bool isNative
-    ) external onlyAdmin {
-        IERCHandler handler = IERCHandler(
-            _resourceIDToHandlerAddress[resourceID]
-        );
-        handler.setNative(nativeAddress, isNative);
     }
 
     function adminSetDomainId(uint8 domainID) external onlyAdmin {
@@ -648,7 +621,7 @@ contract Bridge is EIP712, Pausable, AccessControl, SafeMath, IBridge {
         bytes32 resourceID,
         bytes calldata data,
         bytes[] memory signatures
-    ) external whenNotPaused nonReentrant{
+    ) external whenNotPaused nonReentrant {
         address handler = _resourceIDToHandlerAddress[resourceID];
         require(handler != address(0), "no handler for resourceID");
         bytes32 dataHash = keccak256(

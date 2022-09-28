@@ -539,6 +539,13 @@ task("deploy-proxy", "deploy contract with proxy")
     }
   );
 
+/**
+npx hardhat update-proxy-all \
+--contract <bridge|erc20Handler|erc721Handler|erc1155Handler|genericHandler> \
+--proxy <proxy contract address>
+--rpc https://rpctest.meter.io \
+--proxyadmin 0x123.....890 \
+ */
 task("update-proxy-all", "deploy contract with proxy")
   .addParam("contract", "contract")
   .addParam("proxy", "proxy address")

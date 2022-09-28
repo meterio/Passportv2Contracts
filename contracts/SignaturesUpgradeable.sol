@@ -202,7 +202,7 @@ contract SignaturesUpgradeable is PausableUpgradeable, AccessControl {
         require(!relayerVote[depositHash][relayer], "signature aleardy submit");
         relayerVote[depositHash][relayer] = true;
         require(
-            signatures[depositHash].length <=
+            signatures[depositHash].length <
                 _relayerThreshold[destinationDomainID],
             "Signture aleardy pass"
         );

@@ -1367,7 +1367,7 @@ task("sign-test", "get sign")
       console.log("verify", verify);
     }
   );
-
+// 0x0b2f44e4c1855297f8b1d19b2a316796914a88ae9b93908737624486c4c4d7d3
 task("proposals", "get proposals from signature")
   .addParam("address", "signature contract address")
   .addParam("origin", "origin chain DomainID")
@@ -1379,14 +1379,16 @@ task("proposals", "get proposals from signature")
     async ({ address, origin, dest, nonce, resid, data }, { ethers, run, network }) => {
       const [signer] = await ethers.getSigners();
       const contract = await ethers.getContractAt("Signatures", address, signer) as Signatures;
-      const dataHash = utils.solidityKeccak256(['bytes'], [data]);
+      const dataHash = utils.keccak256(data)
       const depositHash = utils.solidityKeccak256(
-        ['uint8', 'uint8', 'uint64', 'bytes32', 'bytes32'],
+        ['uint256', 'uint256', 'uint256', 'bytes32', 'bytes32'],
         [origin, dest, nonce, resid, dataHash]
       );
+      console.log("depositHash:",depositHash)
       console.log(await contract.proposals(depositHash));
     }
   );
+// npx hardhat bridge-resource-scan --bridge 0xce785e92bc448de7c58d3f7d74f2bdced9cc7c49 --network metertest
 task("bridge-resource-scan", "bridge resourceId scan")
   .addParam("bridge", "bridge address")
   .setAction(

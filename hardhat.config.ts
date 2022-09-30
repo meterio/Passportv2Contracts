@@ -241,6 +241,29 @@ task("proxy-admin", "transfer proxy admin")
       await genericHandler.changeAdmin(admin);
     }
   );
+/*
+npx hardhat transfer-admin \
+--proxy <proxy address> \
+--newadmin <new admin address> \
+--rpc https://rpctest.meter.io \
+--proxyadmin <private key>
+ */
+task("transfer-admin", "transfer proxy admin")
+  .addParam("proxy", "proxy address")
+  .addParam("newadmin", "new admin address")
+  .addParam("rpc", "rpc connect")
+  .addParam("proxyadmin", "proxy admin private key")
+  .setAction(
+    async ({ proxy, newadmin, rpc, proxyadmin }, { ethers, run, network }) => {
+      await run("compile");
+
+      let provider = new ethers.providers.JsonRpcProvider(rpc);
+      const proxyWallet = new ethers.Wallet(proxyadmin, provider);
+
+      const proxy_contract = await ethers.getContractAt("TransparentUpgradeableProxy", proxy, proxyWallet) as TransparentUpgradeableProxy;
+      await proxy_contract.changeAdmin(newadmin);
+    }
+  );
 /**
 npx hardhat deploy-proxy-all \
 --domain 1 \
@@ -1384,7 +1407,7 @@ task("proposals", "get proposals from signature")
         ['uint256', 'uint256', 'uint256', 'bytes32', 'bytes32'],
         [origin, dest, nonce, resid, dataHash]
       );
-      console.log("depositHash:",depositHash)
+      console.log("depositHash:", depositHash)
       console.log(await contract.proposals(depositHash));
     }
   );
@@ -1403,7 +1426,8 @@ task("bridge-resource-scan", "bridge resourceId scan")
       }
     }
   )
-const parseHandleResouceId = async (hre:HardhatRuntimeEnvironment, resourceId: string, bridge: Bridge) => {
+
+const parseHandleResouceId = async (hre: HardhatRuntimeEnvironment, resourceId: string, bridge: Bridge) => {
   if (resourceId.length <= 0) {
     return;
   };
@@ -1424,7 +1448,7 @@ const parseHandleResouceId = async (hre:HardhatRuntimeEnvironment, resourceId: s
   const erc20_burnable = await handler_contract._burnList(erc20_address);
   const isNative = await handler_contract.isNative(erc20_address);
 
-  if(!isNative){
+  if (!isNative) {
     const erc20_contract = await hre.ethers.getContractAt("TokenERC20", erc20_address) as TokenERC20;
     erc20_name = await erc20_contract.name();
     erc20_symbol = await erc20_contract.symbol();

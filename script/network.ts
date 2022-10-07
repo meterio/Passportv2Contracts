@@ -12,6 +12,13 @@ export const RPCS = {
     chainId: 1337,
     accounts: [process.env.PRIVATE_KEY_0]
   },
+  mainnet: {
+    url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+    gasPrice: 3000000000,
+    accounts: {
+      mnemonic: process.env.MNEMONIC,
+    },
+  },
   ropsten: {
     url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,
     gasPrice: 3000000000,

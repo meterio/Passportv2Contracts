@@ -19,6 +19,8 @@ contract ERC20Handler is IDepositExecute, HandlerHelpers, ERC20Safe {
 
     error ProvidedTokenAddressIsNotWhitelisted();
 
+    receive() external payable {}
+
     /**
         @notice A deposit is initiated by making a deposit in the Bridge contract.
         @param resourceID ResourceID used to find address of token to be used for deposit.

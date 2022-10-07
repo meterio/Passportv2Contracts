@@ -21,6 +21,9 @@ task("transfer-proxy-admin-pk", "transfer proxy admin")
             const proxyWallet = new ethers.Wallet(proxyadmin, provider);
 
             const proxy_contract = await ethers.getContractAt("TransparentUpgradeableProxy", proxy, proxyWallet) as TransparentUpgradeableProxy;
-            await proxy_contract.changeAdmin(newadmin);
+            const gasLimit = await proxy_contract.estimateGas.changeAdmin(newadmin);
+            await proxy_contract.changeAdmin(newadmin, {
+                gasLimit: gasLimit
+            });
         }
     );

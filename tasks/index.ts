@@ -29,3 +29,4 @@ export * from "./UpdateSignature";
 export * from "./DeployNative";
 export * from "./DepositETH";
 export * from "./Sign";
+export * from "./UpdateTo";

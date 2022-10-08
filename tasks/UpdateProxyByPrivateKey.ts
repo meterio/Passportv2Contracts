@@ -8,6 +8,7 @@ import {
   GenericHandlerUpgradeable,
   TransparentUpgradeableProxy
 } from "../typechain";
+import { BigNumber } from "ethers";
 
 /**
 npx hardhat update-proxy-pk \
@@ -22,13 +23,24 @@ task("update-proxy-pk", "deploy contract with proxy")
   .addParam("proxy", "proxy address")
   .addParam("rpc", "rpc connect")
   .addParam("proxyadmin", "proxy admin private key")
-  .addParam("gasprice", "gas price")
+  .addOptionalParam("gasprice", "gas price", 0)
   .setAction(
     async ({ rpc, proxy, proxyadmin, contract, gasprice }, { ethers, run, network }) => {
       await run("compile");
       let provider = new ethers.providers.JsonRpcProvider(rpc);
       const proxyWallet = new ethers.Wallet(proxyadmin, provider);
 
+      let override = {}
+      if (gasprice > 0) {
+        override = {
+          gasLimit: BigNumber.from(200000),
+          gasPrice: gasprice
+        }
+      } else {
+        override = {
+          gasLimit: BigNumber.from(200000)
+        }
+      }
       let implAddress = "";
       if (contract == 'bridge') {
         const impl = await deployContract(
@@ -73,9 +85,7 @@ task("update-proxy-pk", "deploy contract with proxy")
       }
       if (implAddress != "") {
         const proxyContract = await ethers.getContractAt("TransparentUpgradeableProxy", proxy, proxyWallet) as TransparentUpgradeableProxy;
-        await proxyContract.upgradeTo(implAddress, {
-          gasPrice: gasprice
-        })
+        await proxyContract.upgradeTo(implAddress, override)
       }
     }
   );

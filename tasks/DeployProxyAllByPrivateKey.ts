@@ -5,7 +5,8 @@ npx hardhat deploy-proxy-all-pk \
 --domain 1 \
 --rpc https://rpctest.meter.io \
 --proxyadmin 0x123.....890 \
---bridgeadmin 0x098.....321
+--bridgeadmin 0x098.....321 \
+--gasprice 1000000000
  */
 task("deploy-proxy-all-pk", "deploy all contract with proxy")
   .addParam("domain", "domain id", "0")
@@ -13,7 +14,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
   .addParam("rpc", "rpc connect")
   .addParam("proxyadmin", "proxy admin private key")
   .addParam("bridgeadmin", "bridge admin private key")
-  .addParam("gasprice", "gas price")
+  .addOptionalParam("gasprice", "gas price", 0)
   .setAction(
     async ({ domain, expiry, rpc, proxyadmin, bridgeadmin, gasprice }, { ethers, run }) => {
       await run("compile");
@@ -22,14 +23,19 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
       const adminWallet = new ethers.Wallet(bridgeadmin, provider);
       console.log("proxyWallet:", proxyWallet.address);
       console.log("adminWallet:", adminWallet.address);
+
+      let override = {}
+      if (gasprice > 0) {
+        override = {
+          gasPrice: gasprice
+        }
+      }
       const proxy_factory = await ethers.getContractFactory("TransparentUpgradeableProxy", proxyWallet);
       // Bridge contract
       const bridgeImpl = await (
         await (
           await ethers.getContractFactory("BridgeUpgradeable", proxyWallet)
-        ).deploy({
-          gasPrice: gasprice
-        })
+        ).deploy(override)
       ).deployed();
       console.log("bridge Impl:", bridgeImpl.address);
       // Bridge Proxy
@@ -38,9 +44,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
           bridgeImpl.address,
           proxyWallet.address,
           bridgeImpl.interface.encodeFunctionData("initialize", [domain, [], 1, expiry, adminWallet.address]),
-          {
-            gasPrice: gasprice
-          }
+          override
         )
       ).deployed();
       console.log("bridge Proxy:", bridgeProxy.address);
@@ -48,9 +52,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
       const erc20HandlerImpl = await (
         await (
           await ethers.getContractFactory("ERC20HandlerUpgradeable", proxyWallet)
-        ).deploy({
-          gasPrice: gasprice
-        })
+        ).deploy(override)
       ).deployed();
       console.log("erc20Handler Impl:", erc20HandlerImpl.address);
       // erc20Handler Proxy
@@ -59,9 +61,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
           erc20HandlerImpl.address,
           proxyWallet.address,
           erc20HandlerImpl.interface.encodeFunctionData("initialize", [bridgeProxy.address]),
-          {
-            gasPrice: gasprice
-          }
+          override
         )
       ).deployed();
       console.log("erc20Handler Proxy:", erc20HandlerProxy.address);
@@ -69,9 +69,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
       const erc721HandlerImpl = await (
         await (
           await ethers.getContractFactory("ERC721HandlerUpgradeable", proxyWallet)
-        ).deploy({
-          gasPrice: gasprice
-        })
+        ).deploy(override)
       ).deployed();
       console.log("erc721Handler Impl:", erc721HandlerImpl.address);
       // erc721Handler Proxy
@@ -80,9 +78,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
           erc721HandlerImpl.address,
           proxyWallet.address,
           erc721HandlerImpl.interface.encodeFunctionData("initialize", [bridgeProxy.address]),
-          {
-            gasPrice: gasprice
-          }
+          override
         )
       ).deployed();
       console.log("erc721Handler Proxy:", erc721HandlerProxy.address);
@@ -90,9 +86,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
       const erc1155HandlerImpl = await (
         await (
           await ethers.getContractFactory("ERC1155HandlerUpgradeable", proxyWallet)
-        ).deploy({
-          gasPrice: gasprice
-        })
+        ).deploy(override)
       ).deployed();
       console.log("erc1155Handler Impl:", erc1155HandlerImpl.address);
       // erc1155Handler Proxy
@@ -101,9 +95,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
           erc1155HandlerImpl.address,
           proxyWallet.address,
           erc1155HandlerImpl.interface.encodeFunctionData("initialize", [bridgeProxy.address]),
-          {
-            gasPrice: gasprice
-          }
+          override
         )
       ).deployed();
       console.log("erc1155Handler Proxy:", erc1155HandlerProxy.address);
@@ -111,9 +103,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
       const genericHandlerImpl = await (
         await (
           await ethers.getContractFactory("GenericHandlerUpgradeable", proxyWallet)
-        ).deploy({
-          gasPrice: gasprice
-        })
+        ).deploy(override)
       ).deployed();
       console.log("genericHandler Impl:", genericHandlerImpl.address);
       // genericHandler Proxy
@@ -122,9 +112,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
           genericHandlerImpl.address,
           proxyWallet.address,
           genericHandlerImpl.interface.encodeFunctionData("initialize", [bridgeProxy.address]),
-          {
-            gasPrice: gasprice
-          }
+          override
         )
       ).deployed();
       console.log("genericHandler Proxy:", genericHandlerProxy.address);

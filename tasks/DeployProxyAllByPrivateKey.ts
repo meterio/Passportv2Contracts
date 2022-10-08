@@ -13,7 +13,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
   .addParam("rpc", "rpc connect")
   .addParam("proxyadmin", "proxy admin private key")
   .addParam("bridgeadmin", "bridge admin private key")
-  .addOptionalParam("gasprice", "gas price")
+  .addParam("gasprice", "gas price")
   .setAction(
     async ({ domain, expiry, rpc, proxyadmin, bridgeadmin, gasprice }, { ethers, run }) => {
       await run("compile");

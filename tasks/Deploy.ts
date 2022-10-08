@@ -10,7 +10,7 @@ import {
 } from "../typechain"
 task("deploy", "deploy contract")
     .addParam("contract", "contract")
-    .addOptionalParam("domain", "domain id", "0")
+    .addParam("domain", "domain id", "0")
     .setAction(
         async ({ contract, domain }, { ethers, run, network }) => {
             await run("compile");

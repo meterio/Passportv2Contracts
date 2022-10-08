@@ -1,12 +1,20 @@
 import { task } from "hardhat/config";
 import { TransparentUpgradeableProxy, ERC20MintablePauseableUpgradeable } from "../typechain";
 
+/*
+npx hardhat update-proxy-token \
+--token <Token proxy address> \
+--rpc https://rpctest.meter.io \
+--proxyadmin <private key>
+--gasprice 1000000000
+ */
 task("update-proxy-token", "deploy contract")
     .addParam("token", "token proxy address", "")
     .addParam("rpc", "rpc connect")
     .addParam("proxyadmin", "proxy admin private key")
+    .addParam("gasprice", "gas price")
     .setAction(
-        async ({ token, rpc, proxyadmin }, { ethers, run, network }) => {
+        async ({ token, rpc, proxyadmin, gasprice }, { ethers, run, network }) => {
             await run("compile");
 
             let provider = new ethers.providers.JsonRpcProvider(rpc);
@@ -17,7 +25,9 @@ task("update-proxy-token", "deploy contract")
             const impl = await (
                 await (
                     await ethers.getContractFactory("ERC20MintablePauseableUpgradeable", proxyWallet)
-                ).deploy()
+                ).deploy({
+                    gasPrice: gasprice
+                })
             ).deployed() as ERC20MintablePauseableUpgradeable;
             console.log("impl:", impl.address);
 

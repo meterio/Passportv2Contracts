@@ -1,3 +1,4 @@
+npx hardhat flatten contracts/proxy/ProxyAdmin.sol > ./flattened/ProxyAdmin.sol
 npx hardhat flatten contracts/proxy/TransparentUpgradeableProxy.sol > ./flattened/TransparentUpgradeableProxy.sol
 npx hardhat flatten contracts/Bridge.sol > ./flattened/Bridge.sol
 npx hardhat flatten contracts/BridgeUpgradeable.sol > ./flattened/BridgeUpgradeable.sol

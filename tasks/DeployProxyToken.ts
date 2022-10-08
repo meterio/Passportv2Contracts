@@ -9,6 +9,7 @@ npx hardhat deploy-proxy-token \
 --admin 0x1E4039Fb9761dA395788b6325D2790537e591937 \
 --rpc https://rpctest.meter.io \
 --proxyadmin 0xabc...def
+--gasprice 1000000000
  */
 task("deploy-proxy-token", "deploy contract")
     .addParam("name", "token name", "")
@@ -17,8 +18,9 @@ task("deploy-proxy-token", "deploy contract")
     .addParam("admin", "token owner address")
     .addParam("rpc", "rpc connect")
     .addParam("proxyadmin", "proxy admin private key")
+    .addParam("gasprice", "gas price")
     .setAction(
-        async ({ name, symbol, decimals, rpc, proxyadmin, admin }, { ethers, run, network }) => {
+        async ({ name, symbol, decimals, rpc, proxyadmin, admin, gasprice }, { ethers, run, network }) => {
             await run("compile");
 
             let provider = new ethers.providers.JsonRpcProvider(rpc);
@@ -29,7 +31,9 @@ task("deploy-proxy-token", "deploy contract")
             const impl = await (
                 await (
                     await ethers.getContractFactory("ERC20MintablePauseableUpgradeable", proxyWallet)
-                ).deploy()
+                ).deploy({
+                    gasPrice: gasprice
+                })
             ).deployed() as ERC20MintablePauseableUpgradeable;
             console.log("impl:", impl.address);
 
@@ -41,7 +45,10 @@ task("deploy-proxy-token", "deploy contract")
                     symbol,
                     decimals,
                     admin
-                ])
+                ]),
+                {
+                    gasPrice: gasprice
+                }
             )).deployed();
             console.log("Proxy:", proxy.address);
 

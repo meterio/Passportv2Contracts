@@ -1,6 +1,7 @@
 import { task } from "hardhat/config";
 import { TransparentUpgradeableProxy, ERC20MintablePauseableUpgradeable } from "../typechain";
 import { BigNumber } from "ethers";
+import { types } from "hardhat/config";
 /*
 npx hardhat update-proxy-token \
 --token <Token proxy address> \
@@ -12,7 +13,7 @@ task("update-proxy-token", "deploy contract")
     .addParam("token", "token proxy address", "")
     .addParam("rpc", "rpc connect")
     .addParam("proxyadmin", "proxy admin private key")
-    .addOptionalParam("gasprice", "gas price", 0)
+    .addOptionalParam("gasprice", "gas price", 0, types.int)
     .setAction(
         async ({ token, rpc, proxyadmin, gasprice }, { ethers, run, network }) => {
             await run("compile");

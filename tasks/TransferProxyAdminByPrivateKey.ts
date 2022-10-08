@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
 import { task } from "hardhat/config";
 import { TransparentUpgradeableProxy } from "../typechain"
+import { types } from "hardhat/config";
 
 /*
 npx hardhat transfer-proxy-admin-pk \
@@ -15,7 +16,7 @@ task("transfer-proxy-admin-pk", "transfer proxy admin")
     .addParam("newadmin", "new admin address")
     .addParam("rpc", "rpc connect")
     .addParam("proxyadmin", "proxy admin private key")
-    .addOptionalParam("gasprice", "gas price", 0)
+    .addOptionalParam("gasprice", "gas price", 0, types.int)
     .setAction(
         async ({ proxy, newadmin, rpc, proxyadmin, gasprice }, { ethers, run, network }) => {
             await run("compile");

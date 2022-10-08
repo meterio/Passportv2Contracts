@@ -1,5 +1,6 @@
 import { task } from "hardhat/config";
 import { Bridge } from "../typechain"
+import { types } from "hardhat/config";
 
 /**
 npx hardhat add-proxy-relayer \
@@ -13,7 +14,7 @@ task("add-proxy-relayer", "adminAddRelayer")
     .addParam("rpc", "rpc connect")
     .addParam("bridgeadmin", "bridge admin private key")
     .addParam("relayer", "relayer address")
-    .addOptionalParam("gasprice", "gas price", 0)
+    .addOptionalParam("gasprice", "gas price", 0, types.int)
     .setAction(
         async ({ bridge, relayer, rpc, bridgeadmin, gasprice }, { ethers, run, network }) => {
             await run("compile");

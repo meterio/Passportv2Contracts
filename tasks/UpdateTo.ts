@@ -15,12 +15,12 @@ task("update-to", "update proxy to new implementation")
   .addParam("proxy", "proxy address")
   .addParam("rpc", "rpc connect")
   .addParam("proxyadmin", "proxy admin private key")
-  .addOptionalParam("gasprice", "gas price", 0)
+  .addOptionalParam("gasprice", "gas price", "0")
   .setAction(
     async ({ rpc, proxy, proxyadmin, impl, gasprice }, { ethers, run, network }) => {
       await run("compile");
       let override = {}
-      if (gasprice > 0) {
+      if (Number(gasprice) > 0) {
         override = {
           gasLimit: BigNumber.from(200000),
           gasPrice: gasprice

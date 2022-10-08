@@ -1,5 +1,6 @@
 import { task } from "hardhat/config";
 import { ERC20MintablePauseableUpgradeable } from "../typechain";
+import { types } from "hardhat/config";
 
 /**
 npx hardhat deploy-proxy-token \
@@ -18,7 +19,7 @@ task("deploy-proxy-token", "deploy contract")
     .addParam("admin", "token owner address")
     .addParam("rpc", "rpc connect")
     .addParam("proxyadmin", "proxy admin private key")
-    .addOptionalParam("gasprice", "gas price", 0)
+    .addOptionalParam("gasprice", "gas price", 0, types.int)
     .setAction(
         async ({ name, symbol, decimals, rpc, proxyadmin, admin, gasprice }, { ethers, run, network }) => {
             await run("compile");

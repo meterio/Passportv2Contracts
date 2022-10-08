@@ -1,5 +1,6 @@
 import { task } from "hardhat/config";
 import { deployContract } from "../script/deployTool";
+import { types } from "hardhat/config";
 import {
   BridgeUpgradeable,
   ERC20HandlerUpgradeable,
@@ -23,7 +24,7 @@ task("update-proxy-pk", "deploy contract with proxy")
   .addParam("proxy", "proxy address")
   .addParam("rpc", "rpc connect")
   .addParam("proxyadmin", "proxy admin private key")
-  .addOptionalParam("gasprice", "gas price", 0)
+  .addOptionalParam("gasprice", "gas price", 0, types.int)
   .setAction(
     async ({ rpc, proxy, proxyadmin, contract, gasprice }, { ethers, run, network }) => {
       await run("compile");

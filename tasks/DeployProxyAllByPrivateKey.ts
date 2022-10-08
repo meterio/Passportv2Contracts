@@ -1,4 +1,5 @@
 import { task } from "hardhat/config";
+import { types } from "hardhat/config";
 
 /**
 npx hardhat deploy-proxy-all-pk \
@@ -14,7 +15,7 @@ task("deploy-proxy-all-pk", "deploy all contract with proxy")
   .addParam("rpc", "rpc connect")
   .addParam("proxyadmin", "proxy admin private key")
   .addParam("bridgeadmin", "bridge admin private key")
-  .addOptionalParam("gasprice", "gas price", 0)
+  .addOptionalParam("gasprice", "gas price", 0, types.int)
   .setAction(
     async ({ domain, expiry, rpc, proxyadmin, bridgeadmin, gasprice }, { ethers, run }) => {
       await run("compile");

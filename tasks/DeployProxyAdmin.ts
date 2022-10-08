@@ -1,6 +1,6 @@
 import { task } from "hardhat/config";
 import { ProxyAdmin } from "../typechain";
-
+import { types } from "hardhat/config";
 /*
 npx hardhat deploy-proxy-admin \
 --rpc https://rpctest.meter.io \
@@ -10,7 +10,7 @@ npx hardhat deploy-proxy-admin \
 task("deploy-proxy-admin", "transfer proxy admin")
     .addParam("rpc", "rpc connect")
     .addParam("pk", "admin private key")
-    .addOptionalParam("gasprice", "gas price", 0)
+    .addOptionalParam("gasprice", "gas price", 0, types.int)
     .setAction(
         async ({ rpc, pk, gasprice }, { ethers, run, network }) => {
             await run("compile");

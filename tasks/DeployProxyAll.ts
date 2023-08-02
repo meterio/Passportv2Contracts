@@ -11,21 +11,23 @@ import {
 
 /**
 npx hardhat deploy-proxy-all \
+--admin <admin address>
 --domain 1 \
 --contract <contract name:bridge|erc20Handler|erc721Handler|erc1155Handler|genericHandler>
  */
 task("deploy-proxy-all", "deploy contract with proxy")
+  .addParam("admin", "contract admin")
   .addParam("contract", "contract")
   .addParam("domain", "domain id", "0")
   .setAction(
-    async ({ contract, domain }, { ethers, run, network }) => {
+    async ({ contract, domain, admin }, { ethers, run, network }) => {
       await run("compile");
       const signers = await ethers.getSigners();
       const deployer = signers[0]
-      const admin = signers[1]
       let config = loadConfig(network.name, true);
+      console.log("deployer:",deployer.address)
 
-      if (contract == 'bridge') {
+      if (contract == 'bridge' || contract == 'all') {
         domain = domain ? domain : config.id;
         if (domain) {
           const impl = await deployContract(
@@ -43,7 +45,7 @@ task("deploy-proxy-all", "deploy contract with proxy")
             [
               impl.address,
               deployer.address,
-              impl.interface.encodeFunctionData("initialize", [domain, [], 1, 999999, admin.address])
+              impl.interface.encodeFunctionData("initialize", [domain, [], 1, 999999, admin])
             ]
           ) as TransparentUpgradeableProxy;
 
@@ -53,7 +55,7 @@ task("deploy-proxy-all", "deploy contract with proxy")
               constructorArguments: [
                 impl.address,
                 deployer.address,
-                impl.interface.encodeFunctionData("initialize", [domain, [], 1, 999999, admin.address])
+                impl.interface.encodeFunctionData("initialize", [domain, [], 1, 999999, admin])
               ]
             });
           }
@@ -63,7 +65,8 @@ task("deploy-proxy-all", "deploy contract with proxy")
           config.from = deployer.address;
           config.id = domain;
         }
-      } else if (contract == "erc20Handler") {
+      }
+      if (contract == "erc20Handler" || contract == 'all') {
         const bridgeAddress = config.bridge;
         if (bridgeAddress != "") {
           const impl = await deployContract(
@@ -92,7 +95,8 @@ task("deploy-proxy-all", "deploy contract with proxy")
           }
           config.erc20Handler = proxy.address;
         }
-      } else if (contract == "erc721Handler") {
+      }
+      if (contract == "erc721Handler" || contract == 'all') {
         const bridgeAddress = config.bridge;
         if (bridgeAddress != "") {
           const impl = await deployContract(
@@ -121,7 +125,8 @@ task("deploy-proxy-all", "deploy contract with proxy")
           }
           config.erc721Handler = proxy.address;
         }
-      } else if (contract == "erc1155Handler") {
+      }
+      if (contract == "erc1155Handler" || contract == 'all') {
         const bridgeAddress = config.bridge;
         if (bridgeAddress != "") {
           const impl = await deployContract(
@@ -150,7 +155,8 @@ task("deploy-proxy-all", "deploy contract with proxy")
           }
           config.erc1155Handler = proxy.address;
         }
-      } else if (contract == "genericHandler") {
+      }
+      if (contract == "genericHandler" || contract == 'all') {
         const bridgeAddress = config.bridge;
         if (bridgeAddress != "") {
           const impl = await deployContract(

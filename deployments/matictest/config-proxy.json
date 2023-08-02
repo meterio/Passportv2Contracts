@@ -1,0 +1,14 @@
+{
+    "name": "matictest",
+    "type": "evm",
+    "id": "9",
+    "from": "0x1381C573b97Bf393A81fA42760DD21E109d8092B",
+    "bridge": "0x0872B14C6fc1dF9b9070ECbEd22547627d012A58",
+    "erc20Handler": "0xb78AAc38F1dc8E4aA244A196085011d7931E087d",
+    "erc721Handler": "0x0b2e287309A8728A01C6Ec8683349E524e103b25",
+    "erc1155Handler": "0x0C4CCda8e0eCeB0ef3B2477f9bF6751CF52Be7b9",
+    "genericHandler": "0xAFfe8B72a29A28999a472a056374d8B8607e4347",
+    "feeHandler": "",
+    "signature": "",
+    "tokens": []
+}

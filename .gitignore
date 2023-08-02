@@ -7,3 +7,4 @@ flattened
 .env.development
 .env
 .DS_Store
+artifacts

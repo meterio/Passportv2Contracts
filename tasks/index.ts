@@ -20,6 +20,7 @@ export * from "./ResourceId";
 export * from "./UpdateProxyByPrivateKey";
 export * from "./DataHash";
 export * from "./DeployToken";
+export * from "./DeployNFT";
 export * from "./SetFee";
 export * from "./UpdateProxyToken";
 export * from "./Deploy";

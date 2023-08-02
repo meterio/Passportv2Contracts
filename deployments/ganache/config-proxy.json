@@ -1,0 +1,14 @@
+{
+    "name": "ganache",
+    "type": "evm",
+    "id": "9",
+    "from": "0x14c6A6419eC72bF04dF772075b4C9B238bdE4fF9",
+    "bridge": "0x8A8023E20a31667530200Dc104516E4DeDf62D06",
+    "erc20Handler": "0xd600cA3e66a2e7f41fa3c56B4F2087237642158d",
+    "erc721Handler": "0x92A53CB97b9313EBe46294FeabBF67dAB1923033",
+    "erc1155Handler": "0x7D1B9CE83c2989c789cE97E365156f0B35116c49",
+    "genericHandler": "0x29680A067977224A2BD71781625ec0C5Db6eB052",
+    "feeHandler": "",
+    "signature": "",
+    "tokens": []
+}

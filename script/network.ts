@@ -13,7 +13,7 @@ export const RPCS = {
     accounts: [process.env.PRIVATE_KEY_4]
   },
   mainnet: {
-    url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+    url: `https://ethereum.publicnode.com`,
     gasPrice: 3000000000,
     accounts: {
       mnemonic: process.env.MNEMONIC,

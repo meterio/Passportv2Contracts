@@ -10,7 +10,6 @@ dotenv.config();
 import { setGlobalDispatcher, ProxyAgent } from "undici";
 const proxyAgent = new ProxyAgent("http://127.0.0.1:7890");
 setGlobalDispatcher(proxyAgent);
-import "./tasks";
 
 export default {
   networks: RPCS,

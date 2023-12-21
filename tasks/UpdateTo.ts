@@ -1,5 +1,5 @@
 import { task } from "hardhat/config";
-import { TransparentUpgradeableProxy } from "../typechain";
+import { TransparentUpgradeableProxy } from "../typechain-types";
 import { BigNumber } from "ethers";
 
 /**
@@ -17,22 +17,29 @@ task("update-to", "update proxy to new implementation")
   .addParam("proxyadmin", "proxy admin private key")
   .addOptionalParam("gasprice", "gas price", "0")
   .setAction(
-    async ({ rpc, proxy, proxyadmin, impl, gasprice }, { ethers, run, network }) => {
+    async (
+      { rpc, proxy, proxyadmin, impl, gasprice },
+      { ethers, run, network }
+    ) => {
       await run("compile");
-      let override = {}
+      let override = {};
       if (Number(gasprice) > 0) {
         override = {
           gasLimit: BigNumber.from(200000),
-          gasPrice: gasprice
-        }
+          gasPrice: gasprice,
+        };
       } else {
         override = {
-          gasLimit: BigNumber.from(200000)
-        }
+          gasLimit: BigNumber.from(200000),
+        };
       }
       let provider = new ethers.providers.JsonRpcProvider(rpc);
       const proxyWallet = new ethers.Wallet(proxyadmin, provider);
-      const proxyContract = await ethers.getContractAt("TransparentUpgradeableProxy", proxy, proxyWallet) as TransparentUpgradeableProxy;
-      await proxyContract.upgradeTo(impl, override)
+      const proxyContract = (await ethers.getContractAt(
+        "TransparentUpgradeableProxy",
+        proxy,
+        proxyWallet
+      )) as TransparentUpgradeableProxy;
+      await proxyContract.upgradeTo(impl, override);
     }
   );

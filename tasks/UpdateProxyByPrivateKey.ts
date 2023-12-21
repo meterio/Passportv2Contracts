@@ -7,8 +7,8 @@ import {
   ERC721HandlerUpgradeable,
   ERC1155HandlerUpgradeable,
   GenericHandlerUpgradeable,
-  TransparentUpgradeableProxy
-} from "../typechain";
+  TransparentUpgradeableProxy,
+} from "../typechain-types";
 import { BigNumber } from "ethers";
 
 /**
@@ -26,67 +26,74 @@ task("update-proxy-pk", "deploy contract with proxy")
   .addParam("proxyadmin", "proxy admin private key")
   .addOptionalParam("gasprice", "gas price", 0, types.int)
   .setAction(
-    async ({ rpc, proxy, proxyadmin, contract, gasprice }, { ethers, run, network }) => {
+    async (
+      { rpc, proxy, proxyadmin, contract, gasprice },
+      { ethers, run, network }
+    ) => {
       await run("compile");
       let provider = new ethers.providers.JsonRpcProvider(rpc);
       const proxyWallet = new ethers.Wallet(proxyadmin, provider);
 
-      let override = {}
+      let override = {};
       if (gasprice > 0) {
         override = {
           gasLimit: BigNumber.from(200000),
-          gasPrice: gasprice
-        }
+          gasPrice: gasprice,
+        };
       } else {
         override = {
-          gasLimit: BigNumber.from(200000)
-        }
+          gasLimit: BigNumber.from(200000),
+        };
       }
       let implAddress = "";
-      if (contract == 'bridge') {
-        const impl = await deployContract(
+      if (contract == "bridge") {
+        const impl = (await deployContract(
           "BridgeUpgradeable",
           network.name,
           ethers.getContractFactory,
           proxyWallet
-        ) as BridgeUpgradeable;
+        )) as BridgeUpgradeable;
         implAddress = impl.address;
       } else if (contract == "erc20Handler") {
-        const impl = await deployContract(
+        const impl = (await deployContract(
           "ERC20HandlerUpgradeable",
           network.name,
           ethers.getContractFactory,
           proxyWallet
-        ) as ERC20HandlerUpgradeable;
+        )) as ERC20HandlerUpgradeable;
         implAddress = impl.address;
       } else if (contract == "erc721Handler") {
-        const impl = await deployContract(
+        const impl = (await deployContract(
           "ERC721HandlerUpgradeable",
           network.name,
           ethers.getContractFactory,
           proxyWallet
-        ) as ERC721HandlerUpgradeable;
+        )) as ERC721HandlerUpgradeable;
         implAddress = impl.address;
       } else if (contract == "erc1155Handler") {
-        const impl = await deployContract(
+        const impl = (await deployContract(
           "ERC1155HandlerUpgradeable",
           network.name,
           ethers.getContractFactory,
           proxyWallet
-        ) as ERC1155HandlerUpgradeable;
+        )) as ERC1155HandlerUpgradeable;
         implAddress = impl.address;
       } else if (contract == "genericHandler") {
-        const impl = await deployContract(
+        const impl = (await deployContract(
           "GenericHandlerUpgradeable",
           network.name,
           ethers.getContractFactory,
           proxyWallet
-        ) as GenericHandlerUpgradeable;
+        )) as GenericHandlerUpgradeable;
         implAddress = impl.address;
       }
       if (implAddress != "") {
-        const proxyContract = await ethers.getContractAt("TransparentUpgradeableProxy", proxy, proxyWallet) as TransparentUpgradeableProxy;
-        await proxyContract.upgradeTo(implAddress, override)
+        const proxyContract = (await ethers.getContractAt(
+          "TransparentUpgradeableProxy",
+          proxy,
+          proxyWallet
+        )) as TransparentUpgradeableProxy;
+        await proxyContract.upgradeTo(implAddress, override);
       }
     }
   );

@@ -1,5 +1,5 @@
 import { task } from "hardhat/config";
-import { BridgeUpgradeable__factory } from "../typechain";
+import { BridgeUpgradeable__factory } from "../typechain-types";
 import { Result } from "ethers/lib/utils";
 
 // npx hardhat decode-deposit-event --hash 0xfa0f8f162bab80cb0c68fa9119a6a1a7971dc01adf08ce169a73e13c28c55717 --network mainnet

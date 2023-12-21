@@ -1,5 +1,5 @@
 import { task } from "hardhat/config";
-import { Bridge } from "../typechain"
+import { Bridge } from "../typechain-types";
 import { types } from "hardhat/config";
 
 /**
@@ -10,25 +10,32 @@ npx hardhat add-proxy-relayer \
 --gasprice 1000000000
  */
 task("add-proxy-relayer", "adminAddRelayer")
-    .addParam("bridge", "bridge contract")
-    .addParam("rpc", "rpc connect")
-    .addParam("bridgeadmin", "bridge admin private key")
-    .addParam("relayer", "relayer address")
-    .addOptionalParam("gasprice", "gas price", 0, types.int)
-    .setAction(
-        async ({ bridge, relayer, rpc, bridgeadmin, gasprice }, { ethers, run, network }) => {
-            await run("compile");
-            let provider = new ethers.providers.JsonRpcProvider(rpc);
-            const adminWallet = new ethers.Wallet(bridgeadmin, provider);
+  .addParam("bridge", "bridge contract")
+  .addParam("rpc", "rpc connect")
+  .addParam("bridgeadmin", "bridge admin private key")
+  .addParam("relayer", "relayer address")
+  .addOptionalParam("gasprice", "gas price", 0, types.int)
+  .setAction(
+    async (
+      { bridge, relayer, rpc, bridgeadmin, gasprice },
+      { ethers, run, network }
+    ) => {
+      await run("compile");
+      let provider = new ethers.providers.JsonRpcProvider(rpc);
+      const adminWallet = new ethers.Wallet(bridgeadmin, provider);
 
-            let override = {}
-            if (gasprice > 0) {
-                override = {
-                    gasPrice: gasprice
-                }
-            }
-            const bridgeInstant = await ethers.getContractAt("Bridge", bridge, adminWallet) as Bridge;
-            let receipt = await bridgeInstant.adminAddRelayer(relayer, override)
-            console.log("adminAddRelayer tx:", receipt.hash)
-        }
-    );
+      let override = {};
+      if (gasprice > 0) {
+        override = {
+          gasPrice: gasprice,
+        };
+      }
+      const bridgeInstant = (await ethers.getContractAt(
+        "Bridge",
+        bridge,
+        adminWallet
+      )) as Bridge;
+      let receipt = await bridgeInstant.adminAddRelayer(relayer, override);
+      console.log("adminAddRelayer tx:", receipt.hash);
+    }
+  );

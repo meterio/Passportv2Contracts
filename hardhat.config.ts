@@ -4,7 +4,6 @@ import "@nomiclabs/hardhat-truffle5";
 import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 require("@openzeppelin/hardhat-upgrades");
-import "@nomicfoundation/hardhat-verify";
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -13,7 +12,7 @@ dotenv.config();
 // setGlobalDispatcher(proxyAgent);
 import { compileSetting } from "./script/deployTool";
 import { RPCS } from "./script/network";
-import "./tasks";
+// import "./tasks";
 
 export default {
   networks: RPCS,

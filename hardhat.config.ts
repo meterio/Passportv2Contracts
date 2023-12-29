@@ -3,8 +3,7 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-truffle5";
 import "@openzeppelin/hardhat-upgrades";
 require("@openzeppelin/hardhat-upgrades");
-
-import "@nomicfoundation/hardhat-toolbox";
+import "@nomicfoundation/hardhat-verify";
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -18,13 +17,13 @@ import "./tasks";
 export default {
   networks: RPCS,
   etherscan: {
-    apiKey: process.env.ETHERSCAN_APIKEY,
+    apiKey: process.env.ARBISCAN_API_KEY,
     customChains: [
       {
         network: "arbitrum",
         chainId: 42161,
         urls: {
-          apiURL: "https://api.arbiscan.io/api",
+          apiURL: `https://api.arbiscan.io/api`,
           browserURL: "https://arbiscan.io/",
         },
       },
@@ -32,7 +31,7 @@ export default {
         network: "goerli",
         chainId: 5,
         urls: {
-          apiURL: `https://api-goerli.etherscan.io/api&apiKey=${process.env.ETHERSCAN_APIKEY}`,
+          apiURL: `https://api-goerli.etherscan.io/api`,
           browserURL: "https://goerli.etherscan.io",
         },
       },

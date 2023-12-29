@@ -14,6 +14,12 @@ export const RPCS = {
       mnemonic: process.env.MNEMONIC,
     },
   },
+  arbitrum: {
+    url: "https://arbitrum.llamarpc.com	",
+    chainId: 42161,
+    gasPrice: 1000000000,
+    accounts: { mnemonic: process.env.MNEMONIC },
+  },
   mainnet: {
     url: `https://ethereum.publicnode.com`,
     gasPrice: 3000000000,

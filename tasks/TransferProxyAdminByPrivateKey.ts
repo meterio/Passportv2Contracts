@@ -17,23 +17,25 @@ task("transfer-proxy-admin-pk", "transfer proxy admin")
   .addParam("rpc", "rpc connect")
   .addParam("proxyadmin", "proxy admin private key")
   .addOptionalParam("gasprice", "gas price", 0, types.int)
+  .addOptionalParam("gaslimit", "gas limit", 200000, types.int)
   .setAction(
     async (
-      { proxy, newadmin, rpc, proxyadmin, gasprice },
+      { proxy, newadmin, rpc, proxyadmin, gasprice, gaslimit },
       { ethers, run, network }
     ) => {
       await run("compile");
-      let override = {};
+      let override: { gasPrice?: number; gasLimit?: BigNumber } = {};
+
       if (gasprice > 0) {
+        override.gasPrice = gasprice;
+      }
+      if (gaslimit > 0) {
         override = {
-          gasLimit: BigNumber.from(200000),
-          gasPrice: gasprice,
-        };
-      } else {
-        override = {
-          gasLimit: BigNumber.from(200000),
+          ...override,
+          gasLimit: BigNumber.from(gaslimit),
         };
       }
+      console.log("override: ", override);
       let provider = new ethers.providers.JsonRpcProvider(rpc);
       const proxyWallet = new ethers.Wallet(proxyadmin, provider);
       const proxy_contract = (await ethers.getContractAt(
